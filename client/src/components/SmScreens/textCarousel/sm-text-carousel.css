@@ -1,0 +1,35 @@
+:root {
+  --sm-font-size: 1.5rem;
+  --sm-text-duration: 30s;
+  --sm-width: 20ch;
+}
+
+.sm-text-carousel {
+  position: relative;
+  height: var(--sm-font-size);
+  overflow: hidden;
+}
+
+@keyframes scrollTextHorizontally {
+  to {
+    transform: translateX(calc(-1 * var(--sm-width)));
+  }
+}
+
+.sm-text-wrapper__element {
+  transform: translateX(calc(var(--sm-width) * 4));
+  position: absolute;
+  height: var(--sm-font-size);
+  width: var(--sm-width);
+  text-align: center;
+  animation-name: scrollTextHorizontally;
+  animation-duration: var(--sm-text-duration);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.sm-text-wrapper__text {
+  font-size: var(--sm-font-size);
+  font-weight: var(--fw-500);
+  line-height: 0.9;
+}

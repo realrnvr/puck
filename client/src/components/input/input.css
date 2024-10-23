@@ -1,0 +1,64 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input__label {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+  text-transform: capitalize;
+}
+
+.input__wrapper {
+  position: relative;
+}
+
+.input__field {
+  width: 100%;
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+  border: 0;
+  outline: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+}
+.input__field--password {
+  padding-inline-end: 3rem;
+}
+
+.input__eye-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 5%;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.input__eye-icon {
+  width: 20px;
+  fill: var(--clr-secondary);
+}
+
+.input__valid {
+  height: 4ch;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 35ch;
+}
+
+.input__valid-icon {
+  width: 15px;
+  aspect-ratio: 1 / 1;
+  fill: var(--clr-primary);
+}
+
+.input__valid-text {
+  font-size: 0.9rem;
+}

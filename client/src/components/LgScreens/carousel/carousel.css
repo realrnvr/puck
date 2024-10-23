@@ -1,0 +1,55 @@
+:root {
+  --lg-duration: 35s;
+  --lg-size: 120px;
+}
+
+.carousel {
+  position: relative;
+  width: var(--lg-size);
+  overflow: hidden;
+}
+
+@keyframes scrollVertical {
+  to {
+    transform: translateY(calc(-1 * var(--lg-size)));
+  }
+}
+
+.carousel__element {
+  transform: translateY(calc(var(--lg-size) * 8));
+  position: absolute;
+  width: var(--lg-size);
+  height: var(--lg-size);
+  animation-name: scrollVertical;
+  animation-iteration-count: infinite;
+  animation-duration: var(--lg-duration);
+  animation-timing-function: linear;
+  border: 1px solid var(--clr-secondary);
+}
+
+.carousel__img {
+  width: var(--lg-size);
+  aspect-ratio: 1 / 1;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+/* @media (min-width: 1024px) {} */
+
+/* Xl */
+@media (min-width: 1280px) {
+  :root {
+    --lg-size: 150px;
+  }
+}
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */

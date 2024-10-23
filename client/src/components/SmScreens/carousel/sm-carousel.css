@@ -1,0 +1,33 @@
+:root {
+  --sm-duration: 30s;
+  --sm-size: 100px;
+}
+
+.sm-carousel {
+  position: relative;
+  height: var(--sm-size);
+  overflow: hidden;
+}
+
+@keyframes scrollHorizontal {
+  to {
+    transform: translateX(calc(-1 * var(--sm-size)));
+  }
+}
+
+.sm-carousel__element {
+  transform: translateX(calc(var(--sm-size) * 8));
+  height: var(--sm-size);
+  width: var(--sm-size);
+  position: absolute;
+  animation-name: scrollHorizontal;
+  animation-duration: var(--sm-duration);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: calc(var(--sm-duration) / 8 * (8 - var(--n)) * -1);
+}
+
+.sm-carousel__img {
+  width: var(--sm-size);
+  aspect-ratio: 1 / 1;
+}

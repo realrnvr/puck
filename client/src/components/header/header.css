@@ -1,0 +1,277 @@
+.header__sec-nav-wrapper {
+  background-color: var(--bg-clr-secondary);
+}
+
+.header__sec-ul {
+  padding-block: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__title {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-400);
+  color: var(--clr-secondary);
+}
+
+.header__sec-link {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-300);
+  text-decoration: underline;
+}
+
+/* .header__main-wrapper {
+  background-color: var(--bg-clr-tertiary);
+} */
+
+.header__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.7rem;
+}
+
+.header__btn {
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  transition: opacity 0.25s;
+}
+.header__btn--border {
+  border: 1px solid var(--clr-secondary);
+}
+.header__btn--opacity {
+  opacity: 1;
+}
+
+.header__icon {
+  width: 30px;
+  aspect-ratio: 1 / 1;
+  transition: color 0.3s;
+  color: var(--clr-primary);
+}
+.header__icon--width {
+  width: 21px;
+}
+.header__icon--color {
+  color: var(--clr-secondary);
+}
+
+.header__lg-screen {
+  display: none;
+}
+
+.header__pri-nav {
+  display: none;
+}
+
+.header__actions {
+  padding-right: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__utilities {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__nav-btn {
+  font-size: var(--fs-xs);
+  color: var(--clr-primary);
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.header__link {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-300);
+}
+
+.header__form {
+  width: fit-content;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.header__input {
+  width: 100%;
+  font-size: var(--fs-xss);
+  background-color: transparent;
+  outline: 0;
+  border: 0;
+  border-bottom: 1px solid var(--clr-secondary);
+  padding: 0.5rem 2.2rem 0.5rem 0rem;
+  transition: border-bottom 0.3s;
+  color: var(--clr-primary);
+}
+
+.header__input::placeholder {
+  color: var(--clr-secondary);
+  transition: color 0.3s;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-300);
+}
+
+.header__input:hover::placeholder {
+  color: var(--clr-primary);
+}
+
+.header__input:focus::placeholder {
+  color: var(--clr-primary);
+}
+
+.header__input:focus {
+  border-bottom: 1px solid var(--clr-primary);
+}
+
+.header__input:focus ~ .header__btn .header__icon {
+  color: var(--clr-primary);
+}
+
+.header__input:hover ~ .header__btn .header__icon {
+  color: var(--clr-primary);
+}
+
+.header__search-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1%;
+}
+
+.header__pri-ul {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.header__pri-ul--flex-d {
+  flex-direction: row;
+}
+
+.header__pri-link {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-500);
+}
+
+.header__img-wrapper {
+  background-color: var(--clr-primary);
+  width: 70px;
+  height: 46.88px;
+}
+
+.header__img {
+  width: 70px;
+  height: 46.88px;
+  filter: grayscale(100%);
+}
+
+.header__mobile-nav-wrapper {
+  position: absolute;
+  background-color: var(--bg-clr-tertiary);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  padding-inline: 1rem;
+  padding-block-start: 1.5rem;
+  transform: translateX(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.25s, opacity 0.25s, visibility 0.25s;
+}
+
+.header__mobile-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__mobile-pri-nav {
+  margin-top: 2rem;
+}
+
+.header__mobile-pri-ul {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header__mobile-sec-nav {
+  margin-top: 3rem;
+}
+
+.header__mobile-sec-ul {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.header__mobile-sec-li-wrapper > * + * {
+  margin-top: 1rem;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+@media (min-width: 1024px) {
+  .header__sec-link {
+    font-size: var(--fs-xs);
+  }
+
+  .header__main {
+    justify-content: flex-start;
+  }
+
+  .header__pri-nav {
+    display: flex;
+    flex: 1;
+  }
+
+  .header__link {
+    font-size: var(--fs-xs);
+  }
+
+  .header__pri-ul {
+    gap: 1.5rem;
+  }
+
+  .header__img-wrapper {
+    background-color: var(--clr-primary);
+    width: 150px;
+    height: 100.44px;
+  }
+
+  .header__img {
+    height: 100.44px;
+    width: 150px;
+  }
+
+  .header__sm-screen {
+    display: none;
+  }
+
+  .header__lg-screen {
+    display: block;
+  }
+}
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */

@@ -1,0 +1,39 @@
+:root {
+  --text-duration: 50s;
+  --text-height: 250px;
+  --text-width: var(--fs-md);
+}
+
+.text-carousel {
+  height: calc(var(--text-height) * 3);
+  width: var(--text-width);
+  position: relative;
+  /* background-color: #f17144; */
+}
+
+.text-carousel__text {
+  transform: translateY(calc(var(--text-height) * 3));
+  position: absolute;
+  height: var(--text-height);
+  width: var(--text-width);
+  animation-name: scrollTextVertically;
+  animation-duration: var(--text-duration);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: calc(var(--text-duration) / 4 * (4 - var(--n)) * -1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-carousel__title {
+  writing-mode: vertical-rl;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-600);
+}
+
+@keyframes scrollTextVertically {
+  to {
+    transform: translateY(calc(-1 * var(--text-height)));
+  }
+}

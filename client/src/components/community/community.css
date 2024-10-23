@@ -1,0 +1,11 @@
+.community__link {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-400);
+  text-decoration: underline;
+}
+
+.community__posts {
+  background-color: rgb(220, 103, 103);
+  margin-top: 1rem;
+  height: 400px;
+}
