@@ -1,6 +1,6 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ResetPasswordSchema } from "../../assets/schema/ResetPasswordSchema";
@@ -9,6 +9,7 @@ import { useResetPasswordMutation } from "../../hooks/useResetPasswordMutation";
 import Input from "../input/Input";
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
   const { verificationId } = useParams();
 
   const {
@@ -30,9 +31,9 @@ const ResetPassword = () => {
       toast.loading("Loading...", { id: "password-toast" });
     },
     onSuccess: (data) => {
-      localStorage.removeItem("passwordEmail");
       if (data?.data?.message) {
         toast.success(data?.data?.message, { id: "password-toast" });
+        navigate("/password-verified");
       }
     },
     onError: (error) => {

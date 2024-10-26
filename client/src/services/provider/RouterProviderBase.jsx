@@ -13,6 +13,7 @@ import VerificationGaurd from "../auth/VerificationGaurd";
 import ForgotPassword from "../../components/forgotPassword/ForgotPassword";
 import ResetPassword from "../../components/resetPassword/ResetPassword";
 import PasswordVerification from "../../components/passwordVerification/PasswordVerification";
+import PasswordVerified from "../../components/passwordVerified/PasswordVerified";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
     element: (
       <VerificationGaurd value={"passwordEmail"}>
         <PasswordVerification />
+      </VerificationGaurd>
+    ),
+  },
+  {
+    path: "/password-verified",
+    element: (
+      <VerificationGaurd value={"passwordEmail"}>
+        <PasswordVerified />
       </VerificationGaurd>
     ),
   },

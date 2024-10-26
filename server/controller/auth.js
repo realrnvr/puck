@@ -205,22 +205,13 @@ export const forgotPassword = async (req, res) => {
 export const resetPassword = async (req, res) => {
   const {
     params: { verificationId },
-    body: { newPassword, confirmPassword },
+    body: { newPassword },
   } = req;
-
-  if (!newPassword || !confirmPassword) {
-    throw new BadRequestError("Please provide credentials.");
-  }
-
-  if (newPassword !== confirmPassword) {
-    throw new BadRequestError("Passwords does not match.");
-  }
 
   try {
     const payload = jwt.verify(verificationId, process.env.JWT_RESET_SECRET);
     const user = await User.findOne({ email: payload.email });
 
-    console.log(user.resetToken);
     if (!user) {
       throw new BadRequestError("user does not exist");
     }
@@ -234,9 +225,10 @@ export const resetPassword = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ message: "Password updated." });
   } catch (error) {
-    res
-      .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: error.message || "something went wrong" });
+    // res
+    //   .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+    //   .json({ message: error.message || "something went wrong" });
+    res.status(500).json({ message: error.message });
   }
 };
 
