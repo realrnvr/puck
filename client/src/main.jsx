@@ -8,14 +8,21 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./resets.css";
 import "./utils.css";
 import "./index.css";
+import Notification from "./utils/toaster/Notification";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const clientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <QueryClientProviderBase>
-      <AuthProvider>
-        <RouterProviderBase />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </AuthProvider>
-    </QueryClientProviderBase>
+    <GoogleOAuthProvider clientId={clientId}>
+      <QueryClientProviderBase>
+        <AuthProvider>
+          <RouterProviderBase />
+          <Notification />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </AuthProvider>
+      </QueryClientProviderBase>
+    </GoogleOAuthProvider>
   </StrictMode>
 );
