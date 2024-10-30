@@ -1,7 +1,22 @@
 import { axiosInstance } from "../api/axios";
 
-export const login = (data) => {
-  return axiosInstance.post("/api/v1/auth/login", data);
+export const verify = ({ verificationId, data }) => {
+  return axiosInstance.post(
+    `/api/v1/auth/verification/${verificationId}`,
+    data
+  );
+};
+
+export const loginAuthOne = (data) => {
+  return axiosInstance.post("/api/v1/auth/loginAuthOne", data);
+};
+
+export const loginAuthTwo = (data) => {
+  return axiosInstance.post("/api/v1/auth/loginAuthTwo", data);
+};
+
+export const loginGoogleAuthTwo = (data) => {
+  return axiosInstance.post("/api/v1/auth/loginGoogleAuthTwo", data);
 };
 
 export const signup = (data) => {

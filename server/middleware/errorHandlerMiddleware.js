@@ -6,6 +6,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
   };
 
+  // validation errors
   if (err.name === "ValidationError") {
     errObj.message = Object.values(err.errors)
       .map((errorObj) => {
@@ -26,7 +27,18 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     errObj.statusCode = StatusCodes.BAD_REQUEST;
   }
 
-  res.status(errObj.statusCode).json(errObj);
+  // JWT errors
+  if (err.name === "TokenExpiredError") {
+    errObj.message = "Link has been expired.";
+    errObj.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+  }
+
+  if (err.name === "JsonWebTokenError") {
+    errObj.message = "Invalid Verification Token";
+    errObj.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+  }
+
+  res.status(errObj.statusCode).json({ message: errObj.message });
   // res.status(500).json({ err });
 };
 

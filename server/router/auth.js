@@ -1,7 +1,11 @@
-import express from "express";
+import { Router } from "express";
 import {
+  deleteUser,
   forgotPassword,
-  login,
+  google,
+  loginAuthOne,
+  loginAuthTwo,
+  loginGoogleAuthTwo,
   logout,
   refreshToken,
   resendPasswordVerification,
@@ -14,13 +18,15 @@ import {
 import { passwordLimiter, resendLimiter } from "../utils/localLimiter.js";
 import { validateResetPassword } from "../middleware/validateResetPassword.js";
 
-const router = express.Router();
+const router = Router();
 
-router.route("/login").post(login);
+router.route("/loginAuthOne").post(loginAuthOne);
+router.route("/loginAuthTwo").post(loginAuthTwo);
+router.route("/loginGoogleAuthTwo").post(loginGoogleAuthTwo);
 router.route("/signup").post(signup);
 router.route("/refreshToken").get(refreshToken);
 router.route("/logout").post(logout);
-router.route("/verification/:verificationId").get(verification);
+router.route("/verification/:verificationId").post(verification);
 router.route("/forgotPassword").post(forgotPassword);
 router
   .route("/resetPassword/:verificationId")
@@ -29,5 +35,7 @@ router.route("/resendVerification").post(resendLimiter, resendVerification);
 router
   .route("/resendPasswordVerification")
   .post(resendLimiter, resendPasswordVerification);
+router.route("/google").post(google);
+router.route("/deleteUser").delete(deleteUser);
 
 export default router;

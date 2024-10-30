@@ -14,6 +14,9 @@ import ForgotPassword from "../../components/forgotPassword/ForgotPassword";
 import ResetPassword from "../../components/resetPassword/ResetPassword";
 import PasswordVerification from "../../components/passwordVerification/PasswordVerification";
 import PasswordVerified from "../../components/passwordVerified/PasswordVerified";
+import Redirect from "../../pages/redirect/Redirect";
+import LoginTwo from "../../components/loginTwo/LoginTwo";
+import LoginGoogleAuth from "../../components/loginGoogleAuth/LoginGoogleAuth";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +90,18 @@ const router = createBrowserRouter([
         <PasswordVerified />
       </VerificationGaurd>
     ),
+  },
+  {
+    path: "/redirect",
+    element: <Redirect />,
+  },
+  {
+    path: "/login/loginTwo",
+    element: <LoginTwo />,
+  },
+  {
+    path: "/login/loginGoogleAuth",
+    element: <LoginGoogleAuth />,
   },
 ]);
 

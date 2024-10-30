@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useReverificationMutation } from "../../hooks/useReverificationMutation";
-import { Toaster } from "react-hot-toast";
+import { reverification } from "../../services/mutation/authMutation";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import "./verification.css";
 
 const Verification = () => {
@@ -13,8 +14,24 @@ const Verification = () => {
     }
   }, []);
 
-  const { mutate: reverificationMutate, isPending } =
-    useReverificationMutation();
+  const { mutate: reverificationMutate, isPending } = useMutation({
+    mutationFn: reverification,
+    onMutate: () => {
+      toast.loading("Sending verification email...", {
+        id: "toast-verification",
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(data?.data?.message, {
+        id: "toast-verification",
+      });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message, {
+        id: "toast-verification",
+      });
+    },
+  });
 
   const handleClick = () => {
     reverificationMutate(userEmail);
@@ -51,20 +68,6 @@ const Verification = () => {
           </button>
         </p>
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            color: "#191815",
-            fontSize: "1rem",
-          },
-          iconTheme: {
-            primary: "#191815",
-            secondary: "#ffffe3",
-          },
-        }}
-      />
     </article>
   );
 };

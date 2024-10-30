@@ -1,11 +1,12 @@
 import React from "react";
 import Input from "../input/Input";
 import { useForm } from "react-hook-form";
-import { useForgotPasswordMutation } from "../../hooks/useForgotPasswordMutation";
-import { Toaster } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmailSchema } from "../../assets/schema/EmailSchema";
 import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../../services/mutation/authMutation";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import "./forgot-password.css";
 
 const ForgotPassword = () => {
@@ -24,23 +25,30 @@ const ForgotPassword = () => {
     mode: "onChange",
   });
 
-  const { mutateAsync: forgotPasswordMutate } = useForgotPasswordMutation({
+  const { mutate: forgotPasswordMutate } = useMutation({
+    mutationFn: forgotPassword,
+    onMutate: () => {
+      toast.loading("Sending verification email...", {
+        id: "toast-verification",
+      });
+    },
     onSuccess: (data) => {
+      toast.success(data?.data?.message, {
+        id: "toast-verification",
+      });
       localStorage.setItem("passwordEmail", data?.data?.user?.email);
       navigate("/password-verification");
     },
     onError: (error) => {
       localStorage.removeItem("passwordEmail");
-      console.log(error);
+      toast.error(error.response?.data?.message, {
+        id: "toast-verification",
+      });
     },
   });
 
-  const onSubmit = async (data) => {
-    try {
-      await forgotPasswordMutate(data);
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit = (data) => {
+    forgotPasswordMutate(data);
   };
 
   return (
@@ -74,20 +82,6 @@ const ForgotPassword = () => {
           </button>
         </form>
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            color: "#191815",
-            fontSize: "1rem",
-          },
-          iconTheme: {
-            primary: "#191815",
-            secondary: "#ffffe3",
-          },
-        }}
-      />
     </article>
   );
 };

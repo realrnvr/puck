@@ -5,29 +5,42 @@ import bcryptjs from "bcryptjs";
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, "Please Provide a Username"],
+    required: [true, "Please provide a username"],
     minlength: 4,
-    maxlength: 8,
+    maxlength: 50,
     unique: true,
   },
   email: {
     type: String,
-    required: [true, "Please Provide a Email"],
+    required: [true, "Please provide an email"],
     match: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Pls provide a valid Email",
+      "Please provide a valid email",
     ],
     unique: true,
   },
   password: {
     type: String,
-    required: [true, "Please Provide a Password"],
-    minlength: 8,
+    required: function () {
+      return !this.googleId;
+    },
+    validate: {
+      validator: function (value) {
+        return !value || value.length >= 8;
+      },
+      message: "Password must be at least 8 characters long.",
+    },
+  },
+  googleId: {
+    type: String, // Removed `unique: true` here
   },
   verificationToken: {
     type: String,
   },
   resetToken: {
+    type: String,
+  },
+  refreshToken: {
     type: String,
   },
   isVerified: {
@@ -37,12 +50,17 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function (next) {
+  if (this.googleId) {
+    this.isVerified = true;
+  }
+
   if (this.isModified("password")) {
     const salt = await bcryptjs.genSalt(10);
     this.password = await bcryptjs.hash(this.password, salt);
   }
 
-  if (this.isNew || this.isModified("verificationToken")) {
+  // Only set verification token if user is new
+  if (this.isNew) {
     this.verificationToken = this.createVerificationToken();
   }
 

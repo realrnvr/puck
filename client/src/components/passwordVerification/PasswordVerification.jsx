@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
-import { useResendPasswordVerificationMutation } from "../../hooks/useResendPasswordVerificationMutation";
+import { resendPasswordVerification } from "../../services/mutation/authMutation";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
 import "./password-verification.css";
 
 const PasswordVerification = () => {
@@ -13,15 +14,29 @@ const PasswordVerification = () => {
     }
   }, []);
 
-  const { mutateAsync: resendPasswordVerificationMutate, isPending } =
-    useResendPasswordVerificationMutation();
+  const { mutate: resendPasswordVerificationMutate, isPending } = useMutation({
+    mutationFn: resendPasswordVerification,
+    onMutate: () => {
+      toast.loading("Sending verification email...", {
+        id: "toast-verification",
+      });
+    },
+    onSuccess: (data) => {
+      toast.dismiss("toast-verification");
+      toast.success(data?.data?.message, {
+        id: "toast-verification",
+      });
+    },
+    onError: (error) => {
+      toast.dismiss("toast-verification");
+      toast.error(error.response?.data?.message, {
+        id: "toast-verification",
+      });
+    },
+  });
 
-  const onSubmit = async () => {
-    try {
-      resendPasswordVerificationMutate(passwordEmail);
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit = () => {
+    resendPasswordVerificationMutate(passwordEmail);
   };
 
   return (
@@ -55,20 +70,6 @@ const PasswordVerification = () => {
           </button>
         </p>
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            color: "#191815",
-            fontSize: "1rem",
-          },
-          iconTheme: {
-            primary: "#191815",
-            secondary: "#ffffe3",
-          },
-        }}
-      />
     </article>
   );
 };

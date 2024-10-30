@@ -1,0 +1,81 @@
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { loginTwoData } from "../../assets/loginTwoData";
+import "./login-two.css";
+import Input from "../input/Input";
+import { PasswordSchema } from "../../assets/schema/PasswordSchema";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../../hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
+import { loginAuthTwo } from "../../services/mutation/authMutation";
+
+const LoginTwo = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { isValid, errors },
+  } = useForm({
+    defaultValues: {
+      password: "",
+    },
+    resolver: zodResolver(PasswordSchema),
+    mode: "onChange",
+  });
+
+  const { mutate: loginAuthTwoMutate, isPending } = useMutation({
+    mutationFn: loginAuthTwo,
+    onSuccess: (data) => {
+      console.log(data);
+      auth.setToken(data?.data?.accessToken);
+      navigate("/account");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const onSubmit = (data) => {
+    loginAuthTwoMutate({
+      email: localStorage.getItem("loginEmail"),
+      ...data,
+    });
+  };
+
+  return (
+    <article className="forgot">
+      <div className="forgot__content">
+        <h2 className="forgot__title">PUCK</h2>
+        <p className="forgot__description">Password</p>
+        <p className="forgot__description forgot__description--fs">
+          Enter your password to proceed.
+        </p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            register={register}
+            watch={watch}
+            errors={errors}
+            formData={loginTwoData[0]}
+          />
+          <div className="login__link-wrapper">
+            <Link className="login__link" to="/forgot-password">
+              Forgot password?
+            </Link>
+          </div>
+          <button
+            className="login-two__btn forgot__btn"
+            disabled={!isValid || isPending}
+          >
+            Log in
+          </button>
+        </form>
+      </div>
+    </article>
+  );
+};
+
+export default LoginTwo;

@@ -1,16 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { LogInSchema } from "../../assets/schema/LogInSchema";
+import { useNavigate } from "react-router-dom";
 import { formData } from "../../assets/logInData";
-import { useAuth } from "../../hooks/useAuth";
-import { useLoginMutation } from "../../hooks/useLoginMutation";
+import { EmailSchema } from "../../assets/schema/EmailSchema";
+import { useMutation } from "@tanstack/react-query";
+import { loginAuthOne } from "../../services/mutation/authMutation";
 import Input from "../input/Input";
 import "./login.css";
 
 const Login = () => {
-  const auth = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -19,68 +18,51 @@ const Login = () => {
     setError,
     setFocus,
     watch,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: {
       email: "",
-      password: "",
     },
-    resolver: zodResolver(LogInSchema),
+    resolver: zodResolver(EmailSchema),
     mode: "onChange",
   });
 
-  const { mutateAsync: loginMutate } = useLoginMutation({
+  const { mutate: loginAuthOneMutate, isPending } = useMutation({
+    mutationFn: loginAuthOne,
     onSuccess: (data) => {
-      auth.setToken(data?.data?.accessToken);
-      navigate("/account");
+      localStorage.setItem("loginEmail", data?.data?.user?.email);
+      navigate(data?.data?.navigate);
     },
     onError: (error) => {
       const serverError = error.response.data.message;
       if (serverError.includes("email")) {
         setError("email", { message: serverError });
         setFocus("email");
-      } else if (serverError.includes("password")) {
-        setError("password", { message: serverError });
-        setError("root", { message: serverError });
-        setFocus("password");
-      } else if (serverError.includes("verify")) {
-        setError("root", { message: serverError });
       }
     },
   });
 
-  const onSubmit = async (data) => {
-    await loginMutate(data);
+  const onSubmit = (data) => {
+    loginAuthOneMutate(data);
   };
 
   return (
     <>
       <form className="login__form" onSubmit={handleSubmit(onSubmit)}>
-        {formData.map((val, idx) => {
-          return (
-            <Input
-              key={idx}
-              register={register}
-              watch={watch}
-              errors={errors}
-              formData={val}
-            />
-          );
-        })}
-        <div className="login__link-wrapper">
-          <Link className="login__link" to="/forgot-password">
-            Forgot password?
-          </Link>
-        </div>
+        <Input
+          register={register}
+          watch={watch}
+          errors={errors}
+          formData={formData[0]}
+        />
         <button
           className="login__btn"
           type="submit"
-          disabled={!isValid || isSubmitting || !watch("password")}
+          disabled={!isValid || isPending}
         >
-          Log in
+          continue
         </button>
       </form>
-      <p className="login__error-msg">{errors.root?.message}</p>
     </>
   );
 };

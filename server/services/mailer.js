@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const mailer = async ({ to, subject, html }) => {
+export const mailer = async ({ to, subject, html }) => {
   const mailOptions = {
     from: process.env.AUTH_USER,
     to,
@@ -20,5 +20,3 @@ const mailer = async ({ to, subject, html }) => {
 
   await transporter.sendMail(mailOptions);
 };
-
-export default mailer;

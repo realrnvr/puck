@@ -1,18 +1,36 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { useVerifyQuery } from "../../hooks/useVerifyQuery";
-import { Toaster } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { verify } from "../../services/mutation/authMutation";
+import { useAuth } from "../../hooks/useAuth";
 import "./verified.css";
 
 const Verified = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
   const { verificationId } = useParams();
-  const { data, isError } = useVerifyQuery(verificationId);
+
+  const { mutate: verifyMutate } = useMutation({
+    mutationFn: verify,
+    onSuccess: (data) => {
+      console.log(data);
+      auth.setToken(data?.data?.accessToken);
+      navigate("/account");
+      localStorage.removeItem("userEmail");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   useEffect(() => {
-    if (data) {
-      localStorage.removeItem("userEmail");
-    }
-  }, [data]);
+    const userEmail = localStorage.getItem("userEmail");
+    if (verificationId && userEmail)
+      verifyMutate({
+        verificationId,
+        email: userEmail,
+      });
+  }, [verificationId]);
 
   return (
     <article className="verification">
@@ -21,7 +39,7 @@ const Verified = () => {
       </div>
       <div className="verification__content">
         <h2 className="verification__title">Puck</h2>
-        <h3 className="verification__title verification__title--fs-mt">
+        {/* <h3 className="verification__title verification__title--fs-mt">
           {isError
             ? "Looks like the link has expired!"
             : "Great, you are verified now!"}
@@ -39,24 +57,10 @@ const Verified = () => {
           </p>
         ) : (
           <p className="verification__description">
-            Refresh the page or <Link to="/login">Login</Link>
+            Refresh the page or <Link to="/account">Account</Link>
           </p>
-        )}
+        )} */}
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            color: "#191815",
-            fontSize: "1rem",
-          },
-          iconTheme: {
-            primary: "#191815",
-            secondary: "#ffffe3",
-          },
-        }}
-      />
     </article>
   );
 };

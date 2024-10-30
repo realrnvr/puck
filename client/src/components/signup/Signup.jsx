@@ -4,9 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { SignUpSchema } from "../../assets/schema/SignUpSchema";
 import { formData } from "../../assets/signUpData";
-import { useSignupMutation } from "../../hooks/useSignupMutation";
+import { signup } from "../../services/mutation/authMutation";
+import { useMutation } from "@tanstack/react-query";
 import Input from "../input/Input";
 import "./signup.css";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const {
@@ -15,7 +17,7 @@ const Signup = () => {
     setError,
     watch,
     setFocus,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: {
       username: "",
@@ -28,12 +30,20 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const { mutateAsync: signupMutate } = useSignupMutation({
+  const { mutate: signupMutate, isPending } = useMutation({
+    mutationFn: signup,
+    onMutate: () => {
+      toast.loading("Loading...", {
+        id: "signup-toast",
+      });
+    },
     onSuccess: (data) => {
+      toast.dismiss("signup-toast");
       localStorage.setItem("userEmail", data?.data?.user?.email);
       navigate("/verification");
     },
     onError: (error) => {
+      toast.dismiss("signup-toast");
       const serverError = error.response.data.message;
       if (serverError.includes("username")) {
         setError("username", { message: serverError });
@@ -45,8 +55,8 @@ const Signup = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    await signupMutate(data);
+  const onSubmit = (data) => {
+    signupMutate(data);
   };
 
   return (
@@ -64,7 +74,7 @@ const Signup = () => {
       })}
       <div className="signup__btn-wrapper">
         <button
-          disabled={isSubmitting || !isValid}
+          disabled={isPending || !isValid}
           className="signup__btn"
           type="submit"
         >

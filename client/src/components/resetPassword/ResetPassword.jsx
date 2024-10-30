@@ -1,12 +1,13 @@
 import React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ResetPasswordSchema } from "../../assets/schema/ResetPasswordSchema";
 import { resetPasswordData } from "../../assets/resetPasswordData";
-import { useResetPasswordMutation } from "../../hooks/useResetPasswordMutation";
+import { resetPassword } from "../../services/mutation/authMutation";
 import Input from "../input/Input";
+import { useMutation } from "@tanstack/react-query";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -26,7 +27,8 @@ const ResetPassword = () => {
     mode: "onChange",
   });
 
-  const { mutateAsync: resetPasswordMutate } = useResetPasswordMutation({
+  const { mutate: resetPasswordMutate, isError } = useMutation({
+    mutationFn: resetPassword,
     onMutate: () => {
       toast.loading("Loading...", { id: "password-toast" });
     },
@@ -43,8 +45,8 @@ const ResetPassword = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    await resetPasswordMutate({ verificationId, data });
+  const onSubmit = (data) => {
+    resetPasswordMutate({ verificationId, data });
   };
 
   return (
@@ -72,20 +74,6 @@ const ResetPassword = () => {
           </button>
         </form>
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            color: "#191815",
-            fontSize: "1rem",
-          },
-          iconTheme: {
-            primary: "#191815",
-            secondary: "#ffffe3",
-          },
-        }}
-      />
     </article>
   );
 };

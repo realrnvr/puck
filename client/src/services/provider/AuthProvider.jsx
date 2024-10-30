@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState();
   console.log("token state", token);
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: refreshAccessTokenMutate } = useMutation({
     mutationFn: () => axiosInstance.get("/api/v1/auth/refreshToken"),
     onSuccess: (data) => {
       console.log("refresh");
@@ -19,10 +19,6 @@ export const AuthProvider = ({ children }) => {
       throw error;
     },
   });
-
-  const refreshAccessToken = async () => {
-    await mutateAsync();
-  };
 
   useLayoutEffect(() => {
     const authInterceptor = axiosInstance.interceptors.request.use(
@@ -49,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         if (error.response?.status === 403 && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
-            const newToken = await refreshAccessToken();
+            const newToken = await refreshAccessTokenMutate();
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return axiosInstance(originalRequest);
           } catch (refreshError) {
