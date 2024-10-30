@@ -1,22 +1,21 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "../../pages/home/Home";
 import Account from "../../pages/account/Account";
 import ProtectedRoute from "../auth/ProtectedRoute";
-import Login from "../../components/login/Login";
-import Signup from "../../components/signup/Signup";
-import Verification from "../../components/verification/Verification";
-import Verified from "../../components/verified/Verified";
+import Login from "../../components/auth/login/Login";
+import Signup from "../../components/auth/signup/Signup";
+import Verification from "../../pages/auth/verification/Verification";
+import Verified from "../../pages/auth/verified/Verified";
 import Template from "../../utils/template/Template";
 import VerificationGaurd from "../auth/VerificationGaurd";
-import ForgotPassword from "../../components/forgotPassword/ForgotPassword";
-import ResetPassword from "../../components/resetPassword/ResetPassword";
-import PasswordVerification from "../../components/passwordVerification/PasswordVerification";
-import PasswordVerified from "../../components/passwordVerified/PasswordVerified";
+import ForgotPassword from "../../pages/auth/forgotPassword/ForgotPassword";
+import ResetPassword from "../../pages/auth/resetPassword/ResetPassword";
+import PasswordVerification from "../../pages/auth/passwordVerification/PasswordVerification";
+import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified";
 import Redirect from "../../pages/redirect/Redirect";
-import LoginTwo from "../../components/loginTwo/LoginTwo";
-import LoginGoogleAuth from "../../components/loginGoogleAuth/LoginGoogleAuth";
+import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
+import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
 
 const router = createBrowserRouter([
   {

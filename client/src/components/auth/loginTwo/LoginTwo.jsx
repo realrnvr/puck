@@ -1,14 +1,13 @@
-import React from "react";
+import "./login-two.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { loginTwoData } from "../../assets/loginTwoData";
-import "./login-two.css";
-import Input from "../input/Input";
-import { PasswordSchema } from "../../assets/schema/PasswordSchema";
+import { loginTwoData } from "../../../assets/data/loginTwoData";
+import { PasswordSchema } from "../../../assets/schema/PasswordSchema";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
-import { loginAuthTwo } from "../../services/mutation/authMutation";
+import { loginAuthTwo } from "../../../services/mutation/authMutation";
+import Input from "../../ui/input/Input";
 
 const LoginTwo = () => {
   const auth = useAuth();

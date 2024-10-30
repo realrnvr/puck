@@ -1,13 +1,12 @@
-import React from "react";
+import "./signup.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { SignUpSchema } from "../../assets/schema/SignUpSchema";
-import { formData } from "../../assets/signUpData";
-import { signup } from "../../services/mutation/authMutation";
+import { SignUpSchema } from "../../../assets/schema/SignUpSchema";
+import { formData } from "../../../assets/data/logInData";
+import { signup } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
-import Input from "../input/Input";
-import "./signup.css";
+import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 
 const Signup = () => {

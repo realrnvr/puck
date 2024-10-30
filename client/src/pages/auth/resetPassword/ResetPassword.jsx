@@ -1,13 +1,12 @@
-import React from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ResetPasswordSchema } from "../../assets/schema/ResetPasswordSchema";
-import { resetPasswordData } from "../../assets/resetPasswordData";
-import { resetPassword } from "../../services/mutation/authMutation";
-import Input from "../input/Input";
+import { ResetPasswordSchema } from "../../../assets/schema/ResetPasswordSchema";
+import { resetPasswordData } from "../../../assets/data/resetPasswordData";
+import { resetPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
+import Input from "../../../components/ui/input/Input";
 
 const ResetPassword = () => {
   const navigate = useNavigate();

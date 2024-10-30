@@ -1,10 +1,10 @@
 import React from "react";
-import Header from "../../components/header/Header";
-import Hero from "../../components/hero/Hero";
-// import Showcase from "../../components/showcase/Showcase";
-import Community from "../../components/community/Community";
-import NewsLetter from "../../components/newsLetter/NewsLetter";
-import Footer from "../../components/footer/Footer";
+import Header from "../../components/ui/header/Header";
+import Hero from "../../components/ui/hero/Hero";
+// import Showcase from "../../components/ui/showcase/Showcase";
+import Community from "../../components/ui/community/Community";
+import NewsLetter from "../../components/ui/newsLetter/NewsLetter";
+import Footer from "../../components/ui/footer/Footer";
 import "./home.css";
 
 const Home = () => {

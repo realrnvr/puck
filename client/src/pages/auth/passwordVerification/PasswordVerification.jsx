@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { resendPasswordVerification } from "../../services/mutation/authMutation";
-import toast from "react-hot-toast";
-import { useMutation } from "@tanstack/react-query";
 import "./password-verification.css";
+import { useEffect, useState } from "react";
+import { resendPasswordVerification } from "../../../services/mutation/authMutation";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const PasswordVerification = () => {
   const [passwordEmail, setPasswordEmail] = useState("");

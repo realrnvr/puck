@@ -1,13 +1,12 @@
-import React from "react";
 import "./login-google-auth.css";
-import Input from "../input/Input";
+import Input from "../../ui/input/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { loginGoogleAuthData } from "../../assets/loginGoogleAuthData";
-import { loginGoogleAuthSchema } from "../../assets/schema/loginGoogleAuthSchema";
+import { loginGoogleAuthData } from "../../../assets/data/loginGoogleAuthData";
+import { loginGoogleAuthSchema } from "../../../assets/schema/loginGoogleAuthSchema";
 import { useMutation } from "@tanstack/react-query";
-import { loginGoogleAuthTwo } from "../../services/mutation/authMutation";
-import { useAuth } from "../../hooks/useAuth";
+import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
+import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const LoginGoogleAuth = () => {

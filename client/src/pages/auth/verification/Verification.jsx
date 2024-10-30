@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { reverification } from "../../services/mutation/authMutation";
+import "./verification.css";
+import { useEffect, useState } from "react";
+import { reverification } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import "./verification.css";
 
 const Verification = () => {
   const [userEmail, setUserEmail] = useState("");

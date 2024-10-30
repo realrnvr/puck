@@ -1,13 +1,12 @@
-import React from "react";
+import "./login.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { formData } from "../../assets/logInData";
-import { EmailSchema } from "../../assets/schema/EmailSchema";
+import { formData } from "../../../assets/data/logInData";
+import { EmailSchema } from "../../../assets/schema/EmailSchema";
 import { useMutation } from "@tanstack/react-query";
-import { loginAuthOne } from "../../services/mutation/authMutation";
-import Input from "../input/Input";
-import "./login.css";
+import { loginAuthOne } from "../../../services/mutation/authMutation";
+import Input from "../../ui/input/Input";
 
 const Login = () => {
   const navigate = useNavigate();

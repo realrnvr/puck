@@ -1,13 +1,12 @@
-import React from "react";
-import Input from "../input/Input";
+import "./forgot-password.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EmailSchema } from "../../assets/schema/EmailSchema";
+import { EmailSchema } from "../../../assets/schema/EmailSchema";
 import { useNavigate } from "react-router-dom";
-import { forgotPassword } from "../../services/mutation/authMutation";
+import { forgotPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
+import Input from "../../../components/ui/input/Input";
 import toast from "react-hot-toast";
-import "./forgot-password.css";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
     watch,
   } = useForm({
     defaultValues: {
@@ -25,7 +24,7 @@ const ForgotPassword = () => {
     mode: "onChange",
   });
 
-  const { mutate: forgotPasswordMutate } = useMutation({
+  const { mutate: forgotPasswordMutate, isPending } = useMutation({
     mutationFn: forgotPassword,
     onMutate: () => {
       toast.loading("Sending verification email...", {
@@ -76,7 +75,7 @@ const ForgotPassword = () => {
           <button
             className="forgot__btn"
             type="submit"
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isPending}
           >
             Continue
           </button>

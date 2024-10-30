@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import "./verified.css";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { verify } from "../../services/mutation/authMutation";
-import { useAuth } from "../../hooks/useAuth";
-import "./verified.css";
+import { verify } from "../../../services/mutation/authMutation";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Verified = () => {
   const auth = useAuth();

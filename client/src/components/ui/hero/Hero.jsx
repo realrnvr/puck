@@ -3,7 +3,7 @@ import Carousel from "../LgScreens/carousel/Carousel";
 import TextCarousel from "../LgScreens/textCarousel/TextCarousel";
 import SmCarousel from "../SmScreens/carousel/SmCarousel";
 import SmTextCarousel from "../SmScreens/textCarousel/SmTextCarousel";
-import { scrollVerticalData } from "../../assets/scrollVerticalData";
+import { scrollVerticalData } from "../../../assets/data/scrollVerticalData";
 import "./hero.css";
 
 const Hero = () => {

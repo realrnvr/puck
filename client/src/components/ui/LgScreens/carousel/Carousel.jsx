@@ -1,5 +1,5 @@
 import React, { memo, useRef } from "react";
-import { useLazyLoadEffect } from "../../../hooks/useLazyLoadEffect";
+import { useLazyLoadEffect } from "../../../../hooks/useLazyLoadEffect";
 import "./carousel.css";
 
 const Carousel = ({ data, reversed }) => {
