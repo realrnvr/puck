@@ -7,12 +7,4 @@ export const formData = [
     defaultMsg: "Valid email.",
     toggle: false,
   },
-  {
-    label: "Password",
-    name: "password",
-    type: "password",
-    serverErr: "password is incorrect.",
-    defaultMsg: "",
-    toggle: true,
-  },
 ];
