@@ -1,18 +1,18 @@
 import { Router } from "express";
 import {
-  deleteUser,
-  forgotPassword,
-  google,
   loginAuthOne,
   loginAuthTwo,
   loginGoogleAuthTwo,
-  logout,
-  refreshToken,
-  resendPasswordVerification,
-  resendVerification,
-  resetPassword,
   signup,
+  refreshToken,
+  logout,
   verification,
+  forgotPassword,
+  resetPassword,
+  resendVerification,
+  resendPasswordVerification,
+  google,
+  deleteUser,
 } from "../controller/auth.js";
 
 import { passwordLimiter, resendLimiter } from "../utils/localLimiter.js";

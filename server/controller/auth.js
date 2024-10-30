@@ -1,11 +1,11 @@
 import User from "../models/auth.js";
 import jwt from "jsonwebtoken";
-import UnauthorziedError from "../errors/unauthorizedError.js";
-import BadRequestError from "../errors/badRequestError.js";
-import axios from "axios";
+import { UnauthorziedError } from "../errors/unauthorizedError.js";
+import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
 import { mailer } from "../services/mailer.js";
 import { OAuth2Client } from "google-auth-library";
+import axios from "axios";
 
 export const signup = async (req, res) => {
   const user = await User.create({ ...req.body });

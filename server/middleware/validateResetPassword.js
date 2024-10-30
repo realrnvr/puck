@@ -1,4 +1,4 @@
-import BadRequestError from "../errors/badRequestError.js";
+import { BadRequestError } from "../errors/badRequestError.js";
 
 export const validateResetPassword = (req, res, next) => {
   const { newPassword, confirmPassword } = req.body;

@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import UnauthorizedError from "../errors/unauthorizedError.js";
+import { UnauthorziedError } from "../errors/unauthorizedError.js";
 import jwt from "jsonwebtoken";
 
 export const auth = (req, res, next) => {
@@ -22,6 +22,6 @@ export const auth = (req, res, next) => {
     };
     next();
   } catch (error) {
-    throw new UnauthorizedError("Authorization invalid.");
+    throw new UnauthorziedError("Authorization invalid.");
   }
 };

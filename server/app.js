@@ -5,19 +5,15 @@ import express from "express";
 const app = express();
 
 import cors from "cors";
-
 import "express-async-errors";
-import { notFound } from "./middleware/notFound.js";
-import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 
-import connectDB from "./connectDB/connectDB.js";
+import { connectDB } from "./connectDB/connectDB.js";
+import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
+import { auth } from "./middleware/authorization.js";
+import { notFound } from "./middleware/notFound.js";
+import { StatusCodes } from "http-status-codes";
 import authRouter from "./router/auth.js";
 import cookieParser from "cookie-parser";
-import { auth } from "./middleware/authorization.js";
-import { StatusCodes } from "http-status-codes";
-
-app.use(express.json());
-app.use(cookieParser());
 
 app.use(
   cors({
@@ -25,6 +21,8 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("API spining!");
