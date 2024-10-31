@@ -1,13 +1,15 @@
-import React from "react";
+import "./template.css";
 import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import "./template.css";
 
 const Template = ({ children, template }) => {
   const login = useGoogleLogin({
     flow: "auth-code",
     ux_mode: "redirect",
     redirect_uri: "http://localhost:5173/redirect",
+    onSuccess: () => {
+      console.log("yeah yeah");
+    },
     onError: (error) => console.error("Login Failed", error),
   });
 

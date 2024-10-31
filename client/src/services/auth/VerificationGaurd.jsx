@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 
 const VerificationGaurd = ({ value, children }) => {
@@ -6,7 +5,7 @@ const VerificationGaurd = ({ value, children }) => {
 
   if (!parameter) {
     return (
-      <Navigate to={value === "userEmail" ? "/login" : "/forgot-password"} />
+      <Navigate to={value === "sign-mail" ? "/login" : "/forgot-password"} />
     );
   }
 

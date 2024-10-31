@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { SignUpSchema } from "../../../assets/schema/SignUpSchema";
-import { formData } from "../../../assets/data/logInData";
+import { formData } from "../../../assets/data/signUpData";
 import { signup } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
+import Loader from "../../ui/loader/Loader";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const Signup = () => {
   const {
@@ -31,19 +33,13 @@ const Signup = () => {
 
   const { mutate: signupMutate, isPending } = useMutation({
     mutationFn: signup,
-    onMutate: () => {
-      toast.loading("Loading...", {
-        id: "signup-toast",
-      });
-    },
     onSuccess: (data) => {
-      toast.dismiss("signup-toast");
-      localStorage.setItem("userEmail", data?.data?.user?.email);
+      localStorage.setItem("sign-mail", data?.data?.user?.email);
       navigate("/verification");
     },
     onError: (error) => {
-      toast.dismiss("signup-toast");
       const serverError = error.response.data.message;
+      console.log(error.response.data);
       if (serverError.includes("username")) {
         setError("username", { message: serverError });
         setFocus("username");
@@ -73,12 +69,13 @@ const Signup = () => {
       })}
       <div className="signup__btn-wrapper">
         <button
-          disabled={isPending || !isValid}
+          disabled={isPending || !isValid || hasErrors(errors)}
           className="signup__btn"
           type="submit"
         >
           Sign Up
         </button>
+        {isPending && <Loader />}
       </div>
     </form>
   );

@@ -5,12 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const Verification = () => {
-  const [userEmail, setUserEmail] = useState("");
+  const [signMail, setSignMail] = useState("");
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedEmail) {
-      setUserEmail(storedEmail);
+    const signMail = localStorage.getItem("sign-mail");
+    if (signMail) {
+      setSignMail(signMail);
     }
   }, []);
 
@@ -49,7 +49,7 @@ const Verification = () => {
         </h3>
         <img className="verification__mail-img" src="/mail.webp" alt="" />
         <p className="verification__description">
-          Check your inbox at <strong>{userEmail}</strong> and click the
+          Check your inbox at <strong>{signMail}</strong> and click the
           verrification link inside to complete your registration. This link
           will expire shortly, so verify soon!
         </p>

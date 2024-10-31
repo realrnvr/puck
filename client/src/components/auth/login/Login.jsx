@@ -7,6 +7,7 @@ import { EmailSchema } from "../../../assets/schema/EmailSchema";
 import { useMutation } from "@tanstack/react-query";
 import { loginAuthOne } from "../../../services/mutation/authMutation";
 import Input from "../../ui/input/Input";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Login = () => {
   const { mutate: loginAuthOneMutate, isPending } = useMutation({
     mutationFn: loginAuthOne,
     onSuccess: (data) => {
-      localStorage.setItem("loginEmail", data?.data?.user?.email);
+      localStorage.setItem("log-mail", data?.data?.user?.email);
       navigate(data?.data?.navigate);
     },
     onError: (error) => {
@@ -57,7 +58,7 @@ const Login = () => {
         <button
           className="login__btn"
           type="submit"
-          disabled={!isValid || isPending}
+          disabled={!isValid || isPending || hasErrors(errors)}
         >
           continue
         </button>

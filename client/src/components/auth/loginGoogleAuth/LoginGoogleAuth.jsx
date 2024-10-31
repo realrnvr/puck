@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const LoginGoogleAuth = () => {
   const auth = useAuth();
@@ -67,7 +68,10 @@ const LoginGoogleAuth = () => {
               />
             );
           })}
-          <button className="forgot__btn" disabled={!isValid}>
+          <button
+            className="forgot__btn"
+            disabled={!isValid || hasErrors(errors)}
+          >
             Log in
           </button>
         </form>

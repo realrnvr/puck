@@ -23,6 +23,9 @@
   padding: 0.5rem 1rem;
   border-radius: 15px;
 }
+.input__field:focus {
+  outline: 3px solid var(--clr-secondary);
+}
 .input__field--password {
   padding-inline-end: 3rem;
 }

@@ -13,9 +13,11 @@ import ForgotPassword from "../../pages/auth/forgotPassword/ForgotPassword";
 import ResetPassword from "../../pages/auth/resetPassword/ResetPassword";
 import PasswordVerification from "../../pages/auth/passwordVerification/PasswordVerification";
 import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified";
-import Redirect from "../../pages/redirect/Redirect";
+import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
 import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
+import LoginGaurd from "../auth/LoginGaurd";
+import PasswordVerifiedGaurd from "../auth/passwordVerifiedGaurd";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +51,7 @@ const router = createBrowserRouter([
   {
     path: "/verification",
     element: (
-      <VerificationGaurd value={"userEmail"}>
+      <VerificationGaurd value={"sign-mail"}>
         <Verification />
       </VerificationGaurd>
     ),
@@ -57,19 +59,23 @@ const router = createBrowserRouter([
   {
     path: "/verified/:verificationId",
     element: (
-      <VerificationGaurd value={"userEmail"}>
+      <VerificationGaurd value={"sign-mail"}>
         <Verified />
       </VerificationGaurd>
     ),
   },
   {
     path: "/forgot-password",
-    element: <ForgotPassword />,
+    element: (
+      <LoginGaurd>
+        <ForgotPassword />
+      </LoginGaurd>
+    ),
   },
   {
     path: "/reset-password/:verificationId",
     element: (
-      <VerificationGaurd value={"passwordEmail"}>
+      <VerificationGaurd value={"pass-mail"}>
         <ResetPassword />
       </VerificationGaurd>
     ),
@@ -77,7 +83,7 @@ const router = createBrowserRouter([
   {
     path: "/password-verification",
     element: (
-      <VerificationGaurd value={"passwordEmail"}>
+      <VerificationGaurd value={"pass-mail"}>
         <PasswordVerification />
       </VerificationGaurd>
     ),
@@ -85,9 +91,9 @@ const router = createBrowserRouter([
   {
     path: "/password-verified",
     element: (
-      <VerificationGaurd value={"passwordEmail"}>
+      <PasswordVerifiedGaurd>
         <PasswordVerified />
-      </VerificationGaurd>
+      </PasswordVerifiedGaurd>
     ),
   },
   {
@@ -96,11 +102,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/login/loginTwo",
-    element: <LoginTwo />,
+    element: (
+      <LoginGaurd>
+        <LoginTwo />
+      </LoginGaurd>
+    ),
   },
   {
     path: "/login/loginGoogleAuth",
-    element: <LoginGoogleAuth />,
+    element: (
+      <LoginGaurd>
+        <LoginGoogleAuth />
+      </LoginGaurd>
+    ),
   },
 ]);
 

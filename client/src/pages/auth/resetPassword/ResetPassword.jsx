@@ -7,6 +7,7 @@ import { resetPasswordData } from "../../../assets/data/resetPasswordData";
 import { resetPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import Input from "../../../components/ui/input/Input";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -68,7 +69,10 @@ const ResetPassword = () => {
               />
             );
           })}
-          <button className="forgot__btn" disabled={!isValid || isSubmitting}>
+          <button
+            className="forgot__btn"
+            disabled={!isValid || isSubmitting || hasErrors(errors)}
+          >
             Reset
           </button>
         </form>

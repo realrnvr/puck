@@ -7,6 +7,7 @@ import { forgotPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import Input from "../../../components/ui/input/Input";
 import toast from "react-hot-toast";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const ForgotPassword = () => {
     watch,
   } = useForm({
     defaultValues: {
-      email: "",
+      email: localStorage.getItem("log-mail") || "",
     },
     resolver: zodResolver(EmailSchema),
     mode: "onChange",
@@ -35,11 +36,10 @@ const ForgotPassword = () => {
       toast.success(data?.data?.message, {
         id: "toast-verification",
       });
-      localStorage.setItem("passwordEmail", data?.data?.user?.email);
+      localStorage.setItem("pass-mail", data?.data?.user?.email);
       navigate("/password-verification");
     },
     onError: (error) => {
-      localStorage.removeItem("passwordEmail");
       toast.error(error.response?.data?.message, {
         id: "toast-verification",
       });
@@ -75,7 +75,7 @@ const ForgotPassword = () => {
           <button
             className="forgot__btn"
             type="submit"
-            disabled={!isValid || isPending}
+            disabled={!isValid || isPending || hasErrors(errors)}
           >
             Continue
           </button>

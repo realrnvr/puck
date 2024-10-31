@@ -8,6 +8,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAuthTwo } from "../../../services/mutation/authMutation";
 import Input from "../../ui/input/Input";
+import { hasErrors } from "../../../helper/hasErrors";
 
 const LoginTwo = () => {
   const auth = useAuth();
@@ -32,6 +33,7 @@ const LoginTwo = () => {
       console.log(data);
       auth.setToken(data?.data?.accessToken);
       navigate("/account");
+      localStorage.removeItem("log-mail");
     },
     onError: (error) => {
       console.log(error);
@@ -40,7 +42,7 @@ const LoginTwo = () => {
 
   const onSubmit = (data) => {
     loginAuthTwoMutate({
-      email: localStorage.getItem("loginEmail"),
+      email: localStorage.getItem("log-mail"),
       ...data,
     });
   };
@@ -67,7 +69,7 @@ const LoginTwo = () => {
           </div>
           <button
             className="login-two__btn forgot__btn"
-            disabled={!isValid || isPending}
+            disabled={!isValid || isPending || hasErrors(errors)}
           >
             Log in
           </button>

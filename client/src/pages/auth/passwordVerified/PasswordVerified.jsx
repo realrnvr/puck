@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const PasswordVerified = () => {
   useEffect(() => {
-    localStorage.removeItem("passwordEmail");
+    localStorage.removeItem("pass-mail");
   }, []);
 
   return (
@@ -22,7 +22,7 @@ const PasswordVerified = () => {
         </p>
 
         <p className="verification__description">
-          Refresh the page or <Link to="/login">Login</Link>
+          Refresh the page or <Link to="/login/loginTwo">Login</Link>
         </p>
       </div>
     </article>

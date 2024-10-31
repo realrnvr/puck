@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { axiosInstance } from "../../services/api/axios";
 import "./redirect.css";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../hooks/useAuth";
+import { axiosInstance } from "../../../services/api/axios";
+import Loader from "../../../components/ui/loader/Loader";
 
 const Redirect = () => {
   const auth = useAuth();
@@ -17,6 +18,7 @@ const Redirect = () => {
       handleGoogleLogin(code);
     } else {
       console.error("No authorization code found in the URL.");
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -34,10 +36,15 @@ const Redirect = () => {
       navigate("/account");
     } catch (error) {
       console.error("Error during Google login:", error);
+      navigate("/login");
     }
   };
 
-  return <div>Redirect</div>;
+  return (
+    <div className="redirect">
+      <Loader />
+    </div>
+  );
 };
 
 export default Redirect;
