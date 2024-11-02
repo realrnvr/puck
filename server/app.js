@@ -1,17 +1,17 @@
-import { config } from "dotenv";
-config();
+import dotenv from "dotenv";
+dotenv.config();
 
 import express from "express";
 const app = express();
 
 import cors from "cors";
 import "express-async-errors";
-
-import { connectDB } from "./connectDB/connectDB.js";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
-import { auth } from "./middleware/authorization.js";
 import { notFound } from "./middleware/notFound.js";
 import { StatusCodes } from "http-status-codes";
+
+import { connectDB } from "./connectDB/connectDB.js";
+import { auth } from "./middleware/authorization.js";
 import authRouter from "./router/auth.js";
 import cookieParser from "cookie-parser";
 
@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+// test route
 app.get("/api/v1/users", auth, (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
 });

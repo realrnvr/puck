@@ -1,5 +1,4 @@
 import { StatusCodes } from "http-status-codes";
-import { UnauthorziedError } from "../errors/unauthorizedError.js";
 import jwt from "jsonwebtoken";
 
 export const auth = (req, res, next) => {
@@ -15,6 +14,7 @@ export const auth = (req, res, next) => {
 
   try {
     const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+    console.log(payload);
     req.user = {
       username: payload.username,
       userId: payload.userId,
@@ -22,6 +22,6 @@ export const auth = (req, res, next) => {
     };
     next();
   } catch (error) {
-    throw new UnauthorziedError("Authorization invalid.");
+    res.status(StatusCodes.FORBIDDEN).json({ message: "Forbidden" });
   }
 };

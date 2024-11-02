@@ -62,7 +62,7 @@ export const verification = async (req, res) => {
     httpOnly: true,
     secure: true,
     SameSite: "Strict",
-    maxAge: process.env.JWT_REFRESH_TIMESPAN * 1000,
+    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
   });
 
   res.status(StatusCodes.OK).json({
@@ -160,7 +160,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
     httpOnly: true,
     secure: true,
     SameSite: "Strict",
-    maxAge: process.env.JWT_REFRESH_TIMESPAN * 1000,
+    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
   });
 
   res.status(StatusCodes.OK).json({
@@ -197,7 +197,7 @@ export const loginAuthTwo = async (req, res) => {
     httpOnly: true,
     secure: true,
     SameSite: "Strict",
-    maxAge: process.env.JWT_REFRESH_TIMESPAN * 1000,
+    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
   });
 
   res.status(StatusCodes.OK).json({
@@ -369,7 +369,7 @@ export const google = async (req, res) => {
       httpOnly: true,
       secure: true,
       SameSite: "Strict",
-      maxAge: process.env.JWT_REFRESH_TIMESPAN * 1000,
+      maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
     });
 
     res.status(StatusCodes.OK).json({

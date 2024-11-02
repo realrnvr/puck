@@ -85,7 +85,7 @@ UserSchema.methods.createRefreshToken = function () {
   const refreshToken = jwt.sign(
     { username: this.username, email: this.email },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_TIMESPAN }
+    { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) }
   );
   return refreshToken;
 };
@@ -103,7 +103,7 @@ UserSchema.methods.createResetToken = function () {
   const resetToken = jwt.sign(
     { email: this.email },
     process.env.JWT_RESET_SECRET,
-    { expiresIn: process.env.JWT_RESET_TIMESPAN }
+    { expiresIn: "7d" }
   );
   return resetToken;
 };
