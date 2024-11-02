@@ -6,10 +6,12 @@ import Header from "../../components/ui/header/Header";
 import "./account.css";
 
 const Account = () => {
-  const { data } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["users"],
     queryFn: () => axiosInstance.get("/api/v1/users"),
   });
+
+  console.log(error);
 
   return (
     <>

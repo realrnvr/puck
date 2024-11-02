@@ -5,12 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const PasswordVerification = () => {
-  const [passwordEmail, setPasswordEmail] = useState("");
+  const [passMail, setPassMail] = useState("");
 
   useEffect(() => {
-    const passwordEmail = localStorage.getItem("passwordEmail");
-    if (passwordEmail) {
-      setPasswordEmail(passwordEmail);
+    const parameter = localStorage.getItem("pass-mail");
+    if (parameter) {
+      setPassMail(parameter);
     }
   }, []);
 
@@ -36,7 +36,7 @@ const PasswordVerification = () => {
   });
 
   const onSubmit = () => {
-    resendPasswordVerificationMutate(passwordEmail);
+    resendPasswordVerificationMutate(passMail);
   };
 
   return (
@@ -51,7 +51,7 @@ const PasswordVerification = () => {
         </h3>
         <img className="verification__mail-img" src="/mail.webp" alt="" />
         <p className="verification__description">
-          Check your inbox at <strong>{passwordEmail}</strong> and click the
+          Check your inbox at <strong>{passMail}</strong> and click the
           verification link inside to complete your registration. This link will
           expire shortly, so verify soon!
         </p>
