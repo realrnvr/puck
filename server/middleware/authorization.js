@@ -1,15 +1,15 @@
-import { StatusCodes } from "http-status-codes";
+import { ForbiddenError } from "../errors/forbiddenError.js";
 import jwt from "jsonwebtoken";
 
 export const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(StatusCodes.FORBIDDEN).json({ message: "Forbidden" });
+    throw new ForbiddenError("Forbidden");
   }
 
   const accessToken = authHeader.split(" ")[1];
   if (!accessToken) {
-    return res.status(StatusCodes.FORBIDDEN).json({ message: "Forbidden" });
+    throw new ForbiddenError("Forbidden");
   }
 
   try {
@@ -21,6 +21,6 @@ export const auth = (req, res, next) => {
     };
     next();
   } catch (error) {
-    res.status(StatusCodes.FORBIDDEN).json({ message: "Forbidden" });
+    throw new ForbiddenError("Forbidden");
   }
 };
