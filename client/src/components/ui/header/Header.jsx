@@ -1,9 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../../hooks/useAuth";
 import "./header.css";
+import { jwtDecode } from "jwt-decode";
+import { useMutation } from "@tanstack/react-query";
+import { axiosInstance } from "../../../services/api/axios";
 
 const Header = () => {
   const [MobileMenu, setMobileMenu] = useState(false);
+  const auth = useAuth();
+
+  const { mutate: logoutMutate } = useMutation({
+    mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
+    onSuccess: () => {
+      auth.setToken(null);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const user = () => {
+    if (auth.token) {
+      const payload = jwtDecode(auth.token);
+      return payload.username;
+    }
+
+    return null;
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenu((prevMobileMenu) => {
@@ -82,16 +106,35 @@ const Header = () => {
           >
             <div className="header__actions">
               <ul className="header__utilities">
-                <li>
-                  <Link className="header__nav-btn" to="/login">
-                    Log in
-                  </Link>
-                </li>
-                <li>
-                  <Link className="header__nav-btn" to="/signup">
-                    Sign up
-                  </Link>
-                </li>
+                {user() ? (
+                  <>
+                    <li>
+                      <span className="header__nav-btn">{user()}</span>
+                    </li>
+                    <li>
+                      <button
+                        className="login__btn"
+                        style={{ backgroundColor: "grey" }}
+                        onClick={logoutMutate}
+                      >
+                        Log out
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link className="header__nav-btn" to="/login">
+                        Log in
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="header__nav-btn" to="/signup">
+                        Sign up
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li>
                   <Link to="#">
                     <svg
