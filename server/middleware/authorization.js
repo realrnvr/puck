@@ -14,7 +14,6 @@ export const auth = (req, res, next) => {
 
   try {
     const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-    console.log(payload);
     req.user = {
       username: payload.username,
       userId: payload.userId,

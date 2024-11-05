@@ -13,6 +13,7 @@ import {
   resendPasswordVerification,
   google,
   deleteUser,
+  me,
 } from "../controller/auth.js";
 
 import { passwordLimiter, resendLimiter } from "../utils/localLimiter.js";
@@ -20,6 +21,7 @@ import { validateResetPassword } from "../middleware/validateResetPassword.js";
 
 const router = Router();
 
+router.route("/me").post(me);
 router.route("/loginAuthOne").post(loginAuthOne);
 router.route("/loginAuthTwo").post(loginAuthTwo);
 router.route("/loginGoogleAuthTwo").post(loginGoogleAuthTwo);

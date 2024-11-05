@@ -127,7 +127,7 @@ export const loginAuthOne = async (req, res) => {
       .json({ user, navigate: "loginGoogleAuth" });
   }
 
-  return res.status(StatusCodes.OK).json({ user, navigate: "loginTwo" });
+  res.status(StatusCodes.OK).json({ user, navigate: "loginTwo" });
 };
 
 export const loginGoogleAuthTwo = async (req, res) => {
@@ -224,6 +224,26 @@ export const refreshToken = async (req, res) => {
   const accessToken = user.createAccessToken();
 
   res.status(StatusCodes.OK).json({ accessToken });
+};
+
+export const me = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.json({ isAuthenticated: false });
+  }
+
+  const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  const { email } = payload;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.json({ isAuthenticated: false });
+  }
+
+  const accessToken = user.createAccessToken();
+
+  res.status(StatusCodes.OK).json({ isAuthenticated: true, accessToken });
 };
 
 export const logout = (req, res) => {
