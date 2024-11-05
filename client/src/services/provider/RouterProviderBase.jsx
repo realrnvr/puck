@@ -23,6 +23,7 @@ import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified
 import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
 import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
+import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,9 +40,11 @@ const router = createBrowserRouter(
       <Route
         path="/login"
         element={
-          <Template template="login">
-            <Login />
-          </Template>
+          <GoogleOAuthProviderBase>
+            <Template template="login">
+              <Login />
+            </Template>
+          </GoogleOAuthProviderBase>
         }
       />
       <Route
@@ -63,9 +66,11 @@ const router = createBrowserRouter(
       <Route
         path="signup"
         element={
-          <Template template="signup">
-            <Signup />
-          </Template>
+          <GoogleOAuthProviderBase>
+            <Template template="signup">
+              <Signup />
+            </Template>
+          </GoogleOAuthProviderBase>
         }
       />
       <Route

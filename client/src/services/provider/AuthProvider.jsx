@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import { useMutation } from "@tanstack/react-query";
@@ -6,6 +6,24 @@ import { useMutation } from "@tanstack/react-query";
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState();
   console.log("token state", token);
+
+  const { mutate: meMutate } = useMutation({
+    mutationFn: () => axiosInstance.post("/api/v1/auth/me"),
+    onSuccess: (data) => {
+      if (data.data?.isAuthenticated) {
+        setToken(data.data?.accessToken);
+      } else {
+        setToken(null);
+      }
+    },
+    onError: () => {
+      setToken(null);
+    },
+  });
+
+  useEffect(() => {
+    meMutate();
+  }, []);
 
   const { mutateAsync: refreshAccessTokenMutate } = useMutation({
     mutationFn: () => axiosInstance.get("/api/v1/auth/refreshToken"),
@@ -58,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => axiosInstance.interceptors.response.eject(refreshInterceptor);
-  }, [token]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>
