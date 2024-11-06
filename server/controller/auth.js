@@ -5,7 +5,10 @@ import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
 import { mailer } from "../services/mailer.js";
 import { OAuth2Client } from "google-auth-library";
-import axios from "axios";
+import { revokeGoogleAccess } from "../utils/revokeGoogleAccess.js";
+import { NotFoundError } from "../errors/notFoundError.js";
+import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
+import { mailTemplate } from "../utils/mailTemplate.js";
 
 export const signup = async (req, res) => {
   const user = await User.create({ ...req.body });
@@ -16,11 +19,11 @@ export const signup = async (req, res) => {
   await mailer({
     to: user.email,
     subject: "Email Address Verification",
-    html: `<h2>Hi ${user.username}</h2>
-    <p>To finish setting up your account and start using Puck, please verify your email address.</p>
-    <a href="${verificationLink}">Verify Email</a>
-    <p>This link will expire after 15 minutes. To request another verification link, please log in to prompt a re-send link.</p>
-    `,
+    html: mailTemplate({
+      username: user.username,
+      redirect: verificationLink,
+      template: "email-verification",
+    }),
   });
 
   res.status(StatusCodes.CREATED).json({ user });
@@ -28,7 +31,6 @@ export const signup = async (req, res) => {
 
 export const verification = async (req, res) => {
   const { verificationId } = req.params;
-
   if (!verificationId) {
     throw new UnauthorziedError("Unauthorized.");
   }
@@ -39,11 +41,9 @@ export const verification = async (req, res) => {
   );
 
   const user = await User.findOne({ email: payload.email });
-
   if (!user) {
     throw new BadRequestError("User is not Found.");
   }
-
   if (user.isVerified) {
     throw new BadRequestError("User is already verified.");
   }
@@ -51,19 +51,12 @@ export const verification = async (req, res) => {
   if (verificationId !== user.verificationToken) {
     throw new UnauthorziedError("Use latest sent verification link.");
   }
-
   user.isVerified = true;
   await user.save();
 
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    SameSite: "Strict",
-    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
-  });
+  setRefreshTokenCookie(res, refreshToken);
 
   res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
@@ -73,17 +66,14 @@ export const verification = async (req, res) => {
 
 export const resendVerification = async (req, res) => {
   const { email } = req.body;
-
   if (!email) {
     throw new BadRequestError("Please provide email.");
   }
 
   const user = await User.findOne({ email });
-
   if (!user) {
     throw new UnauthorziedError("user does not exists.");
   }
-
   if (user.isVerified) {
     throw new BadRequestError("user is already verified.");
   }
@@ -97,11 +87,11 @@ export const resendVerification = async (req, res) => {
   await mailer({
     to: user.email,
     subject: "Email Address Verification",
-    html: `<h2>Hi ${user.username}</h2>
-    <p>To finish setting up your account and start using Puck, please verify your email address.</p>
-    <a href="${verificationLink}">Verify Email</a>
-    <p>This link will expire after 15 minutes. To request another verification link, please log in to prompt a re-send link.</p>
-    `,
+    html: mailTemplate({
+      username: user.username,
+      redirect: verificationLink,
+      template: "email-verification",
+    }),
   });
 
   res
@@ -111,7 +101,6 @@ export const resendVerification = async (req, res) => {
 
 export const loginAuthOne = async (req, res) => {
   const { email } = req.body;
-
   if (!email) {
     throw new BadRequestError("Please Provide a email.");
   }
@@ -132,7 +121,6 @@ export const loginAuthOne = async (req, res) => {
 
 export const loginGoogleAuthTwo = async (req, res) => {
   const { email, password, confirmPassword } = req.body;
-
   if (!email || !password || !confirmPassword) {
     throw new BadRequestError("please provide credentials");
   }
@@ -145,7 +133,6 @@ export const loginGoogleAuthTwo = async (req, res) => {
   if (!user) {
     throw new UnauthorziedError("no account found with this email.");
   }
-
   if (!user.isVerified) {
     throw new UnauthorziedError("please verify your email.");
   }
@@ -155,13 +142,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
 
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    SameSite: "Strict",
-    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
-  });
+  setRefreshTokenCookie(res, refreshToken);
 
   res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
@@ -171,7 +152,6 @@ export const loginGoogleAuthTwo = async (req, res) => {
 
 export const loginAuthTwo = async (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     throw new BadRequestError("please provide credentials");
   }
@@ -180,7 +160,6 @@ export const loginAuthTwo = async (req, res) => {
   if (!user) {
     throw new UnauthorziedError("no account found with this email.");
   }
-
   if (!user.isVerified) {
     throw new UnauthorziedError("please verify your email.");
   }
@@ -192,13 +171,7 @@ export const loginAuthTwo = async (req, res) => {
 
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    SameSite: "Strict",
-    maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
-  });
+  setRefreshTokenCookie(res, refreshToken);
 
   res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
@@ -208,7 +181,6 @@ export const loginAuthTwo = async (req, res) => {
 
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-
   if (!refreshToken) {
     throw new UnauthorziedError("Refresh token expired!");
   }
@@ -228,7 +200,6 @@ export const refreshToken = async (req, res) => {
 
 export const me = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-
   if (!refreshToken) {
     return res.json({ isAuthenticated: false });
   }
@@ -253,7 +224,6 @@ export const logout = (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
-
   if (!email) {
     throw new BadRequestError("Please provide email.");
   }
@@ -272,11 +242,11 @@ export const forgotPassword = async (req, res) => {
   await mailer({
     to: email,
     subject: "Reset Password",
-    html: `<h1>Reset Your Password</h1>
-        <p>Click on the following link to reset your password:</p>
-        <a href="${verificationLink}">here</a>
-        <p>The link will expire in 15 minutes.</p>
-        <p>If you didn't request a password reset, please ignore this email.</p>`,
+    html: mailTemplate({
+      username: user.username,
+      redirect: verificationLink,
+      template: "reset-password",
+    }),
   });
 
   res.status(StatusCodes.OK).json({ user, message: "Reset link sent!" });
@@ -289,8 +259,8 @@ export const resetPassword = async (req, res) => {
   } = req;
 
   const payload = jwt.verify(verificationId, process.env.JWT_RESET_SECRET);
-  const user = await User.findOne({ email: payload.email });
 
+  const user = await User.findOne({ email: payload.email });
   if (!user) {
     throw new BadRequestError("user does not exist");
   }
@@ -307,17 +277,14 @@ export const resetPassword = async (req, res) => {
 
 export const resendPasswordVerification = async (req, res) => {
   const { email } = req.body;
-
   if (!email) {
     throw new BadRequestError("Please provide email.");
   }
 
   const user = await User.findOne({ email });
-
   if (!user) {
     throw new UnauthorziedError("user does not exists.");
   }
-
   if (!user.isVerified) {
     throw new BadRequestError("user is not verified.");
   }
@@ -331,11 +298,11 @@ export const resendPasswordVerification = async (req, res) => {
   await mailer({
     to: user.email,
     subject: "Email Address Verification",
-    html: `<h2>Hi ${user.username}</h2>
-    <p>To reset your password and start using Puck, please verify your email address.</p>
-    <a href="${verificationLink}">Verify Email</a>
-    <p>This link will expire after 15 minutes. To request another verification link, please log in to prompt a re-send link.</p>
-    `,
+    html: mailTemplate({
+      username: user.username,
+      redirect: verificationLink,
+      template: "reset-password",
+    }),
   });
 
   res
@@ -343,6 +310,7 @@ export const resendPasswordVerification = async (req, res) => {
     .json({ user, message: "New verification link sent to your email." });
 };
 
+// Google OAUTH
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -353,92 +321,59 @@ export const google = async (req, res) => {
   const { code } = req.body;
   console.log("Received code:", code);
 
-  try {
-    const { tokens } = await client.getToken(code);
-    const { refresh_token, access_token, id_token } = tokens;
+  const { tokens } = await client.getToken(code);
+  const { refresh_token, access_token, id_token } = tokens;
 
-    const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+  const ticket = await client.verifyIdToken({
+    idToken: id_token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+
+  const payload = ticket.getPayload();
+  const email = payload.email;
+  const googleId = payload.sub;
+  const username = payload.name;
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = new User({
+      email,
+      username,
+      googleId,
+      refreshToken: refresh_token,
+      isVerified: true,
     });
-    const payload = ticket.getPayload();
-    const email = payload.email;
-    const googleId = payload.sub;
-    const username = payload.name;
-
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = new User({
-        email,
-        username,
-        googleId,
-        refreshToken: refresh_token,
-        isVerified: true,
-      });
-    } else {
-      if (!user.refreshToken && refresh_token) {
-        user.refreshToken = refresh_token;
-      }
+  } else {
+    if (!user.refreshToken && refresh_token) {
+      user.refreshToken = refresh_token;
     }
-
-    await user.save();
-    const accessToken = user.createAccessToken();
-    const refreshToken = user.createRefreshToken();
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      SameSite: "Strict",
-      maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
-    });
-
-    res.status(StatusCodes.OK).json({
-      user: { username: user.username, email: user.email },
-      accessToken,
-    });
-  } catch (error) {
-    console.error("Error during Google login:", {
-      message: error.message,
-      stack: error.stack,
-    });
-    res.status(500).json({ error: "Failed to authenticate with Google" });
   }
+
+  await user.save();
+
+  const accessToken = user.createAccessToken();
+  const refreshToken = user.createRefreshToken();
+  setRefreshTokenCookie(res, refreshToken);
+
+  res.status(StatusCodes.OK).json({
+    user: { username: user.username, email: user.email },
+    accessToken,
+  });
 };
 
-const revokeGoogleAccess = async (refreshToken) => {
-  try {
-    await axios.post("https://oauth2.googleapis.com/revoke", null, {
-      params: { token: refreshToken },
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
-    console.log("Successfully revoked Google access");
-  } catch (error) {
-    console.error(
-      "Error revoking Google access:",
-      error.response?.data || error.message
-    );
-  }
-};
-
+// User updates
 export const deleteUser = async (req, res) => {
   const { userId } = req.body;
-
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Revoke Google access if refreshToken exists
-    if (user.googleId && user.refreshToken) {
-      await revokeGoogleAccess(user.refreshToken);
-    }
-
-    // Delete user from the database
-    await User.deleteOne({ _id: userId });
-    res.status(200).json({ message: "User deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).json({ message: "Failed to delete user" });
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new NotFoundError("User not found");
   }
+
+  // Revoke Google access if refreshToken exists
+  if (user.googleId && user.refreshToken) {
+    await revokeGoogleAccess(user.refreshToken);
+  }
+
+  await User.deleteOne({ _id: userId });
+  res.status(StatusCodes.OK).json({ message: "User deleted successfully" });
 };

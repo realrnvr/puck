@@ -14,6 +14,7 @@ import { connectDB } from "./connectDB/connectDB.js";
 import { auth } from "./middleware/authorization.js";
 import authRouter from "./router/auth.js";
 import cookieParser from "cookie-parser";
+import { mailTemplate } from "./utils/mailTemplate.js";
 
 app.use(
   cors({
