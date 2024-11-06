@@ -34,7 +34,7 @@ const Verification = () => {
   });
 
   const handleClick = () => {
-    reverificationMutate(userEmail);
+    reverificationMutate(signMail);
   };
 
   return (
