@@ -8,7 +8,7 @@ const Input = ({ register, errors, watch, formData }) => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const { name, label, defaultMsg, serverErr, toggle, type } = formData;
+  const { name, label, defaultMsg, toggle, type } = formData;
 
   function getError() {
     return errors[name];
