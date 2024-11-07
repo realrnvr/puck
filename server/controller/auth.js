@@ -11,7 +11,21 @@ import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
 
 export const signup = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new BadRequestError("Please provide email");
+  }
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser && !existingUser.isVerified) {
+    return res.status(StatusCodes.CONFLICT).json({
+      type: "verification-incomplete",
+      message: "Account exists but is not verified, please verify your email",
+    });
+  }
+
   const user = await User.create({ ...req.body });
+
   const verificationToken = user.verificationToken;
 
   const verificationLink = `http://localhost:5173/verified/${verificationToken}`;
@@ -42,7 +56,7 @@ export const verification = async (req, res) => {
 
   const user = await User.findOne({ email: payload.email });
   if (!user) {
-    throw new BadRequestError("User is not Found.");
+    throw new NotFoundError("User is not Found.");
   }
   if (user.isVerified) {
     throw new BadRequestError("User is already verified.");
@@ -67,12 +81,12 @@ export const verification = async (req, res) => {
 export const resendVerification = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    throw new BadRequestError("Please provide email.");
+    throw new NotFoundError("Please provide email.");
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("user does not exists.");
+    throw new NotFoundError("user does not exists.");
   }
   if (user.isVerified) {
     throw new BadRequestError("user is already verified.");
@@ -107,7 +121,7 @@ export const loginAuthOne = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("no account found with this email.");
+    throw new NotFoundError("no account found with this email.");
   }
 
   if (!user.password) {
@@ -131,7 +145,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("no account found with this email.");
+    throw new NotFoundError("no account found with this email.");
   }
   if (!user.isVerified) {
     throw new UnauthorziedError("please verify your email.");
@@ -158,7 +172,7 @@ export const loginAuthTwo = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("no account found with this email.");
+    throw new NotFoundError("no account found with this email.");
   }
   if (!user.isVerified) {
     throw new UnauthorziedError("please verify your email.");
@@ -182,7 +196,7 @@ export const loginAuthTwo = async (req, res) => {
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    throw new UnauthorziedError("Refresh token expired!");
+    throw new UnauthorziedError("Provide refresh token!");
   }
 
   const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -190,7 +204,7 @@ export const refreshToken = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("Refresh token expired!");
+    throw new UnauthorziedError("User doesnt exists!");
   }
 
   const accessToken = user.createAccessToken();
@@ -230,7 +244,7 @@ export const forgotPassword = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new BadRequestError("user not found.");
+    throw new NotFoundError("user not found.");
   }
 
   const resetToken = user.createResetToken();
@@ -240,7 +254,7 @@ export const forgotPassword = async (req, res) => {
   const verificationLink = `http://localhost:5173/reset-password/${resetToken}`;
 
   await mailer({
-    to: email,
+    to: user.email,
     subject: "Reset Password",
     html: mailTemplate({
       username: user.username,
@@ -262,7 +276,7 @@ export const resetPassword = async (req, res) => {
 
   const user = await User.findOne({ email: payload.email });
   if (!user) {
-    throw new BadRequestError("user does not exist");
+    throw new NotFoundError("user does not exist");
   }
 
   if (verificationId !== user.resetToken) {
@@ -283,10 +297,10 @@ export const resendPasswordVerification = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorziedError("user does not exists.");
+    throw new NotFoundError("user does not exists.");
   }
   if (!user.isVerified) {
-    throw new BadRequestError("user is not verified.");
+    throw new UnauthorziedError("user is not verified.");
   }
 
   const resetToken = user.createResetToken();
@@ -319,17 +333,31 @@ const client = new OAuth2Client({
 
 export const google = async (req, res) => {
   const { code } = req.body;
+  if (!code) {
+    throw new UnauthorziedError("Please provide google auth code!");
+  }
   console.log("Received code:", code);
 
   const { tokens } = await client.getToken(code);
+  if (!tokens) {
+    throw new UnauthorziedError("Google code is invalid");
+  }
+
   const { refresh_token, access_token, id_token } = tokens;
 
   const ticket = await client.verifyIdToken({
     idToken: id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
+  if (!ticket) {
+    throw new NotFoundError("User credentails can not be used");
+  }
 
   const payload = ticket.getPayload();
+  if (!payload) {
+    throw BadRequestError("User credentials can not be fetched");
+  }
+
   const email = payload.email;
   const googleId = payload.sub;
   const username = payload.name;
@@ -364,6 +392,10 @@ export const google = async (req, res) => {
 // User updates
 export const deleteUser = async (req, res) => {
   const { userId } = req.body;
+  if (!userId) {
+    throw new BadRequestError("Please provide user id");
+  }
+
   const user = await User.findById(userId);
   if (!user) {
     throw new NotFoundError("User not found");
