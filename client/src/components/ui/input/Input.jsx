@@ -9,10 +9,10 @@ const Input = ({ register, errors, watch, formData }) => {
   };
 
   const { name, label, defaultMsg, serverErr, toggle, type } = formData;
+
   function getError() {
     return errors[name];
   }
-
   const error = getError();
 
   return (
@@ -27,7 +27,7 @@ const Input = ({ register, errors, watch, formData }) => {
           type={toggle ? (showPassword ? "text" : "password") : type}
           id={name}
           style={{
-            outline: error?.message === serverErr && "2px solid #dc2626",
+            outline: error?.message && "2px solid #dc2626",
           }}
         />
         {toggle && (
