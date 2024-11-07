@@ -38,14 +38,28 @@ const Signup = () => {
       navigate("/verification");
     },
     onError: (error) => {
-      const serverError = error.response.data.message;
-      console.log(error.response.data);
-      if (serverError.includes("username")) {
-        setError("username", { message: serverError });
-        setFocus("username");
-      } else if (serverError.includes("email")) {
-        setError("email", { message: serverError });
-        setFocus("email");
+      const { type, message } = error.response.data;
+      switch (type) {
+        case "username":
+          setError("username", { message });
+          setFocus("username");
+          break;
+
+        case "email":
+          setError("email", { message });
+          setFocus("email");
+          break;
+
+        case "verification-incomplete":
+          // toast pop up here
+          // navigate user to /verification
+          setError("email", { message });
+          setFocus("email");
+          break;
+
+        default:
+          // make it better
+          toast.error("Something went wrong");
       }
     },
   });
