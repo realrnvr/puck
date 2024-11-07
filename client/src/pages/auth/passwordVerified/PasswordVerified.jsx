@@ -14,7 +14,7 @@ const PasswordVerified = () => {
       <div className="verification__content">
         <h2 className="verification__title">Puck</h2>
         <h3 className="verification__title verification__title--fs-mt">
-          Great, you are verified now!
+          Great, your password has been reset!
         </h3>
         <img className="verification__mail-img" src="/mail.webp" alt="" />
         <p className="verification__description">
