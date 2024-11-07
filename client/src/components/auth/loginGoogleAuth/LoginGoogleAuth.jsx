@@ -43,7 +43,7 @@ const LoginGoogleAuth = () => {
   const onSubmit = (data) => {
     console.log(data);
     loginGoogleAuthTwoMutate({
-      email: localStorage.getItem("loginEmail"),
+      email: localStorage.getItem("log-mail"),
       ...data,
     });
   };
