@@ -108,7 +108,7 @@ const router = createBrowserRouter(
       <Route
         path="/password-verification"
         element={
-          <VerificationGaurd>
+          <VerificationGaurd value={"pass-mail"}>
             <PasswordVerification />
           </VerificationGaurd>
         }
