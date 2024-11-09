@@ -7,10 +7,6 @@ const Template = ({ children, template }) => {
     flow: "auth-code",
     ux_mode: "redirect",
     redirect_uri: "http://localhost:5173/redirect",
-    onSuccess: () => {
-      console.log("yeah yeah");
-    },
-    onError: (error) => console.error("Login Failed", error),
   });
 
   return (
