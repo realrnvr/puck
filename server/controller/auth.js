@@ -9,6 +9,7 @@ import { revokeGoogleAccess } from "../utils/revokeGoogleAccess.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
+import axios from "axios";
 
 export const signup = async (req, res) => {
   const { email } = req.body;
@@ -21,6 +22,7 @@ export const signup = async (req, res) => {
     return res.status(StatusCodes.CONFLICT).json({
       type: "verification-incomplete",
       message: "Account exists but is not verified, please verify your email",
+      email: existingUser.email,
     });
   }
 
@@ -124,6 +126,14 @@ export const loginAuthOne = async (req, res) => {
     throw new NotFoundError("no account found with this email.");
   }
 
+  if (!user.isVerified) {
+    res.status(StatusCodes.CONFLICT).json({
+      message: "user is not verified",
+      type: "email",
+      email: user.email,
+    });
+  }
+
   if (!user.password) {
     return res
       .status(StatusCodes.OK)
@@ -207,9 +217,23 @@ export const refreshToken = async (req, res) => {
     throw new UnauthorziedError("User doesnt exists!");
   }
 
+  if (!user.refreshToken) {
+    const accessToken = user.createAccessToken();
+    return res.status(StatusCodes.OK).json({ accessToken });
+  }
+
+  const response = await axios.post("https://oauth2.googleapis.com/token", {
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+    refresh_token: user.refreshToken,
+    grant_type: "refresh_token",
+  });
+
   const accessToken = user.createAccessToken();
 
-  res.status(StatusCodes.OK).json({ accessToken });
+  return res
+    .status(StatusCodes.OK)
+    .json({ accessToken, googleAccessToken: response.data?.access_token });
 };
 
 export const me = async (req, res) => {
@@ -372,6 +396,7 @@ export const google = async (req, res) => {
       isVerified: true,
     });
   } else {
+    user.isVerified = true;
     if (!user.refreshToken && refresh_token) {
       user.refreshToken = refresh_token;
     }
