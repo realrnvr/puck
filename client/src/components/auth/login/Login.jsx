@@ -6,8 +6,10 @@ import { formData } from "../../../assets/data/logInData";
 import { EmailSchema } from "../../../assets/schema/EmailSchema";
 import { useMutation } from "@tanstack/react-query";
 import { loginAuthOne } from "../../../services/mutation/authMutation";
-import Input from "../../ui/input/Input";
 import { hasErrors } from "../../../helper/hasErrors";
+import Input from "../../ui/input/Input";
+import toast from "react-hot-toast";
+import VerificationToast from "../verificationToast/VerificationToast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,10 +36,14 @@ const Login = () => {
       navigate(data?.data?.navigate);
     },
     onError: (error) => {
-      const serverError = error.response.data.message;
-      if (serverError.includes("email")) {
-        setError("email", { message: serverError });
-        setFocus("email");
+      const { type, message, email } = error.response.data;
+      setError("email", { message });
+      setFocus("email");
+      if (type === "email") {
+        toast(<VerificationToast email={email} navigate={navigate} />, {
+          duration: 10000,
+          id: "verification-toast",
+        });
       }
     },
   });

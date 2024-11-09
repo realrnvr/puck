@@ -6,10 +6,11 @@ import { SignUpSchema } from "../../../assets/schema/SignUpSchema";
 import { formData } from "../../../assets/data/signUpData";
 import { signup } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
+import { hasErrors } from "../../../helper/hasErrors";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 import Loader from "../../ui/loader/Loader";
-import { hasErrors } from "../../../helper/hasErrors";
+import VerificationToast from "../verificationToast/VerificationToast";
 
 const Signup = () => {
   const {
@@ -38,7 +39,7 @@ const Signup = () => {
       navigate("/verification");
     },
     onError: (error) => {
-      const { type, message } = error.response.data;
+      const { type, message, email } = error.response.data;
       switch (type) {
         case "username":
           setError("username", { message });
@@ -51,12 +52,13 @@ const Signup = () => {
           break;
 
         case "verification-incomplete":
-          // toast pop up here
-          // navigate user to /verification
           setError("email", { message });
           setFocus("email");
+          toast(<VerificationToast email={email} navigate={navigate} />, {
+            duration: 10000,
+            id: "verification-toast",
+          });
           break;
-
         default:
           // make it better
           toast.error("Something went wrong");
