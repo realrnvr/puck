@@ -18,6 +18,7 @@ const LoginTwo = () => {
     handleSubmit,
     register,
     watch,
+    setError,
     formState: { isValid, errors },
   } = useForm({
     defaultValues: {
@@ -36,7 +37,7 @@ const LoginTwo = () => {
       localStorage.removeItem("log-mail");
     },
     onError: (error) => {
-      console.log(error);
+      setError("password", { message: error.response.data.message });
     },
   });
 
