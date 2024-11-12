@@ -1,9 +1,4 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Home from "../../pages/home/Home";
 import ProtectedRoute from "../auth/ProtectedRoute";
@@ -24,107 +19,118 @@ import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
 import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
 import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
+import Read from "../../pages/read/Read";
+import Layout from "../../pages/layout/Layout";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<Home />} />
-      <Route
-        path="/account"
-        element={
-          <ProtectedRoute>
-            <Account />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <GoogleOAuthProviderBase>
-            <Template template="login">
-              <Login />
-            </Template>
-          </GoogleOAuthProviderBase>
-        }
-      />
-      <Route
-        path="/login/loginTwo"
-        element={
-          <LoginGaurd>
-            <LoginTwo />
-          </LoginGaurd>
-        }
-      />
-      <Route
-        path="/login/loginGoogleAuth"
-        element={
-          <LoginGaurd>
-            <LoginGoogleAuth />
-          </LoginGaurd>
-        }
-      />
-      <Route
-        path="signup"
-        element={
-          <GoogleOAuthProviderBase>
-            <Template template="signup">
-              <Signup />
-            </Template>
-          </GoogleOAuthProviderBase>
-        }
-      />
-      <Route
-        path="/verification"
-        element={
-          <VerificationGaurd value={"sign-mail"}>
-            <Verification />
-          </VerificationGaurd>
-        }
-      />
-      <Route
-        path="/verified/:verificationId"
-        element={
-          <VerificationGaurd value={"sign-mail"}>
-            <Verified />
-          </VerificationGaurd>
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={
-          <LoginGaurd>
-            <ForgotPassword />
-          </LoginGaurd>
-        }
-      />
-      <Route
-        path="/reset-password/:verificationId"
-        element={
-          <VerificationGaurd value={"pass-mail"}>
-            <ResetPassword />
-          </VerificationGaurd>
-        }
-      />
-      <Route
-        path="/password-verification"
-        element={
-          <VerificationGaurd value={"pass-mail"}>
-            <PasswordVerification />
-          </VerificationGaurd>
-        }
-      />
-      <Route
-        path="/password-verified"
-        element={
-          <PasswordVerifiedGaurd>
-            <PasswordVerified />
-          </PasswordVerifiedGaurd>
-        }
-      />
-      <Route path="/redirect" element={<Redirect />} />
-    </>
-  )
-);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/read",
+        element: <Read />,
+      },
+    ],
+  },
+  {
+    path: "/account",
+    element: (
+      <ProtectedRoute>
+        <Account />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <GoogleOAuthProviderBase>
+        <Template template="login">
+          <Login />
+        </Template>
+      </GoogleOAuthProviderBase>
+    ),
+  },
+  {
+    path: "/login/loginTwo",
+    element: (
+      <LoginGaurd>
+        <LoginTwo />
+      </LoginGaurd>
+    ),
+  },
+  {
+    path: "/login/loginGoogleAuth",
+    element: (
+      <LoginGaurd>
+        <LoginGoogleAuth />
+      </LoginGaurd>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <GoogleOAuthProviderBase>
+        <Template template="signup">
+          <Signup />
+        </Template>
+      </GoogleOAuthProviderBase>
+    ),
+  },
+  {
+    path: "/verification",
+    element: (
+      <VerificationGaurd value="sign-mail">
+        <Verification />
+      </VerificationGaurd>
+    ),
+  },
+  {
+    path: "/verified/:verificationId",
+    element: (
+      <VerificationGaurd value="sign-mail">
+        <Verified />
+      </VerificationGaurd>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <LoginGaurd>
+        <ForgotPassword />
+      </LoginGaurd>
+    ),
+  },
+  {
+    path: "/reset-password/:verificationId",
+    element: (
+      <VerificationGaurd value="pass-mail">
+        <ResetPassword />
+      </VerificationGaurd>
+    ),
+  },
+  {
+    path: "/password-verification",
+    element: (
+      <VerificationGaurd value="pass-mail">
+        <PasswordVerification />
+      </VerificationGaurd>
+    ),
+  },
+  {
+    path: "/password-verified",
+    element: (
+      <PasswordVerifiedGaurd>
+        <PasswordVerified />
+      </PasswordVerifiedGaurd>
+    ),
+  },
+  { path: "/redirect", element: <Redirect /> },
+]);
 
 export const RouterProviderBase = () => {
   return <RouterProvider router={router} />;
