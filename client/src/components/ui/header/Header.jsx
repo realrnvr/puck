@@ -1,7 +1,7 @@
+import "./header.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
-import "./header.css";
 import { jwtDecode } from "jwt-decode";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../../../services/api/axios";
@@ -259,16 +259,35 @@ const Header = () => {
               My Account
             </Link> */}
           <ul className="header__utilities">
-            <li>
-              <Link className="header__nav-btn" to="/login">
-                Log in
-              </Link>
-            </li>
-            <li>
-              <Link className="header__nav-btn" to="/signup">
-                Sign up
-              </Link>
-            </li>
+            {user() ? (
+              <>
+                <li>
+                  <span className="header__nav-btn">{user()}</span>
+                </li>
+                <li>
+                  <button
+                    className="login__btn"
+                    style={{ backgroundColor: "grey" }}
+                    onClick={logoutMutate}
+                  >
+                    Log out
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link className="header__nav-btn" to="/login">
+                    Log in
+                  </Link>
+                </li>
+                <li>
+                  <Link className="header__nav-btn" to="/signup">
+                    Sign up
+                  </Link>
+                </li>
+              </>
+            )}
             <li>
               <Link to="#">
                 <svg
