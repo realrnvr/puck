@@ -15,3 +15,4 @@ Currently, two official plugins are available:
 4. Modal to show when session expires (refresh token expiry). (x)
 5. General UI changes. (x)
 6. Some Refactoring. (x)
+7. Sync validation as same as zod. (x)
