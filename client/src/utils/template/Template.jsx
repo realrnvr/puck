@@ -1,6 +1,7 @@
 import "./template.css";
 import { Link } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
+import PropTypes from "prop-types";
 
 const Template = ({ children, template }) => {
   const login = useGoogleLogin({
@@ -57,6 +58,11 @@ const Template = ({ children, template }) => {
       </div>
     </article>
   );
+};
+
+Template.propTypes = {
+  children: PropTypes.node.isRequired,
+  template: PropTypes.string,
 };
 
 export default Template;

@@ -1,5 +1,5 @@
-import React from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import PropTypes from "prop-types";
 
 export const GoogleOAuthProviderBase = ({ children }) => {
   return (
@@ -7,4 +7,8 @@ export const GoogleOAuthProviderBase = ({ children }) => {
       {children}
     </GoogleOAuthProvider>
   );
+};
+
+GoogleOAuthProviderBase.propTypes = {
+  children: PropTypes.node.isRequired,
 };

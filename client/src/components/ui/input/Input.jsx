@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import "./input.css";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
 const Input = ({ register, errors, watch, formData }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -105,6 +106,13 @@ const Input = ({ register, errors, watch, formData }) => {
       )}
     </div>
   );
+};
+
+Input.propTypes = {
+  register: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+  watch: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
 };
 
 export default Input;

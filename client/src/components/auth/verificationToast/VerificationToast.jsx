@@ -1,5 +1,6 @@
 import "./verification-toast.css";
 import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 
 const VerificationToast = ({ email, navigate }) => {
   return (
@@ -27,6 +28,11 @@ const VerificationToast = ({ email, navigate }) => {
       </div>
     </div>
   );
+};
+
+VerificationToast.propTypes = {
+  email: PropTypes.string.isRequired,
+  navigate: PropTypes.string.isRequired,
 };
 
 export default VerificationToast;

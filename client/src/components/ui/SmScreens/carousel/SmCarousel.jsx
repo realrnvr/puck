@@ -1,6 +1,7 @@
-import React, { memo, useRef } from "react";
-import { useLazyLoadEffect } from "../../../../hooks/useLazyLoadEffect";
 import "./sm-carousel.css";
+import { memo, useRef } from "react";
+import { useLazyLoadEffect } from "../../../../hooks/useLazyLoadEffect";
+import PropTypes from "prop-types";
 
 const SmCarousel = ({ data, reversed }) => {
   const carouselRef = useRef(null);
@@ -35,6 +36,11 @@ const SmCarousel = ({ data, reversed }) => {
       })}
     </div>
   );
+};
+
+SmCarousel.propTypes = {
+  data: PropTypes.array.isRequired,
+  reversed: PropTypes.bool,
 };
 
 export default memo(SmCarousel);

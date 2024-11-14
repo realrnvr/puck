@@ -1,4 +1,3 @@
-import React from "react";
 import "./news-letter.css";
 
 const NewsLetter = () => {
@@ -9,7 +8,7 @@ const NewsLetter = () => {
           Get the latest manga & anime news!
         </h2>
         <p className="newsletter__description">
-          You'll never miss a beat when you subscribe to our newsletter.
+          You will never miss a beat when you subscribe to our newsletter.
         </p>
         <div className="newletter__input-wrapper">
           <input

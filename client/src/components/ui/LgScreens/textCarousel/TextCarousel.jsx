@@ -1,5 +1,5 @@
-import React from "react";
 import "./text-carousel.css";
+import PropTypes from "prop-types";
 
 const TextCarousel = ({ reversed, rotate }) => {
   const textData = ["WATCH ANIME", "READ MANGA", "WATCH ANIME", "READ MANGA"];
@@ -26,6 +26,11 @@ const TextCarousel = ({ reversed, rotate }) => {
       })}
     </div>
   );
+};
+
+TextCarousel.propTypes = {
+  reversed: PropTypes.bool,
+  rotate: PropTypes.bool,
 };
 
 export default TextCarousel;

@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import "./sm-text-carousel.css";
 
 const SmTextCarousel = ({ reversed }) => {
@@ -21,6 +21,10 @@ const SmTextCarousel = ({ reversed }) => {
       })}
     </div>
   );
+};
+
+SmTextCarousel.propTypes = {
+  reversed: PropTypes.bool,
 };
 
 export default SmTextCarousel;

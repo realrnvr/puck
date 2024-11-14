@@ -54,7 +54,7 @@ const Verification = () => {
           will expire shortly, so verify soon!
         </p>
         <p className="verification__description">
-          <strong>Don't see an email?</strong> Check your spam folder.
+          <strong>Don not see an email?</strong> Check your spam folder.
         </p>
         <p className="verification__description">
           Link expired?{" "}

@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
 
 import Home from "../../pages/home/Home";
 import ProtectedRoute from "../auth/ProtectedRoute";
@@ -13,12 +14,11 @@ import LoginGaurd from "../auth/LoginGaurd";
 import ForgotPassword from "../../pages/auth/forgotPassword/ForgotPassword";
 import ResetPassword from "../../pages/auth/resetPassword/ResetPassword";
 import PasswordVerification from "../../pages/auth/passwordVerification/PasswordVerification";
-import PasswordVerifiedGaurd from "../auth/passwordVerifiedGaurd";
+import PasswordVerifiedGaurd from "../auth/PasswordVerifiedGaurd";
 import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified";
 import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
 import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
-import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
 import Read from "../../pages/read/Read";
 import Layout from "../../pages/layout/Layout";
 
