@@ -230,10 +230,9 @@ export const refreshToken = async (req, res) => {
   });
 
   const accessToken = user.createAccessToken();
+  const googleAccessToken = response.data.access_token;
 
-  return res
-    .status(StatusCodes.OK)
-    .json({ accessToken, googleAccessToken: response.data?.access_token });
+  return res.status(StatusCodes.OK).json({ accessToken, googleAccessToken });
 };
 
 export const me = async (req, res) => {
