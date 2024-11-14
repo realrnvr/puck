@@ -1,0 +1,27 @@
+.manga-card {
+  position: relative;
+  width: fit-content;
+  cursor: pointer;
+  border: 1px solid var(--clr-primary);
+}
+.manga-card:hover .manga-card__title {
+  background-color: rgb(203, 60, 60);
+}
+
+.manga-card__img {
+  width: 256px;
+  aspect-ratio: 1 / 1.1;
+}
+
+.manga-card__title {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  background-color: var(--bg-clr-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-300);
+  color: #fff;
+  padding: 1rem;
+  transition: background-color 0.3s ease-in-out;
+}
