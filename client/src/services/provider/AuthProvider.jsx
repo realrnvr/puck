@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import { useMutation } from "@tanstack/react-query";
+import PropTypes from "prop-types";
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState();
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     meMutate();
-  }, []);
+  }, [meMutate]);
 
   const { mutateAsync: refreshAccessTokenMutate } = useMutation({
     mutationFn: () => axiosInstance.get("/api/v1/auth/refreshToken"),
@@ -76,7 +77,11 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => axiosInstance.interceptors.response.eject(refreshInterceptor);
-  }, []);
+  }, [refreshAccessTokenMutate]);
+
+  AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>
