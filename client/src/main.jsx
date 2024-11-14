@@ -4,7 +4,7 @@ import { AuthProvider } from "./services/provider/AuthProvider";
 import { QueryClientProviderBase } from "./services/provider/QueryClientProviderBase";
 import { RouterProviderBase } from "./services/provider/RouterProviderBase";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Notification from "./utils/toaster/Notification";
+import Notification from "./utils/notification/Notification";
 
 import "./resets.css";
 import "./utils.css";
