@@ -31,7 +31,7 @@ const Verified = () => {
         verificationId,
         email: signMail,
       });
-  }, [verificationId]);
+  }, [verificationId, verifyMutate]);
 
   if (!error)
     return (
@@ -52,7 +52,7 @@ const Verified = () => {
         </h3>
         <img className="verification__mail-img" src="/mail.webp" alt="" />
         <p className="verification__description">
-          "You need to verify your email!"
+          You need to verify your email!
         </p>
         <p className="verification__description">
           Resend email <Link to="/verification">Resend verification email</Link>
