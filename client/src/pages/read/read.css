@@ -1,9 +1,18 @@
+.read__top-wrapper {
+  margin-block: 1rem;
+}
+
 .read__intro-container {
   margin-top: 1rem;
 }
 
 .read__intro-container > * + * {
   margin-top: 0.5rem;
+}
+
+.read__img {
+  width: 443px;
+  height: 177.2px;
 }
 
 .read__title {
@@ -15,23 +24,74 @@
 
 .read__description {
   font-size: var(--fs-xss);
-  font-weight: var(--fw-400);
+  font-weight: var(--fw-300);
   text-transform: capitalize;
   letter-spacing: -0.01em;
   max-width: 35ch;
+}
+
+.read__manga-wrapper {
+  background-color: var(--bg-clr-secondary);
+}
+
+.read__manga {
+  padding-block: 3rem;
+}
+
+.read__manga-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-400);
+}
+
+.read__manga-container {
+  margin-block: 1.5rem;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+}
+
+.read__link {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-300);
+  text-decoration: underline;
 }
 
 /* Xs */
 /* @media (min-width: 475px) {} */
 
 /* Sm */
-/* @media (min-width: 640px) {} */
+@media (min-width: 640px) {
+  .read__img {
+    width: 608px;
+    height: 243.2px;
+  }
+
+  .read__manga-container {
+    grid-template-columns: repeat(2, 256px);
+    place-content: center;
+    place-items: stretch;
+  }
+}
 
 /* Md */
-/* @media (min-width: 768px) {} */
+@media (min-width: 768px) {
+  .read__img {
+    width: 763px;
+    height: 294.4px;
+  }
+}
 
 /* Lg */
 @media (min-width: 1024px) {
+  .read__top-wrapper {
+    margin-block-end: 0;
+  }
+
+  .read__img {
+    width: 992px;
+    height: 396.8px;
+  }
+
   .read__top-wrapper {
     position: relative;
   }
@@ -41,6 +101,7 @@
   }
 
   .read__intro-container {
+    margin-top: 0;
     z-index: 999;
     position: absolute;
     bottom: 2.5rem;
@@ -58,13 +119,43 @@
     color: var(--bg-clr-primary);
     font-size: var(--fs-xs);
   }
+
+  .read__manga-title {
+    font-size: var(--fs-md);
+  }
+
+  .read__manga-container {
+    margin-block: 4rem;
+  }
 }
 
 /* Xl */
-/* @media (min-width: 1280px) {} */
+@media (min-width: 1280px) {
+  .read__img {
+    width: 1248px;
+    height: 499.2px;
+  }
+
+  .read__manga-container {
+    grid-template-columns: repeat(4, 256px);
+  }
+
+  .read__manga-title {
+    font-size: var(--fs-lg);
+  }
+
+  .read__link {
+    font-size: var(--fs-sm);
+  }
+}
 
 /* 2Xl */
 @media (min-width: 1440px) {
+  .read__img {
+    width: 1408px;
+    height: 563.2px;
+  }
+
   .read__title {
     font-size: var(--fs-1xl);
   }
