@@ -11,5 +11,5 @@ export function useLazyLoadEffect({ carouselRef, lzImgsRef }) {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [carouselRef, lzImgsRef]);
 }
