@@ -3,6 +3,33 @@ import { Link } from "react-router-dom";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 
 const Read = () => {
+  const caseManga = [
+    {
+      img: "berserk-manga-cover",
+      title: "Berserk",
+      mangaId: "801513ba-a712-498c-8f57-cae55b38cc92",
+      authorId: "5863578d-4e4f-4b57-b64d-1dd45a893cb0",
+    },
+    {
+      img: "vaga-bond-manga-cover",
+      title: "Vaga Bond",
+      mangaId: "d1a9fdeb-f713-407f-960c-8326b586e6fd",
+      authorId: "0b59098f-13c0-41cb-a110-9cbcec72dc0c",
+    },
+    {
+      img: "vinland-saga-manga-cover",
+      title: "Vinland Saga",
+      mangaId: "5d1fc77e-706a-4fc5-bea8-486c9be0145d",
+      authorId: "f5d4fca1-d573-4383-af08-c06b0794ba4e",
+    },
+    {
+      img: "monster-manga-cover",
+      title: "Monster",
+      mangaId: "d9e30523-9d65-469e-92a2-302995770950",
+      authorId: "508631f5-09de-4ae1-87ed-4b6179254ca1",
+    },
+  ];
+
   return (
     <>
       <article className="read">
@@ -22,13 +49,17 @@ const Read = () => {
           <div className="read__manga | container">
             <h3 className="read__manga-title">Read manga series!</h3>
             <div className="read__manga-container">
-              <MangaCard img={"berserk-manga-cover"} title={"Berserk"} />
-              <MangaCard img={"vaga-bond-manga-cover"} title={"Vaga Bond"} />
-              <MangaCard
-                img={"vinland-saga-manga-cover"}
-                title={"Vinland Saga"}
-              />
-              <MangaCard img={"monster-manga-cover"} title={"Monster"} />
+              {caseManga.map((val, idx) => {
+                return (
+                  <MangaCard
+                    key={idx}
+                    img={val.img}
+                    title={val.title}
+                    mangaId={val.mangaId}
+                    authorId={val.authorId}
+                  />
+                );
+              })}
             </div>
             <Link to="/goto" className="read__link">
               See all manga series
