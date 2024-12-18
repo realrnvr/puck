@@ -13,12 +13,13 @@ import { StatusCodes } from "http-status-codes";
 import { connectDB } from "./connectDB/connectDB.js";
 import { auth } from "./middleware/authorization.js";
 import authRouter from "./router/auth.js";
+import mangaRouter from "./router/manga.js";
 import cookieParser from "cookie-parser";
 import axios from "axios";
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   })
 );
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/manga", mangaRouter);
 // test route
 app.get("/api/v1/users", auth, (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
@@ -38,12 +40,12 @@ app.get("/api/v1/users", auth, (req, res) => {
 // get the id of any manga by name
 const baseUrl = "https://api.mangadex.org";
 app.get("/api/v1/getManga", async (req, res) => {
-  const { title } = req.body;
+  const { title, authorOrArtist } = req.body;
   try {
     const response = await axios.get(`${baseUrl}/manga`, {
       params: {
         title,
-        authorOrArtist: "508631f5-09de-4ae1-87ed-4b6179254ca1",
+        authorOrArtist,
       },
     });
     res.status(StatusCodes.OK).json({ data: response.data.data });
@@ -85,34 +87,29 @@ app.get("/api/v1/chapter", async (req, res) => {
   }
 });
 
-app.get("/api/v1/cover", async (req, res) => {
-  const { mangaId } = req.body;
+app.get("/api/v1/cover/:mangaId", async (req, res) => {
+  const { mangaId } = req.params;
+
   try {
-    const response = await axios.get(
-      `https://api.mangadex.org/cover?manga[]=${mangaId}`
-    );
-    const fileName = response.data.data[0].attributes.fileName;
-    const coverImageUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg`;
+    const response = await axios.get(`https://api.mangadex.org/cover`, {
+      params: {
+        manga: [mangaId], // Array of manga IDs
+        limit: 2, // Limit to 5 results per request
+        offset: 0,
+        order: {
+          volume: "desc",
+        },
+        includes: ["manga"],
+      },
+    });
+
+    const fileName = response.data.data[0]?.attributes?.fileName;
+    const coverImageUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
     res.status(StatusCodes.OK).json({ coverImageUrl });
   } catch (error) {
     console.log(error);
   }
 });
-
-// const getCoverArt = async () => {
-//   try {
-//     const response = await axios.get(
-//       `https://api.mangadex.org/cover?manga[]=${mangaId}`
-//     );
-//     const fileName = response.data.data[0].attributes.fileName;
-//     const coverImageUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
-//     console.log("Cover Art URL:", coverImageUrl);
-//   } catch (error) {
-//     console.error("Failed to fetch cover art:", error);
-//   }
-// };
-
-// getCoverArt();
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);
