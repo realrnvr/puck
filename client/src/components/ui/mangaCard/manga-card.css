@@ -18,7 +18,8 @@
   position: absolute;
   text-align: center;
   bottom: 0;
-  background-color: var(--bg-clr-primary);
+  /* background-color: var(--bg-clr-tertiary); */
+  background-color: rgb(200, 105, 105);
   font-size: var(--fs-sm);
   font-weight: var(--fw-300);
   color: #fff;
