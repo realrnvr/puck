@@ -1,0 +1,10 @@
+.tag {
+  font-size: 12px;
+  font-weight: var(--fw-600);
+  background-color: rgb(232, 150, 63);
+  color: #fff;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  width: fit-content;
+}
