@@ -60,7 +60,7 @@ export const cover = async (req, res) => {
         includes: ["manga"],
       },
     });
-    console.log(response.data);
+
     const fileName = response.data.data[0]?.attributes?.fileName;
     const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.512.jpg`;
     res.status(200).json({ coverImgUrl });
