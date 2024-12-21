@@ -62,7 +62,7 @@ export const cover = async (req, res) => {
     });
 
     const fileName = response.data.data[0]?.attributes?.fileName;
-    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.512.jpg`;
+    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
     res.status(200).json({ coverImgUrl });
   } catch (error) {
     throw new BadRequestError("something went wrong");
