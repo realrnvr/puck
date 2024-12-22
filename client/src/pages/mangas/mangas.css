@@ -1,0 +1,86 @@
+.mangas {
+  margin-top: 1.5rem;
+}
+
+.mangas__back {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.mangas__arrow-svg {
+  width: 22px;
+  aspect-ratio: 1 / 1;
+}
+
+.mangas__span-text {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-200);
+  text-decoration: underline;
+}
+
+.mangas__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-400);
+  text-transform: capitalize;
+}
+
+.mangas__content {
+  margin-top: 1.5rem;
+}
+
+.mangas__container {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  place-items: center;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+@media (min-width: 640px) {
+  .mangas__container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Md */
+@media (min-width: 768px) {
+  .mangas__title {
+    font-size: var(--fs-lg);
+  }
+
+  .mangas__span-text {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-300);
+  }
+}
+
+/* Lg */
+@media (min-width: 1024px) {
+  .mangas__container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .mangas__title {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-400);
+  }
+}
+
+/* Xl */
+@media (min-width: 1280px) {
+  .mangas__container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* 2Xl */
+@media (min-width: 1440px) {
+  .mangas__container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
