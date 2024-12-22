@@ -6,7 +6,7 @@
   z-index: -999;
   opacity: 0.3;
   object-fit: cover;
-  filter: blur(8px) brightness(130%);
+  filter: blur(8px);
 }
 
 .manga > * + * {
