@@ -24,10 +24,6 @@ const Manga = () => {
     queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
   });
 
-  const handleDrop = () => {
-    setDrop((prevDrop) => !prevDrop);
-  };
-
   const guts = statics?.data?.data?.attributes?.description?.en;
   const process = guts
     ?.replaceAll(" \n  \n", "<br/><br/>")
@@ -129,7 +125,7 @@ const Manga = () => {
               </p>
               <button
                 className="manga__btn manga__btn--flex-none"
-                onClick={handleDrop}
+                onClick={() => setDrop((prevDrop) => !prevDrop)}
               >
                 {drop ? (
                   <img className="manga__icon" src="/arrow-up.svg" alt="" />
