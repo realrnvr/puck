@@ -1,6 +1,6 @@
 import "./header.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useMutation } from "@tanstack/react-query";
@@ -189,24 +189,72 @@ const Header = () => {
             <div>
               <ul className="header__pri-ul header__pri-ul--flex-d">
                 <li>
-                  <Link className="header__pri-link" to="/read">
+                  <NavLink
+                    style={({ isActive }) =>
+                      isActive
+                        ? {
+                            borderBottom: "5px solid #ffffe3",
+                            borderBottomRightRadius: "3px",
+                            borderBottomLeftRadius: "3px",
+                          }
+                        : null
+                    }
+                    className="header__pri-link"
+                    to="/read"
+                  >
                     Read
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link className="header__pri-link" to="/watch">
+                  <NavLink
+                    style={({ isActive }) =>
+                      isActive
+                        ? {
+                            borderBottom: "5px solid #ffffe3",
+                            borderBottomRightRadius: "3px",
+                            borderBottomLeftRadius: "3px",
+                          }
+                        : null
+                    }
+                    className="header__pri-link"
+                    to="/watch"
+                  >
                     Watch
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link className="header__pri-link" to="/community">
+                  <NavLink
+                    style={({ isActive }) =>
+                      isActive
+                        ? {
+                            borderBottom: "5px solid #ffffe3",
+                            borderBottomRightRadius: "3px",
+                            borderBottomLeftRadius: "3px",
+                          }
+                        : null
+                    }
+                    className="header__pri-link"
+                    to="/community"
+                  >
                     Community
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link className="header__pri-link" to="/about">
+                  <NavLink
+                    style={({ isActive }) =>
+                      isActive
+                        ? {
+                            borderBottom: "5px solid #ffffe3",
+                            borderBottomRightRadius: "3px",
+                            borderBottomLeftRadius: "3px",
+                          }
+                        : null
+                    }
+                    className="header__pri-link"
+                    to="/about"
+                  >
                     About
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </div>
