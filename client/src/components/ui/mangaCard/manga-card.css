@@ -1,3 +1,7 @@
+.manga-card__wrapper {
+  width: fit-content;
+}
+
 .manga-card {
   position: relative;
   width: fit-content;
