@@ -22,6 +22,7 @@ import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAu
 import Read from "../../pages/read/Read";
 import Layout from "../../pages/layout/Layout";
 import Manga from "../../pages/manga/Manga";
+import Mangas from "../../pages/mangas/Mangas";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/manga/:mangaId/:authorId",
         element: <Manga />,
+      },
+      {
+        path: "/mangas",
+        element: <Mangas />,
       },
     ],
   },
