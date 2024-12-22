@@ -1,12 +1,12 @@
-import { Link } from "react-router-dom";
 import "./manga-card.css";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const MangaCard = ({ img, title, mangaId, authorId }) => {
   return (
-    <Link to={`/manga/${mangaId}/${authorId}`}>
+    <Link to={`/manga/${mangaId}/${authorId}`} className="manga-card__wrapper">
       <figure className="manga-card">
-        <img className="manga-card__img" src={`/${img}.jpg`} alt="manga" />
+        <img className="manga-card__img" src={`${img}`} alt="manga" />
         <figcaption className="manga-card__title">{title}</figcaption>
       </figure>
     </Link>
@@ -14,7 +14,7 @@ const MangaCard = ({ img, title, mangaId, authorId }) => {
 };
 
 MangaCard.propTypes = {
-  img: PropTypes.string.isRequired,
+  img: PropTypes.string,
   title: PropTypes.string.isRequired,
   mangaId: PropTypes.string.isRequired,
   authorId: PropTypes.string.isRequired,
