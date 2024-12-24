@@ -55,15 +55,17 @@ app.get("/api/v1/getManga", async (req, res) => {
 });
 
 // response id by name
-const berserkById = "801513ba-a712-498c-8f57-cae55b38cc92";
+// const berserkById = "801513ba-a712-498c-8f57-cae55b38cc92";
 
 // get all chapters by id
 app.get("/api/v1/getChapter", async (req, res) => {
+  const { mangaId } = req.body;
   try {
-    const response = await axios.get(`${baseUrl}/manga/${berserkById}/feed`, {
+    const response = await axios.get(`${baseUrl}/manga/${mangaId}/feed`, {
       params: {
         translatedLanguage: ["en"], // Fetch chapters in English; modify if needed
         limit: 2, // Adjust to control how many chapters per request (up to 500 max)
+        offset: 1,
         order: { chapter: "asc" }, // Order chapters in ascending order
       },
     });
@@ -81,9 +83,15 @@ app.get("/api/v1/chapter", async (req, res) => {
     const response = await axios.get(
       `https://api.mangadex.org/at-home/server/${chapterId}`
     );
-    res.status(StatusCodes.OK).json({ data: response.data });
+    const baseUrl = response.data.baseUrl;
+    const hash = response.data.chapter.hash;
+    const mangaImgs = response.data.chapter.data.map((val) => {
+      return `${baseUrl}/data/${hash}/${val}`;
+    });
+
+    res.status(StatusCodes.OK).json({ data: mangaImgs });
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ error });
+    res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
   }
 });
 
