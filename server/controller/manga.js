@@ -68,3 +68,56 @@ export const cover = async (req, res) => {
     throw new BadRequestError("something went wrong");
   }
 };
+
+export const chapters = async (req, res) => {
+  const {
+    params: { mangaId },
+    query: { limit, offset },
+  } = req;
+
+  if (!mangaId) {
+    throw new BadRequestError("please provide manga id!");
+  }
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/manga/${mangaId}/feed?order[volume]=asc&order[chapter]=asc`,
+      {
+        params: {
+          translatedLanguage: ["en"],
+          limit: limit || 10,
+          offset: offset || 0,
+          // "order[volume]": "asc",
+          // "order[chapter]": "asc",
+        },
+      }
+    );
+    const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data, currLen: data.length, dexLimit, dexOffset, total });
+  } catch (error) {
+    throw new BadRequestError("something went wrong");
+  }
+};
+
+export const chapterImage = async (req, res) => {
+  const { chapterId } = req.params;
+
+  try {
+    const response = await axios.get(`${BASE_URL}/at-home/server/${chapterId}`);
+
+    const baseUrl = response.data.baseUrl;
+    const hash = response.data.chapter.hash;
+    const mangaImgs = response.data.chapter.data.map((val) => {
+      return { src: `${baseUrl}/data/${hash}/${val}` };
+    });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: mangaImgs, length: mangaImgs.length });
+  } catch (error) {
+    throw new BadRequestError("something went wrong");
+  }
+};
