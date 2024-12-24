@@ -1,7 +1,7 @@
 import "./manga.css";
 import { axiosInstance } from "../../services/api/axios";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import Tag from "../../components/ui/tag/Tag";
 
@@ -107,9 +107,12 @@ const Manga = () => {
                 ></path>
               </svg>
             </button>
-            <button className="manga__btn manga__btn--flex-3 signup__btn">
+            <Link
+              to={`/list/${mangaId}`}
+              className="manga__btn manga__btn--flex-3 signup__btn"
+            >
               Read
-            </button>
+            </Link>
           </div>
           <div>
             <p
