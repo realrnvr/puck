@@ -23,6 +23,8 @@ import Read from "../../pages/read/Read";
 import Layout from "../../pages/layout/Layout";
 import Manga from "../../pages/manga/Manga";
 import Mangas from "../../pages/mangas/Mangas";
+import Viewer from "../../pages/viewer/Viewer";
+import List from "../../pages/list/List";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,15 @@ const router = createBrowserRouter([
         element: <Mangas />,
       },
     ],
+  },
+  // test
+  {
+    path: "/viewer/:chapterId",
+    element: <Viewer />,
+  },
+  {
+    path: "/list/:mangaId",
+    element: <List />,
   },
   {
     path: "/account",
