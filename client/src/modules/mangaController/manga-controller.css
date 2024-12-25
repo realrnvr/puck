@@ -1,0 +1,104 @@
+:root {
+  --height: 250px;
+}
+
+.controller-close {
+  transform: translateY(var(--height));
+}
+
+.controller__close-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  border: 0;
+  outline: 0;
+  background-color: var(--bg-clr-primary);
+  padding: 0.3rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.controller__close-svg {
+  width: 30px;
+  aspect-ratio: 1 / 1;
+  fill: #fff;
+}
+
+.controller {
+  background-color: var(--bg-clr-primary);
+  box-shadow: 0px 0px 32px rgba(0, 0, 0, 1);
+  position: absolute;
+  bottom: 0;
+  width: 75%;
+  height: var(--height);
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+  transition: transform 0.3s ease-in;
+  color: #fff;
+  display: flex;
+  padding: 1rem;
+}
+
+.controller__container-left,
+.controller__container-right {
+  /* border: 1px solid red; */
+  flex: 1;
+}
+
+.controller__btn-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.controller__list-btn {
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.controller__list-svg {
+  width: 20px;
+  aspect-ratio: 1 / 1;
+  fill: #fff;
+}
+
+.controller__nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.controller__nav-btn {
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.controller__nav-svg {
+  width: 30px;
+  aspect-ratio: 1 / 1;
+  fill: #fff;
+}
+
+.controller__loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.controller__loader .loader {
+  width: 50px;
+}
