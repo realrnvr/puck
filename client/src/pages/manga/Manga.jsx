@@ -108,7 +108,7 @@ const Manga = () => {
               </svg>
             </button>
             <Link
-              to={`/list/${mangaId}`}
+              to={`/viewer/${mangaId}`}
               className="manga__btn manga__btn--flex-3 signup__btn"
             >
               Read

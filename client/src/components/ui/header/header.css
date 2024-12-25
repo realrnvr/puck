@@ -21,9 +21,10 @@
   text-decoration: underline;
 }
 
-/* .header__main-wrapper {
+.header__main-wrapper {
   background-color: var(--bg-clr-tertiary);
-} */
+  background-color: rgb(29, 29, 29, 0.4);
+}
 
 .header__main {
   display: flex;
