@@ -2,7 +2,7 @@ import "./manga-card.css";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const MangaCard = ({ img, title, mangaId, authorId }) => {
+const MangaCard = ({ img = "/1px.webp", title, mangaId, authorId }) => {
   return (
     <Link to={`/manga/${mangaId}/${authorId}`} className="manga-card__wrapper">
       <figure className="manga-card">
