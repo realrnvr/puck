@@ -57,10 +57,10 @@
   z-index: 10;
 }
 
-button:hover {
+/* button:hover {
   opacity: 0.7;
   transition: opacity 0.2s ease-in;
-}
+} */
 
 /* Xs */
 @media (min-width: 475px) {
