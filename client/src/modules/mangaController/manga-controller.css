@@ -45,10 +45,59 @@
   flex: 1;
 }
 
+.controller__container-right {
+  flex: 3;
+}
+
+.controller__pag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.controller__pg-svg {
+  width: 20px;
+  aspect-ratio: 1 / 1;
+  color: #fff;
+}
+
+.controller__pag-counter {
+  background-color: orange;
+  width: fit-content;
+  padding: 0.3rem;
+  border-radius: 7px;
+}
+
+.controller__pag-btn {
+  width: fit-content;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.controller__nav-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
 .controller__btn-wrapper {
   display: flex;
   gap: 1rem;
   align-items: center;
+  justify-content: center;
+}
+
+.controller__chapter-list {
+  flex: 1;
 }
 
 .controller__list-btn {
@@ -71,11 +120,6 @@
   fill: #fff;
 }
 
-.controller__nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .controller__nav-btn {
   border: 0;
   outline: 0;
@@ -92,6 +136,12 @@
   fill: #fff;
 }
 
+.controller__controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* loader */
 .controller__loader {
   position: absolute;
   top: 50%;
@@ -101,4 +151,53 @@
 
 .controller__loader .loader {
   width: 50px;
+}
+/*  */
+
+.controller__chapter-list {
+  padding-right: 0.5rem;
+  height: 160px;
+  overflow-y: scroll;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem;
+  transition: transform 0.3s ease-in;
+}
+
+.controller__chapter-li {
+  /* width: fit-content; */
+  /* width: 15ch; */
+}
+
+.controller__chapter-btn {
+  width: 100%;
+  padding: 0.3rem 0.5rem;
+  background-color: var(--bg-clr-secondary);
+  border-radius: 8px;
+  border: 0;
+  outline: 0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.controller__chapter-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.controller__chapter-list::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.controller__chapter-list::-webkit-scrollbar-thumb {
+  background-color: var(--clr-primary);
+  border-radius: 5px;
+}
+
+.disabled__btn {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.disabled__btn:hover {
+  opacity: none;
 }

@@ -1,13 +1,30 @@
-import { useState } from "react";
 import "./manga-controller.css";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Loader from "../../components/ui/loader/Loader";
 
 export function MangaController({
   children,
-  MangaControllerProps: { setChapterCount, isPending },
+  MangaControllerProps: {
+    chapterCount,
+    setChapterCount,
+    isPending,
+    currChapter,
+    chapters,
+    nav: {
+      hasPrevChunk,
+      handlePrevChunk,
+      hasNextChunk,
+      handleNextChunk,
+      offset,
+      CHUNK_SIZE,
+      totalChapters,
+    },
+  },
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const hasChapterPrev = chapterCount === 0;
+  const hasChapterNext = chapterCount === chapters?.length - 1;
 
   return (
     <>
@@ -50,21 +67,14 @@ export function MangaController({
           <p>setting</p>
         </div>
         <div className="controller__container-right">
-          <div className="controller__btn-wrapper">
-            <button type="button" className="controller__list-btn">
-              <span>Chapter - 0.02</span>
-              <svg
-                className="controller__list-svg"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
-              </svg>
-            </button>
-            <div className="controller__nav">
+          <div className="controller__nav-panel">
+            <div className="controller__btn-wrapper">
               <button
                 type="button"
-                className="controller__nav-btn"
+                className={`controller__nav-btn ${
+                  hasChapterPrev ? "disabled__btn" : null
+                }`}
+                disabled={hasChapterPrev}
                 onClick={() =>
                   setChapterCount((prevChapterCount) => prevChapterCount - 1)
                 }
@@ -79,9 +89,22 @@ export function MangaController({
                   <path d="M18.464 2.114a.998.998 0 00-1.033.063l-13 9a1.003 1.003 0 000 1.645l13 9A1 1 0 0019 21V3a1 1 0 00-.536-.886zM17 19.091L6.757 12 17 4.909v14.182z" />
                 </svg>
               </button>
+              <button type="button" className="controller__list-btn">
+                <span>Chapter - {currChapter}</span>
+                <svg
+                  className="controller__list-svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
+                </svg>
+              </button>
               <button
                 type="button"
-                className="controller__nav-btn"
+                className={`controller__nav-btn ${
+                  hasChapterNext ? "disabled__btn" : null
+                }`}
+                disabled={hasChapterNext}
                 onClick={() =>
                   setChapterCount((prevChapterCount) => prevChapterCount + 1)
                 }
@@ -96,6 +119,66 @@ export function MangaController({
                   <path d="M5.536 21.886a1.004 1.004 0 001.033-.064l13-9a1 1 0 000-1.644l-13-9A.998.998 0 005 3v18a1 1 0 00.536.886zM7 4.909L17.243 12 7 19.091V4.909z" />
                 </svg>
               </button>
+            </div>
+            <div className="controller__controls">
+              <div className="controller__pag">
+                <button
+                  className={`controller__pag-btn ${
+                    !hasPrevChunk ? "disabled__btn" : null
+                  }`}
+                  type="button"
+                  onClick={handlePrevChunk}
+                  disabled={!hasPrevChunk}
+                >
+                  <svg
+                    className="controller__pg-svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M3 19h18a1.002 1.002 0 00.823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 003 19zm9-12.243L19.092 17H4.908L12 6.757z" />
+                  </svg>
+                </button>
+                <p className="controller__pag-counter">
+                  {offset + 1} - {Math.min(offset + CHUNK_SIZE, totalChapters)}
+                </p>
+                <button
+                  className={`controller__pag-btn ${
+                    !hasNextChunk ? "disabled__btn" : null
+                  }`}
+                  type="button"
+                  onClick={handleNextChunk}
+                  disabled={!hasNextChunk}
+                >
+                  <svg
+                    className="controller__pg-svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M21.886 5.536A1.002 1.002 0 0021 5H3a1.002 1.002 0 00-.822 1.569l9 13a.998.998 0 001.644 0l9-13a.998.998 0 00.064-1.033zM12 17.243L4.908 7h14.184L12 17.243z" />
+                  </svg>
+                </button>
+              </div>
+              <ul className="controller__chapter-list">
+                {chapters?.map((val, idx) => {
+                  return (
+                    <li
+                      key={idx}
+                      className="controller__chapter-li"
+                      onClick={() => setChapterCount(idx)}
+                    >
+                      <button
+                        className="controller__chapter-btn"
+                        style={{
+                          backgroundColor:
+                            chapterCount === idx ? "orange" : null,
+                        }}
+                      >
+                        Chapter - {val?.attributes?.chapter}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </div>
         </div>

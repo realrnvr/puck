@@ -1,8 +1,8 @@
-import { useState } from "react";
-import Lightbox from "yet-another-react-lightbox";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../services/api/axios";
 import { useParams } from "react-router-dom";
+import Lightbox from "yet-another-react-lightbox";
 
 // plugins
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -23,16 +23,26 @@ import "./viewer.css";
 
 const Viewer = () => {
   const [chapterCount, setChapterCount] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [totalChapters, setTotalChapters] = useState(0);
+  const CHUNK_SIZE = 100;
 
   const { mangaId } = useParams();
 
   const { data: chapter } = useQuery({
-    queryKey: ["chapter", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/chapters/${mangaId}`),
+    queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset }],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${offset}`
+      );
+      setTotalChapters(response.data.total);
+      return response;
+    },
   });
 
   const chapters = chapter?.data?.data;
   const chapterId = chapters && chapters[chapterCount]?.id;
+  const currChapter = chapters && chapters[chapterCount]?.attributes?.chapter;
 
   const { data, isPending } = useQuery({
     queryKey: ["chapter-image", { chapterId }],
@@ -42,6 +52,28 @@ const Viewer = () => {
   });
 
   const slides = isPending ? [] : data?.data?.data;
+
+  // memo chunk val
+  const hasPrevChunk = useMemo(() => offset > 0, [offset]);
+  const hasNextChunk = useMemo(
+    () => offset + CHUNK_SIZE < totalChapters,
+    [offset, totalChapters]
+  );
+
+  // handle chunk
+  const handlePrevChunk = () => {
+    if (hasPrevChunk) {
+      setOffset((prev) => prev - CHUNK_SIZE);
+      setChapterCount(0);
+    }
+  };
+
+  const handleNextChunk = () => {
+    if (hasNextChunk) {
+      setOffset((prev) => prev + CHUNK_SIZE);
+      setChapterCount(0);
+    }
+  };
 
   return (
     <>
@@ -75,7 +107,22 @@ const Viewer = () => {
           animation={{
             zoom: 500,
           }}
-          MangaControllerProps={{ chapterCount, setChapterCount, isPending }}
+          MangaControllerProps={{
+            chapterCount,
+            setChapterCount,
+            isPending,
+            currChapter,
+            chapters,
+            nav: {
+              hasPrevChunk,
+              handlePrevChunk,
+              hasNextChunk,
+              handleNextChunk,
+              offset,
+              CHUNK_SIZE,
+              totalChapters,
+            },
+          }}
         />
       </div>
     </>
