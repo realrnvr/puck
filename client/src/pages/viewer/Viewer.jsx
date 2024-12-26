@@ -11,21 +11,19 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import Download from "yet-another-react-lightbox/plugins/download";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Counter from "yet-another-react-lightbox/plugins/counter";
-// import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import { MangaControllerPlugin } from "../../plugin/MangaControllerPlugin";
 
 // css
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "./viewer.css";
 
 const Viewer = () => {
+  const CHUNK_SIZE = 100;
   const [chapterCount, setChapterCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const [totalChapters, setTotalChapters] = useState(0);
-  const CHUNK_SIZE = 100;
 
   const { mangaId } = useParams();
 
@@ -86,7 +84,6 @@ const Viewer = () => {
             Download,
             Slideshow,
             Counter,
-            // Thumbnails,
             MangaControllerPlugin,
           ]}
           open={true}
