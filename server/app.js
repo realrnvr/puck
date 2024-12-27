@@ -19,7 +19,11 @@ import axios from "axios";
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:4173",
+    ],
     credentials: true,
   })
 );
@@ -61,14 +65,17 @@ app.get("/api/v1/getManga", async (req, res) => {
 app.get("/api/v1/getChapter", async (req, res) => {
   const { mangaId } = req.body;
   try {
-    const response = await axios.get(`${baseUrl}/manga/${mangaId}/feed`, {
-      params: {
-        translatedLanguage: ["en"], // Fetch chapters in English; modify if needed
-        limit: 2, // Adjust to control how many chapters per request (up to 500 max)
-        offset: 1,
-        order: { chapter: "asc" }, // Order chapters in ascending order
-      },
-    });
+    const response = await axios.get(
+      `${baseUrl}/manga/${mangaId}/feed?order[volume]=asc&order[chapter]=asc`,
+      {
+        params: {
+          // originalLanguage: ["ja"],
+          translatedLanguage: ["en"], // Fetch chapters in English; modify if needed
+          limit: 10, // Adjust to control how many chapters per request (up to 500 max)
+          offset: 0,
+        },
+      }
+    );
     const data = response.data.data.map((chapter) => chapter.id);
     res.status(StatusCodes.OK).json({ data: response.data.data });
   } catch (error) {
