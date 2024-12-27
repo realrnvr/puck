@@ -94,24 +94,41 @@ export const chapters = async (req, res) => {
     );
     const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
 
-    res
-      .status(StatusCodes.OK)
-      .json({ data, currLen: data.length, dexLimit, dexOffset, total });
+    const filteredData = data.filter((val) => {
+      return val.attributes.externalUrl === null;
+    });
+
+    res.status(StatusCodes.OK).json({
+      data: filteredData,
+      currLen: data.length,
+      dexLimit,
+      dexOffset,
+      total,
+    });
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
 };
 
 export const chapterImage = async (req, res) => {
-  const { chapterId } = req.params;
+  const {
+    params: { chapterId },
+    query: { quality },
+  } = req;
 
   try {
     const response = await axios.get(`${BASE_URL}/at-home/server/${chapterId}`);
+    console.log(response.data);
 
     const baseUrl = response.data.baseUrl;
     const hash = response.data.chapter.hash;
-    const mangaImgs = response.data.chapter.data.map((val) => {
-      return { src: `${baseUrl}/data/${hash}/${val}` };
+    const data =
+      quality === "data-saver"
+        ? response.data.chapter.dataSaver
+        : response.data.chapter.data;
+
+    const mangaImgs = data.map((val) => {
+      return { src: `${baseUrl}/${quality}/${hash}/${val}` };
     });
 
     res
