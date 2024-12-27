@@ -35,18 +35,13 @@
   border-top-left-radius: 25px;
   transition: transform 0.3s ease-in;
   color: #fff;
-  display: flex;
   padding: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
-.controller__container-left,
 .controller__container-right {
-  /* border: 1px solid red; */
   flex: 1;
-}
-
-.controller__container-right {
-  flex: 3;
 }
 
 .controller__pag {
@@ -89,11 +84,22 @@
   flex: 1;
 }
 
+.controller__top-container {
+  padding-inline: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.controller__chap-count {
+  background-color: orange;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+}
+
 .controller__btn-wrapper {
   display: flex;
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
 }
 
 .controller__chapter-list {
@@ -156,7 +162,7 @@
 
 .controller__chapter-list {
   padding-right: 0.5rem;
-  height: 160px;
+  max-height: 160px;
   overflow-y: scroll;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -171,7 +177,7 @@
 
 .controller__chapter-btn {
   width: 100%;
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 1rem;
   background-color: var(--bg-clr-secondary);
   border-radius: 8px;
   border: 0;
@@ -200,4 +206,30 @@
 
 .disabled__btn:hover {
   opacity: none;
+}
+
+.controller__drop-down {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.controller__select {
+  border: 0;
+  outline: 0;
+  background-color: var(--bg-clr-primary);
+  color: #fff;
+  outline: 1px solid var(--clr-primary);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.controller__option {
+  background: var(--bg-clr-secondary);
+  color: #fff;
+  padding: 0.3rem;
+  font-size: 14px;
 }
