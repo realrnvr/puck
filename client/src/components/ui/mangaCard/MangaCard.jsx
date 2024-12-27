@@ -1,5 +1,6 @@
 import "./manga-card.css";
 import { Link } from "react-router-dom";
+import { memo } from "react";
 import PropTypes from "prop-types";
 
 const MangaCard = ({ img = "/1px.webp", title, mangaId, authorId }) => {
@@ -20,4 +21,4 @@ MangaCard.propTypes = {
   authorId: PropTypes.string.isRequired,
 };
 
-export default MangaCard;
+export default memo(MangaCard);
