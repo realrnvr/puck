@@ -11,6 +11,7 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import Download from "yet-another-react-lightbox/plugins/download";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Counter from "yet-another-react-lightbox/plugins/counter";
+import Inline from "yet-another-react-lightbox/plugins/inline";
 import { MangaControllerPlugin } from "../../plugin/MangaControllerPlugin";
 
 // css
@@ -24,6 +25,7 @@ const Viewer = () => {
   const [chapterCount, setChapterCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const [totalChapters, setTotalChapters] = useState(0);
+  const [quality, setQuality] = useState("data");
 
   const { mangaId } = useParams();
 
@@ -43,9 +45,13 @@ const Viewer = () => {
   const currChapter = chapters && chapters[chapterCount]?.attributes?.chapter;
 
   const { data, isPending } = useQuery({
-    queryKey: ["chapter-image", { chapterId }],
+    queryKey: ["chapter-image", { chapterId, quality }],
     queryFn: () =>
-      axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`),
+      axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`, {
+        params: {
+          quality: quality,
+        },
+      }),
     enabled: !!chapterId,
   });
 
@@ -78,6 +84,7 @@ const Viewer = () => {
       <div className="viewer">
         <Lightbox
           plugins={[
+            Inline,
             Fullscreen,
             Zoom,
             Captions,
@@ -119,6 +126,8 @@ const Viewer = () => {
               CHUNK_SIZE,
               totalChapters,
             },
+            quality,
+            setQuality,
           }}
         />
       </div>
