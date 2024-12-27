@@ -13,10 +13,16 @@ const Mangas = () => {
       authorId: "5863578d-4e4f-4b57-b64d-1dd45a893cb0",
     },
     {
-      img: "vaga-bond-manga-cover",
-      title: "Vaga Bond",
-      mangaId: "d1a9fdeb-f713-407f-960c-8326b586e6fd",
-      authorId: "0b59098f-13c0-41cb-a110-9cbcec72dc0c",
+      img: "duranki",
+      title: "duranki",
+      mangaId: "336bce99-e6a0-4590-a5be-06f276e2006d",
+      authorId: "5863578d-4e4f-4b57-b64d-1dd45a893cb0",
+    },
+    {
+      img: "dragon ball",
+      title: "Dragon Ball",
+      mangaId: "40bc649f-7b49-4645-859e-6cd94136e722",
+      authorId: "f5d4fca1-d573-4383-af08-c06b0794ba4e",
     },
     {
       img: "vinland-saga-manga-cover",
@@ -49,18 +55,6 @@ const Mangas = () => {
       authorId: "00345ac8-e515-458d-a11d-56cfd1cb253b",
     },
     {
-      img: "aot",
-      title: "Attack On Titan",
-      mangaId: "304ceac3-8cdb-4fe7-acf7-2b6ff7a60613",
-      authorId: "31e059c9-6040-4765-b7bd-40a16d657a94",
-    },
-    {
-      img: "ds",
-      title: "Demon Slayer",
-      mangaId: "789642f8-ca89-4e4e-8f7b-eee4d17ea08b",
-      authorId: "f0efa2ab-6e78-4f21-ad30-bbf2cf38972d",
-    },
-    {
       img: "bleach",
       title: "Bleach",
       mangaId: "239d6260-d71f-43b0-afff-074e3619e3de",
@@ -70,12 +64,6 @@ const Mangas = () => {
       img: "pm",
       title: "Psycho Mob",
       mangaId: "736a2bf0-f875-4b52-a7b4-e8c40505b68a",
-      authorId: "16b98239-6452-4859-b6df-fdb1c7f12b52",
-    },
-    {
-      img: "opm",
-      title: "One Punch Man",
-      mangaId: "d8a959f7-648e-4c8d-8f23-f1f3f8e129f3",
       authorId: "16b98239-6452-4859-b6df-fdb1c7f12b52",
     },
     {
@@ -89,6 +77,30 @@ const Mangas = () => {
       title: "Chainsaw Man",
       mangaId: "a77742b1-befd-49a4-bff5-1ad4e6b0ef7b",
       authorId: "f85a5b93-3c87-4c61-9032-07ceacbb9e64",
+    },
+    {
+      img: "Sailor Moon",
+      title: "Sailor Moon",
+      mangaId: "e39944f5-15bf-4464-9556-a4e9b3945571",
+      authorId: "40e66f64-a9d2-4fb3-9dc4-9e9a68e9eb9c",
+    },
+    {
+      img: "Hajime no Ippo",
+      title: "Hajime no Ippo",
+      mangaId: "f7888782-0727-49b0-95ec-a3530c70f83b",
+      authorId: "c6c60b88-c03c-46f1-b66d-bda51287d578",
+    },
+    {
+      img: "Slam Dunk",
+      title: "Slam Dunk",
+      mangaId: "319df2e2-e6a6-4e3a-a31c-68539c140a84",
+      authorId: "0b59098f-13c0-41cb-a110-9cbcec72dc0c",
+    },
+    {
+      img: "Nichijou",
+      title: "Nichijou",
+      mangaId: "f5bf9cc3-d003-47fe-bc76-99774b2a0562",
+      authorId: "43243d69-13cf-454a-9e37-6d0d3adb22c8",
     },
   ];
 
