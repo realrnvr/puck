@@ -80,26 +80,25 @@ export const chapters = async (req, res) => {
   }
 
   try {
-    const response = await axios.get(
-      `${BASE_URL}/manga/${mangaId}/feed?order[volume]=asc&order[chapter]=asc`,
-      {
-        params: {
-          translatedLanguage: ["en"],
-          limit: limit || 10,
-          offset: offset || 0,
-          // "order[volume]": "asc",
-          // "order[chapter]": "asc",
+    const response = await axios.get(`${BASE_URL}/chapter`, {
+      params: {
+        manga: mangaId,
+        translatedLanguage: ["en"],
+        limit: limit || 10,
+        offset: offset || 0,
+        order: {
+          volume: "asc",
+          chapter: "asc",
         },
-      }
-    );
+        includeExternalUrl: 0,
+        includeEmptyPages: 0,
+        includeFuturePublishAt: 0,
+      },
+    });
     const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
 
-    const filteredData = data.filter((val) => {
-      return val.attributes.externalUrl === null;
-    });
-
     res.status(StatusCodes.OK).json({
-      data: filteredData,
+      data: data,
       currLen: data.length,
       dexLimit,
       dexOffset,
@@ -118,14 +117,11 @@ export const chapterImage = async (req, res) => {
 
   try {
     const response = await axios.get(`${BASE_URL}/at-home/server/${chapterId}`);
-    console.log(response.data);
-
-    const baseUrl = response.data.baseUrl;
-    const hash = response.data.chapter.hash;
-    const data =
-      quality === "data-saver"
-        ? response.data.chapter.dataSaver
-        : response.data.chapter.data;
+    const {
+      baseUrl,
+      chapter: { hash, data: original, dataSaver },
+    } = response.data;
+    const data = quality === "data-saver" ? dataSaver : original;
 
     const mangaImgs = data.map((val) => {
       return { src: `${baseUrl}/${quality}/${hash}/${val}` };
