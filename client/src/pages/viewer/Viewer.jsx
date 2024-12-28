@@ -20,12 +20,17 @@ import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import "./viewer.css";
 
+const CHUNK_SIZE = 100;
+
 const Viewer = () => {
-  const CHUNK_SIZE = 100;
   const [chapterCount, setChapterCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const [totalChapters, setTotalChapters] = useState(0);
   const [quality, setQuality] = useState("data");
+  const [chapterBound, setChapterBound] = useState({
+    first: 0,
+    last: 0,
+  });
 
   const { mangaId } = useParams();
 
@@ -36,6 +41,14 @@ const Viewer = () => {
         `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${offset}`
       );
       setTotalChapters(response.data.total);
+      setChapterBound((prevChapterBound) => {
+        return {
+          ...prevChapterBound,
+          first: response.data.data[0].attributes.chapter,
+          last: response.data.data[response.data.data.length - 1].attributes
+            .chapter,
+        };
+      });
       return response;
     },
   });
@@ -43,6 +56,7 @@ const Viewer = () => {
   const chapters = chapter?.data?.data;
   const chapterId = chapters && chapters[chapterCount]?.id;
   const currChapter = chapters && chapters[chapterCount]?.attributes?.chapter;
+  const currVolume = chapters && chapters[chapterCount]?.attributes?.volume;
 
   const { data, isPending } = useQuery({
     queryKey: ["chapter-image", { chapterId, quality }],
@@ -116,15 +130,15 @@ const Viewer = () => {
             setChapterCount,
             isPending,
             currChapter,
+            currVolume,
             chapters,
             nav: {
               hasPrevChunk,
               handlePrevChunk,
               hasNextChunk,
               handleNextChunk,
-              offset,
-              CHUNK_SIZE,
               totalChapters,
+              chapterBound,
             },
             quality,
             setQuality,
