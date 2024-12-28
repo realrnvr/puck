@@ -9,13 +9,12 @@ import "express-async-errors";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
 import { notFound } from "./middleware/notFound.js";
 import { StatusCodes } from "http-status-codes";
-
 import { connectDB } from "./connectDB/connectDB.js";
 import { auth } from "./middleware/authorization.js";
+
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
 import cookieParser from "cookie-parser";
-import axios from "axios";
 
 app.use(
   cors({
@@ -36,6 +35,14 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/manga", mangaRouter);
+
+// test route
+
+app.get("/api/v1/users", auth, (req, res) => {
+  res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
+});
+
+// ... //
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);
