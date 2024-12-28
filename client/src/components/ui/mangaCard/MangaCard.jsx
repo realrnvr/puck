@@ -1,9 +1,9 @@
 import "./manga-card.css";
-import { Link } from "react-router-dom";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const MangaCard = ({ img = "/1px.webp", title, mangaId, authorId }) => {
+const MangaCard = memo(({ img = "/1px.webp", title, mangaId, authorId }) => {
   return (
     <Link to={`/manga/${mangaId}/${authorId}`} className="manga-card__wrapper">
       <figure className="manga-card">
@@ -12,7 +12,9 @@ const MangaCard = ({ img = "/1px.webp", title, mangaId, authorId }) => {
       </figure>
     </Link>
   );
-};
+});
+
+MangaCard.displayName = "MangaCard";
 
 MangaCard.propTypes = {
   img: PropTypes.string,
@@ -21,4 +23,4 @@ MangaCard.propTypes = {
   authorId: PropTypes.string.isRequired,
 };
 
-export default memo(MangaCard);
+export default MangaCard;
