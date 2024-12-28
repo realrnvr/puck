@@ -4,27 +4,3 @@
   height: 100%;
   width: 100%;
 }
-
-/* .test {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 9999999999999;
-} */
-
-/* .yarl__container {
-  border: 1px solid red;
-}
-
-.yarl__root {
-  width: 90%;
-  border: 1px solid green;
-  position: relative;
-  z-index: -1;
-} */
-
-.yarl__thumbnails_container {
-  border: 1px solid red;
-  position: relative;
-  z-index: -99;
-}
