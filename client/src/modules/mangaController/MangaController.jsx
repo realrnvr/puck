@@ -9,7 +9,7 @@ export function MangaController({
   MangaControllerProps: {
     chapterCount,
     setChapterCount,
-    isPending,
+    isLoading,
     currChapter,
     currVolume,
     chapters,
@@ -229,7 +229,7 @@ export function MangaController({
               </svg>
             </button>
             <p className="controller__pag-counter">
-              {chapterBound.first} - {chapterBound.last}
+              {chapterBound?.first} - {chapterBound?.last}
             </p>
             <button
               className={`controller__pag-btn ${
@@ -273,7 +273,7 @@ export function MangaController({
           </button>
         </div>
       </div>
-      <div className="controller__loader">{isPending ? <Loader /> : null}</div>
+      <div className="controller__loader">{isLoading ? <Loader /> : null}</div>
     </>
   );
 }
