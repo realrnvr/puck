@@ -97,9 +97,15 @@ export const chapters = async (req, res) => {
     });
     const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
 
+    const chapterBound = {
+      first: data[0].attributes.chapter,
+      last: data[data.length - 1].attributes.chapter,
+    };
+
     res.status(StatusCodes.OK).json({
       data: data,
       currLen: data.length,
+      chapterBound,
       dexLimit,
       dexOffset,
       total,
