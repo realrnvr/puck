@@ -1,7 +1,8 @@
 import "./manga-controller.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Loader from "../../components/ui/loader/Loader";
+import { useController } from "yet-another-react-lightbox";
 
 export function MangaController({
   children,
@@ -32,6 +33,45 @@ export function MangaController({
     const { value } = e.target;
     setQuality(value);
   };
+
+  const { subscribeSensors } = useController();
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+
+    const unsubscribeKeyDown = subscribeSensors("onKeyDown", (event) => {
+      event.stopPropagation();
+    });
+
+    const unsubscribePointerDown = subscribeSensors(
+      "onPointerDown",
+      (event) => {
+        event.stopPropagation();
+      }
+    );
+
+    const unsubscribeWheel = subscribeSensors("onWheel", (event) => {
+      event.stopPropagation();
+      // event.preventDefault();
+    });
+
+    const unsubscribeGestureStart = subscribeSensors(
+      "onGestureStart",
+      (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    );
+
+    return () => {
+      unsubscribeKeyDown();
+      unsubscribePointerDown();
+      unsubscribeWheel();
+      unsubscribeGestureStart();
+    };
+  }, [isOpen, subscribeSensors]);
 
   return (
     <>
