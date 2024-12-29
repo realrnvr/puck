@@ -23,42 +23,32 @@ import "./viewer.css";
 const CHUNK_SIZE = 100;
 
 const Viewer = () => {
-  const [chapterCount, setChapterCount] = useState(0);
-  const [offset, setOffset] = useState(0);
-  const [totalChapters, setTotalChapters] = useState(0);
-  const [quality, setQuality] = useState("data");
-  const [chapterBound, setChapterBound] = useState({
-    first: 0,
-    last: 0,
-  });
-
   const { mangaId } = useParams();
+  // state
+  const [offset, setOffset] = useState(0);
+  const [quality, setQuality] = useState("data");
+  const [chapterCount, setChapterCount] = useState(0);
 
+  // chapter data
   const { data: chapter } = useQuery({
     queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset }],
-    queryFn: async () => {
-      const response = await axiosInstance.get(
+    queryFn: () =>
+      axiosInstance.get(
         `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${offset}`
-      );
-      setTotalChapters(response.data.total);
-      setChapterBound((prevChapterBound) => {
-        return {
-          ...prevChapterBound,
-          first: response.data.data[0].attributes.chapter,
-          last: response.data.data[response.data.data.length - 1].attributes
-            .chapter,
-        };
-      });
-      return response;
-    },
+      ),
   });
 
+  // data extraction
   const chapters = chapter?.data?.data;
+  const totalChapters = chapter?.data?.total;
+  const chapterBound = chapter?.data?.chapterBound;
+
   const chapterId = chapters && chapters[chapterCount]?.id;
   const currChapter = chapters && chapters[chapterCount]?.attributes?.chapter;
   const currVolume = chapters && chapters[chapterCount]?.attributes?.volume;
 
-  const { data, isPending } = useQuery({
+  // chapter images
+  const { data, isLoading } = useQuery({
     queryKey: ["chapter-image", { chapterId, quality }],
     queryFn: () =>
       axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`, {
@@ -69,7 +59,8 @@ const Viewer = () => {
     enabled: !!chapterId,
   });
 
-  const slides = isPending ? [] : data?.data?.data;
+  // image array
+  const slides = isLoading ? [] : data?.data?.data;
 
   // memo chunk val
   const hasPrevChunk = useMemo(() => offset > 0, [offset]);
@@ -122,7 +113,7 @@ const Viewer = () => {
           MangaControllerProps={{
             chapterCount,
             setChapterCount,
-            isPending,
+            isLoading,
             currChapter,
             currVolume,
             chapters,
