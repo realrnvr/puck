@@ -114,14 +114,8 @@ const Viewer = () => {
             zoomInMultiplier: 2,
             doubleClickMaxStops: 2,
             keyboardMoveDistance: 100,
-            scrollToZoom: false,
           }}
-          slideshow={{ finite: true }}
-          thumbnails={{
-            width: 50,
-            height: 50,
-            showToggle: true,
-          }}
+          carousel={{ finite: true }}
           animation={{
             zoom: 500,
           }}
