@@ -1,8 +1,8 @@
 import "./mangas.css";
 import { useQueries } from "@tanstack/react-query";
 import { axiosInstance } from "../../services/api/axios";
-import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import { Link } from "react-router-dom";
+import MangaCard from "../../components/ui/mangaCard/MangaCard";
 
 const Mangas = () => {
   const caseManga = [
