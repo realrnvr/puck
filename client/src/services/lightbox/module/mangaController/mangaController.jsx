@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useDisableEvent } from "../../../../hooks/useDisableEvent";
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
+import ChapterList from "../../components/ChapterList";
+import Button from "../../components/Button";
 
 function MangaController({
   children,
@@ -10,34 +12,20 @@ function MangaController({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleToggleButton = () => {
+    setIsOpen((prevIsOpen) => !prevIsOpen);
+  };
+
   useDisableEvent(isOpen);
 
   return (
     <>
       {children}
-      <button
-        type="button"
-        className="controller__close-btn"
-        onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
-      >
-        {isOpen ? (
-          <svg
-            className="controller__close-svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M18.707 12.707l-1.414-1.414L13 15.586V6h-2v9.586l-4.293-4.293-1.414 1.414L12 19.414z" />
-          </svg>
-        ) : (
-          <svg
-            className="controller__close-svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M11 8.414V18h2V8.414l4.293 4.293 1.414-1.414L12 4.586l-6.707 6.707 1.414 1.414z" />
-          </svg>
-        )}
-      </button>
+      <Button
+        isOpen={isOpen}
+        onClick={handleToggleButton}
+        className={"controller__close-btn"}
+      />
       <div className={`controller ${isOpen ? "controller-close" : null}`}>
         <div className="controller__container-right">
           <div className="controller__top-container">
@@ -92,7 +80,7 @@ function MangaController({
                   <path d="M5.536 21.886a1.004 1.004 0 001.033-.064l13-9a1 1 0 000-1.644l-13-9A.998.998 0 005 3v18a1 1 0 00.536.886zM7 4.909L17.243 12 7 19.091V4.909z" />
                 </svg>
               </button>
-              <div className="controller__counter controller__lg-screen">
+              <div className="controller__counter controller__vol-lg-screen">
                 <span>Volume - {chapter.currVolume}</span>
                 <svg
                   className="controller__list-svg"
@@ -110,32 +98,11 @@ function MangaController({
               {chapter.totalChapters}
             </p>
           </div>
-          <ul className="controller__chapter-list">
-            {chapter.chapters?.map((val, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className="controller__chapter-li"
-                  onClick={() => chapter.setChapterCount(idx)}
-                >
-                  <button
-                    className="controller__chapter-btn"
-                    style={{
-                      backgroundColor:
-                        chapter.chapterCount === idx ? "orange" : null,
-                    }}
-                  >
-                    <p className="controller__chapter-details">
-                      Chapter - {val?.attributes?.chapter}
-                    </p>
-                    <p className="controller__chapter-details">
-                      {val?.attributes?.title || "----"}
-                    </p>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <ChapterList
+            chapters={chapter.chapters}
+            setChapterCount={chapter.setChapterCount}
+            chapterCount={chapter.chapterCount}
+          />
         </div>
         <div className="controller__container-left">
           <div className="controller__drop-down">
@@ -192,29 +159,11 @@ function MangaController({
               </svg>
             </button>
           </div>
-          <button
-            type="button"
-            className="controller__close-btn-sm"
-            onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
-          >
-            {isOpen ? (
-              <svg
-                className="controller__close-svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M18.707 12.707l-1.414-1.414L13 15.586V6h-2v9.586l-4.293-4.293-1.414 1.414L12 19.414z" />
-              </svg>
-            ) : (
-              <svg
-                className="controller__close-svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M11 8.414V18h2V8.414l4.293 4.293 1.414-1.414L12 4.586l-6.707 6.707 1.414 1.414z" />
-              </svg>
-            )}
-          </button>
+          <Button
+            isOpen={isOpen}
+            onClick={handleToggleButton}
+            className={"controller__close-btn-sm"}
+          />
         </div>
       </div>
       <div className="controller__loader">{isLoading ? <Loader /> : null}</div>
