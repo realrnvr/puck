@@ -1,6 +1,5 @@
 // css
 import "yet-another-react-lightbox/styles.css";
-import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 // hooks
 import { useChapter } from "../../hooks/useChapter";
