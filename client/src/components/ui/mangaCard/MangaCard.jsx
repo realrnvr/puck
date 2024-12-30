@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const MangaCard = memo(({ img = "/1px.webp", title, mangaId, authorId }) => {
+const MangaCard = ({ img = "/1px.webp", title, mangaId, authorId }) => {
   return (
     <Link to={`/manga/${mangaId}/${authorId}`} className="manga-card__wrapper">
       <figure className="manga-card">
@@ -12,9 +12,7 @@ const MangaCard = memo(({ img = "/1px.webp", title, mangaId, authorId }) => {
       </figure>
     </Link>
   );
-});
-
-MangaCard.displayName = "MangaCard";
+};
 
 MangaCard.propTypes = {
   img: PropTypes.string,
@@ -23,4 +21,4 @@ MangaCard.propTypes = {
   authorId: PropTypes.string.isRequired,
 };
 
-export default MangaCard;
+export default memo(MangaCard);
