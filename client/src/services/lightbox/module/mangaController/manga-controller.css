@@ -222,6 +222,10 @@
   display: none;
 }
 
+.controller__vol-lg-screen {
+  display: none;
+}
+
 /* scrollbar */
 .controller__chapter-list::-webkit-scrollbar {
   display: none;
@@ -284,6 +288,13 @@
 
   .controller {
     width: 75%;
+  }
+}
+
+/* Md-Lg */
+@media (min-width: 850px) {
+  .controller__vol-lg-screen {
+    display: flex;
   }
 }
 
