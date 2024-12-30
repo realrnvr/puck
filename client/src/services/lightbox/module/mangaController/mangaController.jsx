@@ -4,7 +4,7 @@ import { useDisableEvent } from "../../../../hooks/useDisableEvent";
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
 
-export function MangaController({
+function MangaController({
   children,
   MangaControllerProps: { chapter, nav, isLoading },
 }) {
@@ -226,3 +226,5 @@ MangaController.propTypes = {
   children: PropTypes.node.isRequired,
   MangaControllerProps: PropTypes.object,
 };
+
+export default MangaController;

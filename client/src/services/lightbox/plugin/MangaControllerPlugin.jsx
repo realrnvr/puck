@@ -1,5 +1,5 @@
 import { createModule } from "yet-another-react-lightbox";
-import { MangaController } from "../module/mangaController/mangaController";
+import MangaController from "../module/mangaController/mangaController";
 
 const MangaControllerModule = createModule(
   "MangaControllerModule",
