@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { client } from "../config/redisClient.js";
+import { redisClient } from "../config/redisClient.js";
 import { BadRequestError } from "../errors/badRequestError.js";
-import { notFound } from "../middleware/notFound.js";
+import { NotFoundError } from "../errors/notFoundError.js";
 import axios from "axios";
 
 const BASE_URL = "https://api.mangadex.org";
@@ -13,12 +13,27 @@ export const statics = async (req, res) => {
   }
 
   try {
-    const response = await axios.get(`${BASE_URL}/manga/${mangaId}`);
-    if (!response.data) {
-      throw new notFound("Manga is not there");
+    const cacheKey = `statics:${mangaId}`;
+
+    const cachedStatics = await redisClient.get(cacheKey);
+    if (cachedStatics) {
+      console.log("statics cache value");
+      return res
+        .status(StatusCodes.OK)
+        .json({ data: JSON.parse(cachedStatics) });
     }
 
-    res.status(StatusCodes.OK).json({ data: response.data.data });
+    const response = await axios.get(`${BASE_URL}/manga/${mangaId}`);
+
+    const staticsData = response.data.data;
+    if (!staticsData) {
+      throw new NotFoundError("Manga is not there");
+    }
+
+    console.log("statics response value");
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(staticsData));
+
+    res.status(StatusCodes.OK).json({ data: staticsData });
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
@@ -32,12 +47,28 @@ export const author = async (req, res) => {
   }
 
   try {
+    const cacheKey = `author:${authorId}`;
+
+    const cachedAuthor = await redisClient.get(cacheKey);
+    if (cachedAuthor) {
+      console.log("author cache value");
+      return res
+        .status(StatusCodes.OK)
+        .json({ data: JSON.parse(cachedAuthor) });
+    }
+
     const response = await axios.get(`${BASE_URL}/author/${authorId}`);
 
-    if (!response.data) {
-      throw new notFound("author is not there");
+    const authorData = response.data.data;
+    if (!authorData) {
+      throw new NotFoundError("Author data is not available");
     }
-    res.status(StatusCodes.OK).json({ data: response.data.data });
+
+    console.log("author response value");
+
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(authorData));
+
+    res.status(StatusCodes.OK).json({ data: authorData });
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
@@ -51,15 +82,17 @@ export const cover = async (req, res) => {
   }
 
   try {
-    const cachedCover = await client.get(`cover:${mangaId}`);
+    const cacheKey = `cover:${mangaId}`;
+
+    const cachedCover = await redisClient.get(cacheKey);
     if (cachedCover) {
-      console.log("cache hit");
+      console.log("cover cache hit");
       return res
         .status(StatusCodes.OK)
         .json({ coverImgUrl: JSON.parse(cachedCover) });
     }
 
-    console.log("cache miss");
+    console.log("cover cache miss");
     const response = await axios.get(`${BASE_URL}/cover`, {
       params: {
         manga: [mangaId],
@@ -72,9 +105,13 @@ export const cover = async (req, res) => {
     });
 
     const fileName = response.data.data[0]?.attributes?.fileName;
+    if (!fileName) {
+      throw new NotFoundError("Cover not found");
+    }
+
     const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg`;
 
-    await client.setEx(`cover:${mangaId}`, 3600, JSON.stringify(coverImgUrl));
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(coverImgUrl));
 
     res.status(StatusCodes.OK).json({ coverImgUrl });
   } catch (error) {
@@ -85,7 +122,7 @@ export const cover = async (req, res) => {
 export const chapters = async (req, res) => {
   const {
     params: { mangaId },
-    query: { limit, offset },
+    query: { limit = 10, offset = 0 },
   } = req;
 
   if (!mangaId) {
@@ -93,12 +130,20 @@ export const chapters = async (req, res) => {
   }
 
   try {
+    const cacheKey = `chapters:${mangaId}:${limit}:${offset}`;
+
+    const cachedChapters = await redisClient.get(cacheKey);
+    if (cachedChapters) {
+      console.log("chapter cache value");
+      return res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
+    }
+
     const response = await axios.get(`${BASE_URL}/chapter`, {
       params: {
         manga: mangaId,
         translatedLanguage: ["en"],
-        limit: limit || 10,
-        offset: offset || 0,
+        limit: limit,
+        offset: offset,
         order: {
           volume: "asc",
           chapter: "asc",
@@ -108,6 +153,11 @@ export const chapters = async (req, res) => {
         includeFuturePublishAt: 0,
       },
     });
+
+    if (!response.data.data) {
+      throw new NotFoundError("not found");
+    }
+
     const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
 
     const chapterBound = {
@@ -115,14 +165,19 @@ export const chapters = async (req, res) => {
       last: data[data.length - 1].attributes.chapter,
     };
 
-    res.status(StatusCodes.OK).json({
+    const responseObj = {
       data: data,
       currLen: data.length,
       chapterBound,
       dexLimit,
       dexOffset,
       total,
-    });
+    };
+
+    console.log("chapters response value");
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(responseObj));
+
+    res.status(StatusCodes.OK).json(responseObj);
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
@@ -131,24 +186,43 @@ export const chapters = async (req, res) => {
 export const chapterImage = async (req, res) => {
   const {
     params: { chapterId },
-    query: { quality },
+    query: { quality = "data" },
   } = req;
 
+  if (!chapterId) {
+    throw new BadRequestError("please provide a valid chapter id");
+  }
+
   try {
+    const cacheKey = `chapterImage:${chapterId}:${quality}`;
+
+    const cachedChapterImage = await redisClient.get(cacheKey);
+    if (cachedChapterImage) {
+      console.log("chapterImage cache value");
+      return res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
+    }
+
     const response = await axios.get(`${BASE_URL}/at-home/server/${chapterId}`);
+    if (!response.data.baseUrl) {
+      throw new NotFoundError("not found");
+    }
+
     const {
       baseUrl,
       chapter: { hash, data: original, dataSaver },
     } = response.data;
-    const data = quality === "data-saver" ? dataSaver : original;
 
+    const data = quality === "data-saver" ? dataSaver : original;
     const mangaImgs = data.map((val) => {
       return { src: `${baseUrl}/${quality}/${hash}/${val}` };
     });
 
-    res
-      .status(StatusCodes.OK)
-      .json({ data: mangaImgs, length: mangaImgs.length });
+    const responseObj = { data: mangaImgs, length: mangaImgs.length };
+
+    console.log("chapterImage response value");
+    await redisClient.setEx(cacheKey, 600, JSON.stringify(responseObj));
+
+    res.status(StatusCodes.OK).json(responseObj);
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
