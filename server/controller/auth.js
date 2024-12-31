@@ -4,11 +4,11 @@ import { UnauthorziedError } from "../errors/unauthorizedError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
 import { mailer } from "../services/mailer.js";
-import { OAuth2Client } from "google-auth-library";
 import { revokeGoogleAccess } from "../utils/revokeGoogleAccess.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
+import { oauthClient } from "../config/oauthClient.js";
 import axios from "axios";
 
 export const signup = async (req, res) => {
@@ -347,13 +347,6 @@ export const resendPasswordVerification = async (req, res) => {
     .json({ user, message: "New verification link sent to your email." });
 };
 
-// Google OAUTH
-const client = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: process.env.GOOGLE_REDIRECT_URI,
-});
-
 export const google = async (req, res) => {
   const { code } = req.body;
   if (!code) {
@@ -361,14 +354,14 @@ export const google = async (req, res) => {
   }
   console.log("Received code:", code);
 
-  const { tokens } = await client.getToken(code);
+  const { tokens } = await oauthClient.getToken(code);
   if (!tokens) {
     throw new UnauthorziedError("Google code is invalid");
   }
 
   const { refresh_token, access_token, id_token } = tokens;
 
-  const ticket = await client.verifyIdToken({
+  const ticket = await oauthClient.verifyIdToken({
     idToken: id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
