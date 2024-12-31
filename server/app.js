@@ -15,6 +15,7 @@ import { auth } from "./middleware/authorization.js";
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
 import cookieParser from "cookie-parser";
+import { client } from "./config/redisClient.js";
 
 app.use(
   cors({
@@ -42,6 +43,17 @@ app.get("/api/v1/users", auth, (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
 });
 
+app.get("/api/v1/test", async (req, res) => {
+  try {
+    await client.set("foo", "bar");
+    const result = await client.get("foo");
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
 // ... //
 
 app.use(notFound);
@@ -52,6 +64,7 @@ const PORT = process.env.PORT || 3000;
 (async () => {
   try {
     await connectDB(process.env.MONGO_URI);
+    await client.connect();
     app.listen(PORT, () => {
       console.log(`Server listening to PORT ${PORT} ...`);
     });

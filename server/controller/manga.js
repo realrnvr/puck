@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { client } from "../config/redisClient.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { notFound } from "../middleware/notFound.js";
 import axios from "axios";
@@ -50,10 +51,19 @@ export const cover = async (req, res) => {
   }
 
   try {
+    const cachedCover = await client.get(`cover:${mangaId}`);
+    if (cachedCover) {
+      console.log("cache hit");
+      return res
+        .status(StatusCodes.OK)
+        .json({ coverImgUrl: JSON.parse(cachedCover) });
+    }
+
+    console.log("cache miss");
     const response = await axios.get(`${BASE_URL}/cover`, {
       params: {
         manga: [mangaId],
-        limit: 2,
+        limit: 1,
         order: {
           volume: "desc",
         },
@@ -62,8 +72,11 @@ export const cover = async (req, res) => {
     });
 
     const fileName = response.data.data[0]?.attributes?.fileName;
-    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
-    res.status(200).json({ coverImgUrl });
+    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg`;
+
+    await client.setEx(`cover:${mangaId}`, 3600, JSON.stringify(coverImgUrl));
+
+    res.status(StatusCodes.OK).json({ coverImgUrl });
   } catch (error) {
     throw new BadRequestError("something went wrong");
   }
