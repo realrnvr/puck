@@ -5,7 +5,6 @@ const ChapterList = ({ chapters, setChapterCount, chapterCount }) => {
   return (
     <ul className="controller__chapter-list">
       {chapters?.map((val, idx) => {
-        console.log("mapping");
         return (
           <li
             key={idx}
