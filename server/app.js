@@ -11,11 +11,11 @@ import { notFound } from "./middleware/notFound.js";
 import { StatusCodes } from "http-status-codes";
 import { connectDB } from "./connectDB/connectDB.js";
 import { auth } from "./middleware/authorization.js";
+import { redisClient } from "./config/redisClient.js";
 
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
 import cookieParser from "cookie-parser";
-import { client } from "./config/redisClient.js";
 
 app.use(
   cors({
@@ -64,7 +64,7 @@ const PORT = process.env.PORT || 3000;
 (async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    await client.connect();
+    await redisClient.connect();
     app.listen(PORT, () => {
       console.log(`Server listening to PORT ${PORT} ...`);
     });
