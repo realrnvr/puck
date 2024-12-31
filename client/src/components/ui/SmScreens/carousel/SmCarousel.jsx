@@ -27,7 +27,7 @@ const SmCarousel = ({ data, reversed }) => {
             <img
               ref={(el) => (lzImgsRef.current[index] = el)}
               className="sm-carousel__img | loading sm-lazy"
-              src="https://fakeimg.pl/150"
+              src="/1px.webp"
               data-src={val.imgSrc}
               alt={val.imgAlt}
             />
