@@ -1,119 +1,9 @@
 import "./mangas.css";
-import { useQueries } from "@tanstack/react-query";
-import { axiosInstance } from "../../services/api/axios";
+import MangaContainer from "../../components/mangaContainer";
 import { Link } from "react-router-dom";
-import MangaCard from "../../components/ui/mangaCard/MangaCard";
+import { caseManga } from "../../utils/MangaData";
 
 const Mangas = () => {
-  const caseManga = [
-    {
-      img: "berserk-manga-cover",
-      title: "Berserk",
-      mangaId: "801513ba-a712-498c-8f57-cae55b38cc92",
-      authorId: "5863578d-4e4f-4b57-b64d-1dd45a893cb0",
-    },
-    {
-      img: "duranki",
-      title: "duranki",
-      mangaId: "336bce99-e6a0-4590-a5be-06f276e2006d",
-      authorId: "5863578d-4e4f-4b57-b64d-1dd45a893cb0",
-    },
-    {
-      img: "dragon ball",
-      title: "Dragon Ball",
-      mangaId: "40bc649f-7b49-4645-859e-6cd94136e722",
-      authorId: "f5d4fca1-d573-4383-af08-c06b0794ba4e",
-    },
-    {
-      img: "vinland-saga-manga-cover",
-      title: "Vinland Saga",
-      mangaId: "5d1fc77e-706a-4fc5-bea8-486c9be0145d",
-      authorId: "f5d4fca1-d573-4383-af08-c06b0794ba4e",
-    },
-    {
-      img: "monster-manga-cover",
-      title: "Monster",
-      mangaId: "d9e30523-9d65-469e-92a2-302995770950",
-      authorId: "508631f5-09de-4ae1-87ed-4b6179254ca1",
-    },
-    {
-      img: "naruto",
-      title: "Naruto",
-      mangaId: "6b1eb93e-473a-4ab3-9922-1a66d2a29a4a",
-      authorId: "7f718dfa-e5be-45ea-a5cb-0fcd3ed52d5f",
-    },
-    {
-      img: "death note",
-      title: "Death Note",
-      mangaId: "75ee72ab-c6bf-4b87-badd-de839156934c",
-      authorId: "0669bf79-ca27-4f50-9b48-741fb235137f",
-    },
-    {
-      img: "hunter x hunter",
-      title: "Hunter X Hunter",
-      mangaId: "db692d58-4b13-4174-ae8c-30c515c0689c",
-      authorId: "00345ac8-e515-458d-a11d-56cfd1cb253b",
-    },
-    {
-      img: "bleach",
-      title: "Bleach",
-      mangaId: "239d6260-d71f-43b0-afff-074e3619e3de",
-      authorId: "246984d8-340d-4544-871b-c962da4bb28b",
-    },
-    {
-      img: "pm",
-      title: "Psycho Mob",
-      mangaId: "736a2bf0-f875-4b52-a7b4-e8c40505b68a",
-      authorId: "16b98239-6452-4859-b6df-fdb1c7f12b52",
-    },
-    {
-      img: "jjk",
-      title: "jujutsu kaisen",
-      mangaId: "c52b2ce3-7f95-469c-96b0-479524fb7a1a",
-      authorId: "94be1d47-54d0-42c6-b42b-439605e3793f",
-    },
-    {
-      img: "csm",
-      title: "Chainsaw Man",
-      mangaId: "a77742b1-befd-49a4-bff5-1ad4e6b0ef7b",
-      authorId: "f85a5b93-3c87-4c61-9032-07ceacbb9e64",
-    },
-    {
-      img: "Sailor Moon",
-      title: "Sailor Moon",
-      mangaId: "e39944f5-15bf-4464-9556-a4e9b3945571",
-      authorId: "40e66f64-a9d2-4fb3-9dc4-9e9a68e9eb9c",
-    },
-    {
-      img: "Hajime no Ippo",
-      title: "Hajime no Ippo",
-      mangaId: "f7888782-0727-49b0-95ec-a3530c70f83b",
-      authorId: "c6c60b88-c03c-46f1-b66d-bda51287d578",
-    },
-    {
-      img: "Slam Dunk",
-      title: "Slam Dunk",
-      mangaId: "319df2e2-e6a6-4e3a-a31c-68539c140a84",
-      authorId: "0b59098f-13c0-41cb-a110-9cbcec72dc0c",
-    },
-    {
-      img: "Nichijou",
-      title: "Nichijou",
-      mangaId: "f5bf9cc3-d003-47fe-bc76-99774b2a0562",
-      authorId: "43243d69-13cf-454a-9e37-6d0d3adb22c8",
-    },
-  ];
-
-  const mangaQueries = useQueries({
-    queries: caseManga.map((val) => {
-      const { mangaId } = val;
-      return {
-        queryKey: ["manga-cover", { mangaId }],
-        queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
-      };
-    }),
-  });
-
   return (
     <section className="mangas | container">
       <Link to="/read">
@@ -137,19 +27,7 @@ const Mangas = () => {
       </Link>
       <div className="mangas__content">
         <h2 className="mangas__title">Read The Hit Manga Series!</h2>
-        <div className="mangas__container">
-          {caseManga?.map((val, idx) => {
-            return (
-              <MangaCard
-                key={idx}
-                img={mangaQueries[idx]?.data?.data?.coverImgUrl}
-                title={val.title}
-                mangaId={val.mangaId}
-                authorId={val.authorId}
-              />
-            );
-          })}
-        </div>
+        <MangaContainer caseManga={caseManga} />
       </div>
     </section>
   );
