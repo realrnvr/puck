@@ -1,6 +1,6 @@
 import "./manga-controller.css";
-import { useState } from "react";
 import { useDisableEvent } from "../../../../hooks/useDisableEvent";
+import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
 import ChapterList from "../../components/ChapterList";
@@ -10,13 +10,13 @@ function MangaController({
   children,
   MangaControllerProps: { chapter, nav, isLoading },
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
+
+  useDisableEvent(isOpen);
 
   const handleToggleButton = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
-
-  useDisableEvent(isOpen);
 
   return (
     <>
