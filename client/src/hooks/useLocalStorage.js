@@ -1,28 +1,29 @@
-export const useLocalStorage = (key) => {
-  const set = (value) => {
-    try {
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+import { useCallback, useState } from "react";
 
-  const get = () => {
+export const useLocalStorage = (key, initialValue) => {
+  const [value, setValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : undefined;
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.log(error);
+      console.log("Error accessing localStorage", error);
+      return initialValue;
     }
-  };
+  });
 
-  const remove = () => {
-    try {
-      window.localStorage.removeItem(key);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const setValueWrapper = useCallback(
+    (updatedValue) => {
+      try {
+        const valueToStore =
+          updatedValue instanceof Function ? updatedValue(value) : updatedValue;
+        setValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.log("Error adding into localstorage", error);
+      }
+    },
+    [key, value]
+  );
 
-  return { set, get, remove };
+  return [value, setValueWrapper];
 };
