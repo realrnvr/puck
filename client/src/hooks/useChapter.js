@@ -1,14 +1,18 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../services/api/axios";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
 const CHUNK_SIZE = 100;
 
 export const useChapter = (mangaId) => {
   // state
-  const [chapterCount, setChapterCount] = useState(0);
-  const [quality, setQuality] = useState("data");
-  const [offset, setOffset] = useState(0);
+  const [chapterCount, setChapterCount] = useLocalStorage(
+    `chapterCount:${mangaId}`,
+    0
+  );
+  const [quality, setQuality] = useLocalStorage(`quality:${mangaId}`, "data");
+  const [offset, setOffset] = useLocalStorage(`offset:${mangaId}`, 0);
 
   // chapter data
   const { data: chapter } = useQuery({
@@ -65,20 +69,23 @@ export const useChapter = (mangaId) => {
       setOffset((prev) => prev - CHUNK_SIZE);
       setChapterCount(0);
     }
-  }, [hasPrevChunk]);
+  }, [hasPrevChunk, setOffset, setChapterCount]);
 
   const handleNextChunk = useCallback(() => {
     if (hasNextChunk) {
       setOffset((prev) => prev + CHUNK_SIZE);
       setChapterCount(0);
     }
-  }, [hasNextChunk]);
+  }, [hasNextChunk, setOffset, setChapterCount]);
 
   // handle quality
-  const handleQualityChange = (e) => {
-    const { value } = e.target;
-    setQuality(value);
-  };
+  const handleQualityChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      setQuality(value);
+    },
+    [setQuality]
+  );
 
   return {
     chapter: {
