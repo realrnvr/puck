@@ -24,6 +24,7 @@ import Layout from "../../pages/layout/Layout";
 import Manga from "../../pages/manga/Manga";
 import Mangas from "../../pages/mangas/Mangas";
 import Viewer from "../../pages/viewer/Viewer";
+import Favourite from "../../pages/favourite/Favourite";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/mangas",
         element: <Mangas />,
+      },
+      {
+        path: "/favourite",
+        element: <Favourite />,
       },
     ],
   },
