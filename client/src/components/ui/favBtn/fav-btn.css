@@ -1,0 +1,18 @@
+.fav-btn {
+  border: 0;
+  outline: 0;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.3rem;
+  /* border-radius: 7px; */
+  cursor: pointer;
+}
+
+.fav-btn__svg {
+  width: 25px;
+  aspect-ratio: 1 / 1;
+  fill: #fff;
+}
+
+.fav-btn__disable {
+  cursor: not-allowed;
+}
