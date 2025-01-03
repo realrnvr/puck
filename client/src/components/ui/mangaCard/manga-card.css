@@ -1,3 +1,14 @@
+.manga-card__container {
+  position: relative;
+}
+
+.manga-card__btn {
+  position: absolute;
+  z-index: 99;
+  top: 0px;
+  left: 0px;
+}
+
 .manga-card__wrapper {
   width: fit-content;
 }
