@@ -1,10 +1,20 @@
 import mongoose from "mongoose";
-import { FavouriteMangaSchema } from "../schemas/FavouriteMangaSchema.js";
 
 const ClientSchema = new mongoose.Schema(
   {
-    favouriteManga: [FavouriteMangaSchema],
-    client: {
+    mangaTitle: {
+      type: String,
+    },
+    mangaId: {
+      type: String,
+    },
+    authorId: {
+      type: String,
+    },
+    coverUrl: {
+      type: String,
+    },
+    createdBy: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: [true, "Please provide a valid user"],

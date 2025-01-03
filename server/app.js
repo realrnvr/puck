@@ -15,7 +15,9 @@ import { redisClient } from "./config/redisClient.js";
 
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
+import clientRouter from "./router/client.js";
 import cookieParser from "cookie-parser";
+import Client from "./models/client.js";
 
 app.use(
   cors({
@@ -36,10 +38,12 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/manga", mangaRouter);
+app.use("/api/v1/client", auth, clientRouter);
 
 // test route
 
-app.get("/api/v1/users", auth, (req, res) => {
+app.get("/api/v1/users", auth, async (req, res) => {
+  const client = await Client.findOne({ createdBy: req.user.userId });
   res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
 });
 
