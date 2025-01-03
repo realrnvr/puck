@@ -4,7 +4,9 @@ export const useLocalStorage = (key, initialValue) => {
   const [value, setValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item !== null && item !== "undefined"
+        ? JSON.parse(item)
+        : initialValue;
     } catch (error) {
       console.log("Error accessing localStorage", error);
       return initialValue;
@@ -19,7 +21,7 @@ export const useLocalStorage = (key, initialValue) => {
         setValue(valueToStore);
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       } catch (error) {
-        console.log("Error adding into localstorage", error);
+        console.log("Error adding into localStorage", error);
       }
     },
     [key, value]
