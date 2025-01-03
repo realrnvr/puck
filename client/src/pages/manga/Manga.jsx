@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import Tag from "../../components/ui/tag/Tag";
+import FavBtn from "../../components/ui/favBtn/FavBtn";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
@@ -37,6 +38,13 @@ const Manga = () => {
     ?.replaceAll("\n\n", "<br/><br/>")
     ?.replaceAll("***", "<strong>")
     ?.replaceAll("---", "<hr>");
+
+  const mangaData = {
+    mangaTitle: statics?.data?.data?.attributes?.title?.en,
+    mangaId: mangaId,
+    authorId: authorId,
+    coverUrl: coverImg?.data?.coverImgUrl,
+  };
 
   return (
     <article className="manga" style={{ marginTop: "3rem" }}>
@@ -91,22 +99,9 @@ const Manga = () => {
             </p>
           </div>
           <div className="manga__btn-container">
-            <button className="manga__btn signup__btn">
-              <svg
-                className="manga__icon"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                ></path>
-              </svg>
-            </button>
+            {/* button */}
+            <FavBtn mangaId={mangaId} mangaData={mangaData} />
+            {/* button */}
             <Link
               to={`/viewer/${mangaId}`}
               className="manga__btn manga__btn--flex-3 signup__btn"
