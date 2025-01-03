@@ -74,7 +74,7 @@ UserSchema.methods.verifyPassword = async function (stringPassword) {
 
 UserSchema.methods.createAccessToken = function () {
   const accessToken = jwt.sign(
-    { username: this.username, email: this.email },
+    { username: this.username, userId: this._id, email: this.email },
     process.env.JWT_ACCESS_SECRET,
     { expiresIn: process.env.JWT_ACCESS_TIMESPAN }
   );
@@ -83,7 +83,7 @@ UserSchema.methods.createAccessToken = function () {
 
 UserSchema.methods.createRefreshToken = function () {
   const refreshToken = jwt.sign(
-    { username: this.username, email: this.email },
+    { username: this.username, userId: this._id, email: this.email },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) }
   );
