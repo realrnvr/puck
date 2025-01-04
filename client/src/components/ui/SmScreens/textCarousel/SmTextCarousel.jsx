@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
 import "./sm-text-carousel.css";
+import PropTypes from "prop-types";
 
 const SmTextCarousel = ({ reversed }) => {
   const textData = ["WATCH ANIME", "READ MANGA", "WATCH ANIME", "READ ANIME"];
