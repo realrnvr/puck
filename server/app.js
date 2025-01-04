@@ -6,6 +6,7 @@ const app = express();
 
 import cors from "cors";
 import "express-async-errors";
+import nodeCron from "node-cron";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
 import { notFound } from "./middleware/notFound.js";
 import { StatusCodes } from "http-status-codes";
@@ -16,8 +17,10 @@ import { redisClient } from "./config/redisClient.js";
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
 import clientRouter from "./router/client.js";
+import newsletterRouter from "./router/newsletter.js";
 import cookieParser from "cookie-parser";
 import Client from "./models/client.js";
+import { sendNewsLetter } from "./services/newsletter.js";
 
 app.use(
   cors({
@@ -39,6 +42,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/manga", mangaRouter);
 app.use("/api/v1/client", auth, clientRouter);
+app.use("/api/v1/newsletter", newsletterRouter);
 
 // test route
 
@@ -47,15 +51,10 @@ app.get("/api/v1/users", auth, async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
 });
 
-app.get("/api/v1/test", async (req, res) => {
-  try {
-    await client.set("foo", "bar");
-    const result = await client.get("foo");
-    res.status(200).json({ result });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error });
-  }
+// every Saturday at midnight
+nodeCron.schedule("0 0 * * 6", async () => {
+  console.log("Sending weekly newsletter...");
+  sendNewsLetter();
 });
 
 // ... //
