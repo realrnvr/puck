@@ -2,7 +2,7 @@ import "./input.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const Input = ({ register, errors, watch, formData }) => {
+const Input = ({ register, errors, watch, formData, className }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordToggle = () => {
@@ -18,13 +18,17 @@ const Input = ({ register, errors, watch, formData }) => {
 
   return (
     <div className="input">
-      <label className="input__label" htmlFor={name}>
-        {label}
-      </label>
+      {label ? (
+        <label className="input__label" htmlFor={name}>
+          {label}
+        </label>
+      ) : null}
       <div className="input__wrapper">
         <input
           {...register(name)}
-          className={`input__field ${toggle && "input__field--password"}`}
+          className={`input__field ${className} ${
+            toggle && "input__field--password"
+          }`}
           type={toggle ? (showPassword ? "text" : "password") : type}
           id={name}
           style={{
@@ -113,6 +117,7 @@ Input.propTypes = {
   errors: PropTypes.object.isRequired,
   watch: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
+  className: PropTypes.string,
 };
 
 export default Input;
