@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import "./favourite.css";
+import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../services/api/axios";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 
@@ -8,8 +8,6 @@ const Favourite = () => {
     queryKey: ["all-favourites"],
     queryFn: () => axiosInstance.get("/api/v1/client/all-favourites"),
   });
-
-  console.log(data);
 
   return (
     <article className="mangas__container | container">
