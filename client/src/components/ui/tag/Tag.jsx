@@ -1,4 +1,5 @@
 import "./tag.css";
+import { memo } from "react";
 import PropTypes from "prop-types";
 
 const Tag = ({ tag, clr }) => {
@@ -14,4 +15,4 @@ Tag.propTypes = {
   clr: PropTypes.bool,
 };
 
-export default Tag;
+export default memo(Tag);
