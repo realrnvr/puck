@@ -1,4 +1,5 @@
 import "./text-carousel.css";
+import { memo } from "react";
 import PropTypes from "prop-types";
 
 const TextCarousel = ({ reversed, rotate }) => {
@@ -33,4 +34,4 @@ TextCarousel.propTypes = {
   rotate: PropTypes.bool,
 };
 
-export default TextCarousel;
+export default memo(TextCarousel);
