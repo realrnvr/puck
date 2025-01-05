@@ -1,7 +1,7 @@
-import { useQueries } from "@tanstack/react-query";
+// import { useQueries } from "@tanstack/react-query";
 import { memo } from "react";
-import { axiosInstance } from "../services/api/axios";
-import MangaCard from "./ui/mangaCard/MangaCard";
+// import { axiosInstance } from "../services/api/axios";
+// import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
 import MangaLazyCard from "./MangaLazyCard";
 
