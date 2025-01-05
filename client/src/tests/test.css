@@ -1,0 +1,33 @@
+.test {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.box {
+  width: 150px;
+  aspect-ratio: 1 / 1;
+  /* background-color: red; */
+  border: 1px solid red;
+  display: flex;
+  /* line-height: 1; */
+}
+
+.circle {
+  width: 150px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+.flex-1 {
+  flex: 1;
+  display: block;
+  line-height: 1;
+}
+
+.circle__fit {
+  height: 100%;
+  width: 100%;
+}
