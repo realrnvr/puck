@@ -7,6 +7,11 @@ import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
   queryCache: new QueryCache({
     onSuccess: (data) => {
       if (data?.data?.message) {
