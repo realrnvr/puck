@@ -3,39 +3,35 @@ import { memo } from "react";
 import { axiosInstance } from "../services/api/axios";
 import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
+import MangaLazyCard from "./MangaLazyCard";
 
 const MangaContainer = ({ caseManga }) => {
-  const mangaQueries = useQueries({
-    queries: caseManga.map((val) => {
-      return {
-        queryKey: ["manga-cover", { mangaId: val.mangaId }],
-        queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${val.mangaId}`),
-      };
-    }),
-  });
+  // const mangaQueries = useQueries({
+  //   queries: caseManga.map((val) => {
+  //     return {
+  //       queryKey: ["manga-cover", { mangaId: val.mangaId }],
+  //       queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${val.mangaId}`),
+  //     };
+  //   }),
+  // });
 
-  const isLoading = mangaQueries.some((query) => query.isLoading);
-
-  const mangaData = caseManga.map((val, idx) => {
-    return {
-      ...val,
-      img: mangaQueries[idx]?.data?.data?.coverImgUrl,
-    };
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // const mangaData = caseManga.map((val, idx) => {
+  //   const query = mangaQueries[idx];
+  //   return {
+  //     ...val,
+  //     img: query?.data?.data?.coverImgUrl,
+  //     isLoading: query.isLoading,
+  //   };
+  // });
 
   return (
     <div className="mangas__container">
-      {mangaData?.map((val, idx) => {
+      {caseManga?.map((val, idx) => {
         return (
-          <MangaCard
+          <MangaLazyCard
             key={idx}
-            img={val.img}
-            title={val.title}
             mangaId={val.mangaId}
+            title={val.title}
             authorId={val.authorId}
           />
         );
