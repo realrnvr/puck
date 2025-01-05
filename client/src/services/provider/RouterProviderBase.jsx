@@ -25,6 +25,7 @@ import Manga from "../../pages/manga/Manga";
 import Mangas from "../../pages/mangas/Mangas";
 import Viewer from "../../pages/viewer/Viewer";
 import Favourite from "../../pages/favourite/Favourite";
+import Test from "../../tests/Test";
 
 const router = createBrowserRouter([
   {
@@ -53,12 +54,14 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // test
   {
     path: "/viewer/:mangaId",
     element: <Viewer />,
   },
-  // ...
+  {
+    path: "/test",
+    element: <Test />,
+  },
   {
     path: "/account",
     element: (
