@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { memo } from "react";
 
-const ChapterList = ({ chapters, setChapterCount, chapterCount }) => {
+const ChapterList = ({ chapters, setChapter, chapterCount }) => {
   return (
     <ul className="controller__chapter-list">
       {chapters?.map((val, idx) => {
@@ -9,7 +9,7 @@ const ChapterList = ({ chapters, setChapterCount, chapterCount }) => {
           <li
             key={idx}
             className="controller__chapter-li"
-            onClick={() => setChapterCount(idx)}
+            onClick={() => setChapter(idx)}
           >
             <button
               className="controller__chapter-btn"
@@ -33,7 +33,7 @@ const ChapterList = ({ chapters, setChapterCount, chapterCount }) => {
 
 ChapterList.propTypes = {
   chapters: PropTypes.array,
-  setChapterCount: PropTypes.func,
+  setChapter: PropTypes.func,
   chapterCount: PropTypes.number,
 };
 
