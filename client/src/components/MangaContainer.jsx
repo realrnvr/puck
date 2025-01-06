@@ -1,42 +1,65 @@
-// import { useQueries } from "@tanstack/react-query";
+import { Fragment, useEffect } from "react";
 import { memo } from "react";
-// import { axiosInstance } from "../services/api/axios";
-// import MangaCard from "./ui/mangaCard/MangaCard";
+import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
-import MangaLazyCard from "./MangaLazyCard";
+import { axiosInstance } from "../services/api/axios";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
 
-const MangaContainer = ({ caseManga }) => {
-  // const mangaQueries = useQueries({
-  //   queries: caseManga.map((val) => {
-  //     return {
-  //       queryKey: ["manga-cover", { mangaId: val.mangaId }],
-  //       queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${val.mangaId}`),
-  //     };
-  //   }),
-  // });
+const LIMIT = 10;
 
-  // const mangaData = caseManga.map((val, idx) => {
-  //   const query = mangaQueries[idx];
-  //   return {
-  //     ...val,
-  //     img: query?.data?.data?.coverImgUrl,
-  //     isLoading: query.isLoading,
-  //   };
-  // });
+const MangaContainer = () => {
+  const fetchMangas = async ({ pageParam = "" }) => {
+    const { data } = await axiosInstance.get(
+      `/api/v1/manga/mangas?limit=${LIMIT}&cursor=${pageParam}`
+    );
+    return data;
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["mangas"],
+      queryFn: fetchMangas,
+      initialPageParam: "",
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    });
+
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage]);
 
   return (
-    <div className="mangas__container">
-      {caseManga?.map((val, idx) => {
-        return (
-          <MangaLazyCard
-            key={idx}
-            mangaId={val.mangaId}
-            title={val.title}
-            authorId={val.authorId}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className="mangas__container">
+        {data?.pages?.map((page, idx) => {
+          return (
+            <Fragment key={idx}>
+              {page?.manga?.map((val) => {
+                return (
+                  <MangaCard
+                    key={val?.mangaId}
+                    title={val?.title}
+                    mangaId={val?.mangaId}
+                    authorId={val?.authorId}
+                  />
+                );
+              })}
+            </Fragment>
+          );
+        })}
+        {isFetching && !isFetchingNextPage && (
+          <MangaCardSkeleton count={LIMIT} />
+        )}
+      </div>
+      <div ref={ref} style={{ height: "1px", width: "1px" }}></div>
+    </>
   );
 };
 
