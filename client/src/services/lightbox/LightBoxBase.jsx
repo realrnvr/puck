@@ -9,9 +9,12 @@ import { animation, carousel, plugins, zoom } from "./config";
 import Lightbox from "yet-another-react-lightbox";
 // other
 import PropTypes from "prop-types";
+import { memo } from "react";
 
 const LightBoxBase = ({ mangaId }) => {
   const { slides, isLoading, chapter, nav } = useChapter(mangaId);
+
+  console.log("rendered");
 
   return (
     <Lightbox
@@ -20,11 +23,7 @@ const LightBoxBase = ({ mangaId }) => {
       zoom={zoom}
       carousel={carousel}
       animation={animation}
-      MangaControllerProps={{
-        chapter,
-        nav,
-        isLoading,
-      }}
+      MangaControllerProps={{ chapter, nav, isLoading }}
     />
   );
 };
@@ -33,4 +32,4 @@ LightBoxBase.propTypes = {
   mangaId: PropTypes.string.isRequired,
 };
 
-export default LightBoxBase;
+export default memo(LightBoxBase);
