@@ -7,19 +7,18 @@ const CHUNK_SIZE = 100;
 
 export const useChapter = (mangaId) => {
   // state
-  const [chapterCount, setChapterCount] = useLocalStorage(
-    `chapterCount:${mangaId}`,
-    0
-  );
-  const [quality, setQuality] = useLocalStorage(`quality:${mangaId}`, "data");
-  const [offset, setOffset] = useLocalStorage(`offset:${mangaId}`, 0);
+  const [state, setState] = useLocalStorage(`mangaState:${mangaId}`, {
+    chapterCount: 0,
+    quality: "data",
+    offset: 0,
+  });
 
   // chapter data
   const { data: chapter } = useQuery({
-    queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset }],
+    queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset: state.offset }],
     queryFn: () =>
       axiosInstance.get(
-        `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${offset}`
+        `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${state.offset}`
       ),
     placeholderData: keepPreviousData,
   });
@@ -32,21 +31,23 @@ export const useChapter = (mangaId) => {
     last: chapter?.data?.chapterBound?.last,
   };
 
-  const chapterId = chapters && chapters[chapterCount]?.id;
-  const currChapter = chapters && chapters[chapterCount]?.attributes?.chapter;
-  const currVolume = chapters && chapters[chapterCount]?.attributes?.volume;
+  const chapterId = chapters && chapters[state.chapterCount]?.id;
+  const currChapter =
+    chapters && chapters[state.chapterCount]?.attributes?.chapter;
+  const currVolume =
+    chapters && chapters[state.chapterCount]?.attributes?.volume;
 
   // chapter limit
-  const hasChapterPrev = chapterCount === 0;
-  const hasChapterNext = chapterCount === chapters?.length - 1;
+  const hasChapterPrev = state.chapterCount === 0;
+  const hasChapterNext = state.chapterCount === chapters?.length - 1;
 
   // chapter images
   const { data, isLoading } = useQuery({
-    queryKey: ["chapter-image", { chapterId, quality }],
+    queryKey: ["chapter-image", { chapterId, quality: state.quality }],
     queryFn: () =>
       axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`, {
         params: {
-          quality: quality,
+          quality: state.quality,
         },
       }),
     placeholderData: keepPreviousData,
@@ -54,44 +55,89 @@ export const useChapter = (mangaId) => {
   });
 
   // image array
-  const slides = isLoading ? [] : data?.data?.data;
+  const slides = data?.data?.data || [];
 
   // memo chunk val
-  const hasPrevChunk = useMemo(() => offset > 0, [offset]);
+  const hasPrevChunk = useMemo(() => state.offset > 0, [state.offset]);
   const hasNextChunk = useMemo(
-    () => offset + CHUNK_SIZE < totalChapters,
-    [offset, totalChapters]
+    () => state.offset + CHUNK_SIZE < totalChapters,
+    [state.offset, totalChapters]
   );
 
   // handle chunk
   const handlePrevChunk = useCallback(() => {
-    if (hasPrevChunk) {
-      setOffset((prev) => prev - CHUNK_SIZE);
-      setChapterCount(0);
+    if (state.offset > 0) {
+      setState((prev) => ({
+        ...prev,
+        offset: prev.offset - CHUNK_SIZE,
+        chapterCount: 0,
+      }));
     }
-  }, [hasPrevChunk, setOffset, setChapterCount]);
+  }, [state.offset, setState]);
 
   const handleNextChunk = useCallback(() => {
-    if (hasNextChunk) {
-      setOffset((prev) => prev + CHUNK_SIZE);
-      setChapterCount(0);
+    if (state.offset + CHUNK_SIZE < totalChapters) {
+      setState((prev) => ({
+        ...prev,
+        offset: prev.offset + CHUNK_SIZE,
+        chapterCount: 0,
+      }));
     }
-  }, [hasNextChunk, setOffset, setChapterCount]);
+  }, [state.offset, totalChapters, setState]);
 
   // handle quality
   const handleQualityChange = useCallback(
     (e) => {
       const { value } = e.target;
-      setQuality(value);
+      setState((prevState) => {
+        return {
+          ...prevState,
+          quality: value,
+        };
+      });
     },
-    [setQuality]
+    [setState]
+  );
+
+  const prevChapter = useCallback(
+    () =>
+      setState((prevState) => {
+        return {
+          ...prevState,
+          chapterCount: prevState.chapterCount - 1,
+        };
+      }),
+    [setState]
+  );
+
+  const nextChapter = useCallback(
+    () =>
+      setState((prevState) => {
+        return {
+          ...prevState,
+          chapterCount: prevState.chapterCount + 1,
+        };
+      }),
+    [setState]
+  );
+
+  const setChapter = useCallback(
+    (idx) =>
+      setState((prevState) => {
+        return {
+          ...prevState,
+          chapterCount: idx,
+        };
+      }),
+    [setState]
   );
 
   return {
     chapter: {
-      chapterCount,
-      setChapterCount,
-      quality,
+      state,
+      prevChapter,
+      nextChapter,
+      setChapter,
       handleQualityChange,
       currChapter,
       currVolume,
