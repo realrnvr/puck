@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
+import { useDisableEvent } from "../../../hooks/useDisableEvent";
 
 const Button = ({ isOpen, onClick, className }) => {
+  useDisableEvent(isOpen);
+
   return (
     <button type="button" className={className} onClick={onClick}>
       {isOpen ? (
