@@ -1,5 +1,4 @@
 import "./manga-controller.css";
-import { useDisableEvent } from "../../../../hooks/useDisableEvent";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
@@ -11,8 +10,6 @@ function MangaController({
   MangaControllerProps: { chapter, nav, isLoading },
 }) {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
-
-  useDisableEvent(isOpen);
 
   const handleToggleButton = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
@@ -36,11 +33,7 @@ function MangaController({
                   chapter.hasChapterPrev ? "disabled__btn" : null
                 }`}
                 disabled={chapter.hasChapterPrev}
-                onClick={() =>
-                  chapter.setChapterCount(
-                    (prevChapterCount) => prevChapterCount - 1
-                  )
-                }
+                onClick={chapter.prevChapter}
               >
                 <svg
                   className="controller__nav-svg"
@@ -66,11 +59,7 @@ function MangaController({
                   chapter.hasChapterNext ? "disabled__btn" : null
                 }`}
                 disabled={chapter.hasChapterNext}
-                onClick={() =>
-                  chapter.setChapterCount(
-                    (prevChapterCount) => prevChapterCount + 1
-                  )
-                }
+                onClick={chapter.nextChapter}
               >
                 <svg
                   className="controller__nav-svg"
@@ -100,8 +89,8 @@ function MangaController({
           </div>
           <ChapterList
             chapters={chapter.chapters}
-            setChapterCount={chapter.setChapterCount}
-            chapterCount={chapter.chapterCount}
+            setChapter={chapter.setChapter}
+            chapterCount={chapter.state.chapterCount}
           />
         </div>
         <div className="controller__container-left">
@@ -111,7 +100,7 @@ function MangaController({
               className="controller__select"
               name="quality"
               id="quality"
-              value={chapter.quality}
+              value={chapter.state.quality}
               onChange={chapter.handleQualityChange}
             >
               <option className="controller__option" value="data">
