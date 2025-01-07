@@ -6,6 +6,7 @@ const app = express();
 
 import cors from "cors";
 import "express-async-errors";
+// import "./populate.js";
 import nodeCron from "node-cron";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
 import { notFound } from "./middleware/notFound.js";
