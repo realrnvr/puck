@@ -26,14 +26,14 @@ const MangaContainer = () => {
     });
 
   const { ref, inView } = useInView({
-    triggerOnce: true,
+    threshold: 0.1,
   });
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage, hasNextPage]);
+  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <>
