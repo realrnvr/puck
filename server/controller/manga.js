@@ -40,35 +40,60 @@ export const mangas = async (req, res) => {
 
 export const statics = async (req, res) => {
   const { mangaId } = req.params;
+
   if (!mangaId) {
     throw new BadRequestError("Please provide params");
   }
 
-  try {
-    const cacheKey = `statics:${mangaId}`;
+  const cacheKey = `statics:${mangaId}`;
 
-    const cachedStatics = await redisClient.get(cacheKey);
-    if (cachedStatics) {
-      console.log("statics cache value");
-      return res
-        .status(StatusCodes.OK)
-        .json({ data: JSON.parse(cachedStatics) });
-    }
-
-    const response = await axios.get(`${BASE_URL}/manga/${mangaId}`);
-
-    const staticsData = response.data.data;
-    if (!staticsData) {
-      throw new NotFoundError("Manga is not there");
-    }
-
-    console.log("statics response value");
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify(staticsData));
-
-    res.status(StatusCodes.OK).json({ data: staticsData });
-  } catch (error) {
-    throw new BadRequestError("something went wrong");
+  const cachedStatics = await redisClient.get(cacheKey);
+  if (cachedStatics) {
+    console.log("statics cache value");
+    return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
   }
+
+  const response = await axios.get(`${BASE_URL}/manga/${mangaId}`);
+  const staticsData = response.data.data;
+
+  if (!staticsData) {
+    throw new NotFoundError("Manga not found");
+  }
+
+  const altTitles = staticsData.attributes.altTitles.map(
+    (altTitle) => Object.values(altTitle)[0]
+  );
+
+  const jaTitleObj = staticsData.attributes.altTitles.find((altTitle) =>
+    altTitle.hasOwnProperty("ja")
+  );
+  const jaTitle = jaTitleObj ? jaTitleObj.ja : "No Japanese title available";
+
+  const safeData = {
+    ...staticsData,
+    attributes: {
+      ...staticsData.attributes,
+      title: staticsData.attributes.title || { en: "No Title Available" },
+      altTitles: altTitles,
+      publicationDemographic:
+        staticsData.attributes.publicationDemographic || "Unknown",
+      contentRating: staticsData.attributes.contentRating || "Not Rated",
+      tags: staticsData.attributes.tags || [],
+      year: staticsData.attributes.year || "Unknown",
+      status: staticsData.attributes.status || "Unknown",
+      description: {
+        en:
+          staticsData.attributes.description?.en || "No description available",
+      },
+      links: staticsData.attributes.links || {},
+      altTitleJa: jaTitle,
+    },
+  };
+
+  console.log("statics response value");
+  await redisClient.setEx(cacheKey, 3600, JSON.stringify(safeData));
+
+  res.status(StatusCodes.OK).json({ data: safeData });
 };
 
 export const author = async (req, res) => {
