@@ -16,3 +16,4 @@ Currently, two official plugins are available:
 5. General UI changes. (x)
 6. Some Refactoring. (x)
 7. Sync validation as same as zod. (x)
+8. image pop up
