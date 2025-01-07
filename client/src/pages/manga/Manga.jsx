@@ -2,25 +2,26 @@ import "./manga.css";
 import { axiosInstance } from "../../services/api/axios";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { useState } from "react";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
+import Skeleton from "react-loading-skeleton";
+import AuthorDropDown from "../../components/AuthorDropDown";
+import { useMemo } from "react";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
-  const [drop, setDrop] = useState(false);
 
-  const { data: statics } = useQuery({
+  const { data: statics, isPending: isStatics } = useQuery({
     queryKey: ["static", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/statics/${mangaId}`),
   });
 
-  const { data: authorData } = useQuery({
+  const { data: authorData, isPending: isAuthor } = useQuery({
     queryKey: ["author", { authorId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/author/${authorId}`),
   });
 
-  const { data: coverImg } = useQuery({
+  const { data: coverImg, isPending: isCover } = useQuery({
     queryKey: ["coverImg", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
   });
@@ -39,19 +40,27 @@ const Manga = () => {
     ?.replaceAll("***", "<strong>")
     ?.replaceAll("---", "<hr>");
 
-  const mangaData = {
-    mangaTitle: statics?.data?.data?.attributes?.title?.en,
-    mangaId: mangaId,
-    authorId: authorId,
-    coverUrl: coverImg?.data?.coverImgUrl,
-  };
+  const mangaData = useMemo(
+    () => ({
+      mangaTitle: statics?.data?.data?.attributes?.title?.en,
+      mangaId: mangaId,
+      authorId: authorId,
+      coverUrl: coverImg?.data?.coverImgUrl,
+    }),
+    [
+      statics?.data?.data?.attributes?.title?.en,
+      mangaId,
+      authorId,
+      coverImg?.data?.coverImgUrl,
+    ]
+  );
 
   return (
     <article className="manga" style={{ marginTop: "3rem" }}>
       <div className="manga__bg">
         <img
           className="manga__bg-img"
-          src={coverImg?.data?.coverImgUrl}
+          src={coverImg?.data?.coverImgUrl || "/t-1px.webp"}
           alt=""
         />
       </div>
@@ -60,19 +69,56 @@ const Manga = () => {
           <div className="manga__cover-wrapper">
             <img
               className="manga__cover-img"
-              src={coverImg?.data?.coverImgUrl}
+              src={coverImg?.data?.coverImgUrl || "/t-1px.webp"}
               alt=""
             />
+            {isCover ? (
+              <div className="manga__skeleton">
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  height={"100%"}
+                  width={"100%"}
+                />
+              </div>
+            ) : null}
           </div>
-          <div>
+          <div className="manga__div">
             <h2 className="manga__title">
               {statics?.data?.data?.attributes?.title?.en}
+              {isStatics ? (
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  height={"100%"}
+                  width={"130px"}
+                />
+              ) : null}
             </h2>
             <p className="manga__author" style={{ marginBottom: "1rem" }}>
-              {statics?.data?.data?.attributes?.altTitles[4]?.ja}
+              {statics?.data?.data?.attributes?.altTitleJa}
+              {isStatics ? (
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  height={"100%"}
+                  width={"130px"}
+                />
+              ) : null}
             </p>
             <p className="manga__author" style={{ marginBottom: "1rem" }}>
-              Created by {authorData?.data?.data?.attributes?.name}
+              {isAuthor ? (
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  height={"100%"}
+                  width={"100%"}
+                />
+              ) : (
+                <span>
+                  Created by {authorData?.data?.data?.attributes?.name}
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -80,28 +126,53 @@ const Manga = () => {
       <div className="manga__content">
         <div className="manga__content-wrapper | container">
           <div className="manga__tags">
-            <Tag
-              clr={true}
-              tag={statics?.data?.data?.attributes?.publicationDemographic}
-            />
-            <Tag
-              clr={true}
-              tag={statics?.data?.data?.attributes?.contentRating}
-            />
-            {statics?.data?.data?.attributes?.tags.map((val, idx) => {
-              return <Tag key={idx} tag={val?.attributes?.name?.en} />;
-            })}
+            {isStatics ? (
+              Array.from({ length: 20 }, (_, idx) => {
+                return (
+                  <Skeleton
+                    key={idx}
+                    baseColor="#202020"
+                    highlightColor="#444"
+                    height={"100%"}
+                    width={"100px"}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <Tag
+                  clr={true}
+                  tag={statics?.data?.data?.attributes?.publicationDemographic}
+                />
+                <Tag
+                  clr={true}
+                  tag={statics?.data?.data?.attributes?.contentRating}
+                />
+                {statics?.data?.data?.attributes?.tags.map((val, idx) => {
+                  return <Tag key={idx} tag={val?.attributes?.name?.en} />;
+                })}
+              </>
+            )}
           </div>
           <div>
             <p className="manga__para">
-              Publication: {statics?.data?.data?.attributes?.year},{" "}
-              {statics?.data?.data?.attributes?.status}
+              {isStatics ? (
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  height={"100%"}
+                  width={"150px"}
+                />
+              ) : (
+                <span>
+                  Publication: {statics?.data?.data?.attributes?.year},{" "}
+                  {statics?.data?.data?.attributes?.status}
+                </span>
+              )}
             </p>
           </div>
           <div className="manga__btn-container">
-            {/* button */}
             <FavBtn mangaId={mangaId} mangaData={mangaData} />
-            {/* button */}
             <Link
               to={`/viewer/${mangaId}`}
               className="manga__btn manga__btn--flex-3 signup__btn"
@@ -109,82 +180,98 @@ const Manga = () => {
               Read
             </Link>
           </div>
-          <div>
-            <p
-              className="manga__description"
-              dangerouslySetInnerHTML={{ __html: process }}
-            ></p>
+          <div className="manga__description-container">
+            {isStatics ? (
+              <Skeleton
+                baseColor="#202020"
+                highlightColor="#444"
+                height={"300px"}
+                width={"100%"}
+              />
+            ) : (
+              <p
+                className="manga__description"
+                dangerouslySetInnerHTML={{ __html: process }}
+              ></p>
+            )}
           </div>
           <div className="manga__author-container">
             <p className="manga__sec-title">Author</p>
-            <div className="manga__drop-down">
-              <p className="manga__author manga__author-tag">
-                {authorData?.data?.data?.attributes?.name}
-              </p>
-              <button
-                className="manga__btn manga__btn--flex-none"
-                onClick={() => setDrop((prevDrop) => !prevDrop)}
-              >
-                {drop ? (
-                  <img className="manga__icon" src="/arrow-up.svg" alt="" />
-                ) : (
-                  <img className="manga__icon" src="/arrow-down.svg" alt="" />
-                )}
-              </button>
-            </div>
-            {drop && (
-              <p
-                className="manga__description"
-                dangerouslySetInnerHTML={{ __html: aprocess }}
-              ></p>
-            )}
+            <AuthorDropDown
+              name={authorData?.data?.data?.attributes?.name}
+              process={aprocess}
+              isAuthor={isAuthor}
+            />
           </div>
           <div className="manga__read-or-buy">
             <p className="manga__sec-title">Read or Buy</p>
             <div className="manga__links">
-              <a
-                className="manga__link"
-                href={statics?.data?.data?.attributes?.links?.raw}
-              >
-                Official Raw
-              </a>
-              <a
-                className="manga__link"
-                href={statics?.data?.data?.attributes?.links?.engtl}
-              >
-                Official English
-              </a>
-              <a
-                className="manga__link"
-                href={statics?.data?.data?.attributes?.links?.amz}
-              >
-                Amazon
-              </a>
-              <a
-                className="manga__link"
-                href={statics?.data?.data?.attributes?.links?.ebj}
-              >
-                eBookJapan
-              </a>
-              <a
-                className="manga__link"
-                href={statics?.data?.data?.attributes?.links?.cdj}
-              >
-                CDJapan
-              </a>
+              {isStatics ? (
+                Array.from({ length: 5 }, (_, idx) => {
+                  return (
+                    <Skeleton
+                      key={idx}
+                      baseColor="#202020"
+                      highlightColor="#444"
+                      width={"100px"}
+                    />
+                  );
+                })
+              ) : (
+                <>
+                  <a
+                    className="manga__link"
+                    href={statics?.data?.data?.attributes?.links?.raw}
+                  >
+                    Official Raw
+                  </a>
+                  <a
+                    className="manga__link"
+                    href={statics?.data?.data?.attributes?.links?.engtl}
+                  >
+                    Official English
+                  </a>
+                  <a
+                    className="manga__link"
+                    href={statics?.data?.data?.attributes?.links?.amz}
+                  >
+                    Amazon
+                  </a>
+                  <a
+                    className="manga__link"
+                    href={statics?.data?.data?.attributes?.links?.ebj}
+                  >
+                    eBookJapan
+                  </a>
+                  <a
+                    className="manga__link"
+                    href={statics?.data?.data?.attributes?.links?.cdj}
+                  >
+                    CDJapan
+                  </a>
+                </>
+              )}
             </div>
           </div>
           <div className="manga__title-container">
             <p className="manga__sec-title">Alternative Titles</p>
             <div className="manga__lang-container">
-              {statics?.data?.data?.attributes?.altTitles?.map((val, idx) => {
-                const lang = Object.values(val)[0];
-                return (
-                  <p className="manga__lang" key={idx}>
-                    {lang}
-                  </p>
-                );
-              })}
+              {isStatics ? (
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  width={"100%"}
+                  count={15}
+                />
+              ) : (
+                statics?.data?.data?.attributes?.altTitles?.map((val, idx) => {
+                  return (
+                    <p className="manga__lang" key={idx}>
+                      {val}
+                    </p>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
