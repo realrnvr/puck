@@ -6,6 +6,7 @@ import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
 import Skeleton from "react-loading-skeleton";
 import AuthorDropDown from "../../components/AuthorDropDown";
+import MangaFsImg from "../../components/MangaFsImg";
 import { useMemo } from "react";
 
 const Manga = () => {
@@ -66,12 +67,16 @@ const Manga = () => {
       </div>
       <div className="manga__wrapper | container">
         <div className="manga__top-container">
-          <div className="manga__cover-wrapper">
+          <div
+            className="manga__cover-wrapper"
+            style={{ pointerEvents: isCover ? "none" : "auto" }}
+          >
             <img
               className="manga__cover-img"
               src={coverImg?.data?.coverImgUrl || "/t-1px.webp"}
               alt=""
             />
+            <MangaFsImg coverImgUrl={coverImg?.data?.coverImgUrl} />
             {isCover ? (
               <div className="manga__skeleton">
                 <Skeleton
