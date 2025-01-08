@@ -97,6 +97,14 @@
   gap: 0.7rem;
 }
 
+.controller__counter-skeleton {
+  width: 120px;
+}
+
+/* .controller__tc-skeleton-sm {
+  width: 50px;
+} */
+
 .controller__curr-chapter {
   display: none;
 }
@@ -310,6 +318,15 @@
 
   .controller__lg-screen {
     display: flex;
+  }
+
+  .controller__tc-skeleton {
+    width: 200px;
+    height: 22px;
+  }
+
+  .controller__tc-skeleton-sm-wrapper {
+    display: none;
   }
 }
 
