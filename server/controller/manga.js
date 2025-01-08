@@ -284,3 +284,38 @@ export const chapterImage = async (req, res) => {
     throw new BadRequestError("something went wrong");
   }
 };
+
+export const search = async (req, res) => {
+  const { query } = req.query;
+
+  const manga = await Manga.aggregate([
+    {
+      $search: {
+        index: "default",
+        autocomplete: {
+          query: query,
+          path: "title",
+          tokenOrder: "sequential",
+          fuzzy: {
+            maxEdits: 1,
+            prefixLength: 2,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        img: 1,
+        mangaId: 1,
+        authorId: 1,
+        highlights: { $meta: "searchHighlights" },
+        score: { $meta: "searchScore" },
+      },
+    },
+    { $sort: { score: -1 } },
+    { $limit: 10 },
+  ]);
+
+  res.status(200).json({ manga });
+};
