@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
 import ChapterList from "../../components/ChapterList";
 import Button from "../../components/Button";
+import Skeleton from "react-loading-skeleton";
 
 function MangaController({
   children,
-  MangaControllerProps: { chapter, nav, isLoading },
+  MangaControllerProps: { chapter, nav, isChapterImage, isChapter },
 }) {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
 
@@ -30,9 +31,9 @@ function MangaController({
               <button
                 type="button"
                 className={`controller__nav-btn ${
-                  chapter.hasChapterPrev ? "disabled__btn" : null
+                  chapter.hasChapterPrev || isChapter ? "disabled__btn" : null
                 }`}
-                disabled={chapter.hasChapterPrev}
+                disabled={chapter.hasChapterPrev || isChapter}
                 onClick={chapter.prevChapter}
               >
                 <svg
@@ -44,21 +45,31 @@ function MangaController({
                 </svg>
               </button>
               <div className="controller__counter controller__curr-chapter">
-                <span>Chapter - {chapter.currChapter}</span>
-                <svg
-                  className="controller__list-svg"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
-                </svg>
+                {isChapter ? (
+                  <Skeleton
+                    baseColor="#202020"
+                    highlightColor="#444"
+                    className="controller__counter-skeleton"
+                  />
+                ) : (
+                  <>
+                    <span>Chapter - {chapter.currChapter}</span>
+                    <svg
+                      className="controller__list-svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
+                    </svg>
+                  </>
+                )}
               </div>
               <button
                 type="button"
                 className={`controller__nav-btn ${
-                  chapter.hasChapterNext ? "disabled__btn" : null
+                  chapter.hasChapterNext || isChapter ? "disabled__btn" : null
                 }`}
-                disabled={chapter.hasChapterNext}
+                disabled={chapter.hasChapterNext || isChapter}
                 onClick={chapter.nextChapter}
               >
                 <svg
@@ -70,51 +81,90 @@ function MangaController({
                 </svg>
               </button>
               <div className="controller__counter controller__vol-lg-screen">
-                <span>Volume - {chapter.currVolume}</span>
-                <svg
-                  className="controller__list-svg"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
-                </svg>
+                {isChapter ? (
+                  <Skeleton
+                    baseColor="#202020"
+                    highlightColor="#444"
+                    className="controller__counter-skeleton"
+                  />
+                ) : (
+                  <>
+                    <span>Volume - {chapter.currVolume}</span>
+                    <svg
+                      className="controller__list-svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4.5a.5.5 0 00-1 0v5.793L5.354 8.146a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V4.5z" />
+                    </svg>
+                  </>
+                )}
               </div>
             </div>
-            <p className="controller__chap-count controller__lg-screen">
-              Total chapters - {chapter.totalChapters}
-            </p>
-            <p className="controller__chap-count controller__sm-screen">
-              {chapter.totalChapters}
-            </p>
+            {isChapter ? (
+              <Skeleton
+                baseColor="#202020"
+                highlightColor="#444"
+                className="controller__tc-skeleton"
+              />
+            ) : (
+              <p className="controller__chap-count controller__lg-screen">
+                Total chapters - {chapter.totalChapters}
+              </p>
+            )}
+            {isChapter ? (
+              <div className="controller__tc-skeleton-sm-wrapper">
+                <Skeleton
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  width={"50px"}
+                  height={"20px"}
+                />
+              </div>
+            ) : (
+              <p className="controller__chap-count controller__sm-screen">
+                {chapter.totalChapters}
+              </p>
+            )}
           </div>
           <ChapterList
             chapters={chapter.chapters}
             setChapter={chapter.setChapter}
             chapterCount={chapter.state.chapterCount}
+            isChapter={isChapter}
           />
         </div>
         <div className="controller__container-left">
           <div className="controller__drop-down">
             <label htmlFor="quality">Quality</label>
-            <select
-              className="controller__select"
-              name="quality"
-              id="quality"
-              value={chapter.state.quality}
-              onChange={chapter.handleQualityChange}
-            >
-              <option className="controller__option" value="data">
-                Original
-              </option>
-              <option className="controller__option" value="data-saver">
-                Data saver
-              </option>
-            </select>
+            {isChapterImage || isChapter ? (
+              <Skeleton
+                baseColor="#202020"
+                highlightColor="#444"
+                height={"100%"}
+                width={"9ch"}
+              />
+            ) : (
+              <select
+                className="controller__select"
+                name="quality"
+                id="quality"
+                value={chapter.state.quality}
+                onChange={chapter.handleQualityChange}
+              >
+                <option className="controller__option" value="data">
+                  Original
+                </option>
+                <option className="controller__option" value="data-saver">
+                  Data saver
+                </option>
+              </select>
+            )}
           </div>
           <div className="controller__pag">
             <button
               className={`controller__pag-btn ${
-                !nav.hasPrevChunk ? "disabled__btn" : null
+                !nav.hasPrevChunk || isChapter ? "disabled__btn" : null
               }`}
               type="button"
               onClick={nav.handlePrevChunk}
@@ -128,16 +178,25 @@ function MangaController({
                 <path d="M3 19h18a1.002 1.002 0 00.823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 003 19zm9-12.243L19.092 17H4.908L12 6.757z" />
               </svg>
             </button>
-            <p className="controller__pag-counter">
-              {chapter.chapterBound.first} - {chapter.chapterBound.last}
-            </p>
+            {isChapter ? (
+              <Skeleton
+                baseColor="#202020"
+                highlightColor="#444"
+                height={"20px"}
+                width={"80px"}
+              />
+            ) : (
+              <p className="controller__pag-counter">
+                {chapter.chapterBound.first} - {chapter.chapterBound.last}
+              </p>
+            )}
             <button
               className={`controller__pag-btn ${
-                !nav.hasNextChunk ? "disabled__btn" : null
+                !nav.hasNextChunk || isChapter ? "disabled__btn" : null
               }`}
               type="button"
               onClick={nav.handleNextChunk}
-              disabled={!nav.hasNextChunk}
+              disabled={!nav.hasNextChunk || isChapter}
             >
               <svg
                 className="controller__pg-svg"
@@ -155,7 +214,9 @@ function MangaController({
           />
         </div>
       </div>
-      <div className="controller__loader">{isLoading ? <Loader /> : null}</div>
+      <div className="controller__loader">
+        {isChapterImage ? <Loader /> : null}
+      </div>
     </>
   );
 }
