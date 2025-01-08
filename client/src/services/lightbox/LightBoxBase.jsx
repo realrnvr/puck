@@ -12,9 +12,8 @@ import PropTypes from "prop-types";
 import { memo } from "react";
 
 const LightBoxBase = ({ mangaId }) => {
-  const { slides, isLoading, chapter, nav } = useChapter(mangaId);
-
-  console.log("rendered");
+  const { slides, isChapterImage, isChapter, chapter, nav } =
+    useChapter(mangaId);
 
   return (
     <Lightbox
@@ -23,7 +22,7 @@ const LightBoxBase = ({ mangaId }) => {
       zoom={zoom}
       carousel={carousel}
       animation={animation}
-      MangaControllerProps={{ chapter, nav, isLoading }}
+      MangaControllerProps={{ chapter, nav, isChapterImage, isChapter }}
     />
   );
 };
