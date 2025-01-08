@@ -14,7 +14,7 @@ export const useChapter = (mangaId) => {
   });
 
   // chapter data
-  const { data: chapter } = useQuery({
+  const { data: chapter, isLoading: isChapter } = useQuery({
     queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset: state.offset }],
     queryFn: () =>
       axiosInstance.get(
@@ -42,7 +42,7 @@ export const useChapter = (mangaId) => {
   const hasChapterNext = state.chapterCount === chapters?.length - 1;
 
   // chapter images
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: isChapterImage } = useQuery({
     queryKey: ["chapter-image", { chapterId, quality: state.quality }],
     queryFn: () =>
       axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`, {
@@ -154,6 +154,7 @@ export const useChapter = (mangaId) => {
       handleNextChunk,
     },
     slides,
-    isLoading,
+    isChapterImage,
+    isChapter,
   };
 };
