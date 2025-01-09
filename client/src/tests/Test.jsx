@@ -1,8 +1,7 @@
 import "./test.css";
-import Search from "../components/Search";
 
 const Test = () => {
-  return <Search />;
+  return <></>;
 };
 
 export default Test;
