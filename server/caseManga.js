@@ -186,12 +186,6 @@ export const caseManga = [
     authorId: "4ebfc316-f7d5-4cc8-8150-d96adba3ab35",
   },
   {
-    img: "Akira",
-    title: "Akira",
-    mangaId: "175cf215-2122-4656-9fac-37ac092438af",
-    authorId: "42390fa3-1ff3-4ca9-871a-2133783a28a1",
-  },
-  {
     img: "Fruits Basket",
     title: "Fruits Basket",
     mangaId: "e9b1d4ba-b8fb-48c3-8d52-5a4eefd05980",
