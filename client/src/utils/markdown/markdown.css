@@ -1,0 +1,14 @@
+.markdown > * + * {
+  margin-top: 1rem;
+}
+
+.markdown p,
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-200);
+}
