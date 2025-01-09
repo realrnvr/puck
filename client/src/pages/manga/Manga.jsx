@@ -2,12 +2,13 @@ import "./manga.css";
 import { axiosInstance } from "../../services/api/axios";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
+import { useMemo } from "react";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
 import Skeleton from "react-loading-skeleton";
 import AuthorDropDown from "../../components/AuthorDropDown";
 import MangaFsImg from "../../components/MangaFsImg";
-import { useMemo } from "react";
+import Markdown from "../../utils/markdown/Markdown";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
@@ -27,19 +28,8 @@ const Manga = () => {
     queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
   });
 
-  const guts = statics?.data?.data?.attributes?.description?.en;
-  const process = guts
-    ?.replaceAll(" \n  \n", "<br/><br/>")
-    ?.replaceAll("\n\n", "<br/><br/>")
-    ?.replaceAll("***", "<strong>")
-    ?.replaceAll("---", "<hr>");
-
+  const manga = statics?.data?.data?.attributes?.description?.en;
   const author = authorData?.data?.data?.attributes?.biography?.en;
-  const aprocess = author
-    ?.replaceAll(" \n  \n", "<br/><br/>")
-    ?.replaceAll("\n\n", "<br/><br/>")
-    ?.replaceAll("***", "<strong>")
-    ?.replaceAll("---", "<hr>");
 
   const mangaData = useMemo(
     () => ({
@@ -195,17 +185,14 @@ const Manga = () => {
                 width={"100%"}
               />
             ) : (
-              <p
-                className="manga__description"
-                dangerouslySetInnerHTML={{ __html: process }}
-              ></p>
+              <Markdown content={manga} />
             )}
           </div>
           <div className="manga__author-container">
             <p className="manga__sec-title">Author</p>
             <AuthorDropDown
               name={authorData?.data?.data?.attributes?.name}
-              process={aprocess}
+              author={author}
               isAuthor={isAuthor}
             />
           </div>
