@@ -250,3 +250,7 @@
 .manga__btn-fav {
   border-radius: 7px;
 }
+
+.manga__static-content {
+  margin-top: 1rem;
+}
