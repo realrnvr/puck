@@ -177,11 +177,12 @@ const Manga = () => {
             </p>
           </div>
           <div className="manga__btn-container">
-            <FavBtn mangaId={mangaId} mangaData={mangaData} />
-            <Link
-              to={`/viewer/${mangaId}`}
-              className="manga__btn manga__btn--flex-3 signup__btn"
-            >
+            <FavBtn
+              mangaId={mangaId}
+              mangaData={mangaData}
+              className="manga__btn-fav"
+            />
+            <Link to={`/viewer/${mangaId}`} className="manga__btn signup__btn">
               Read
             </Link>
           </div>
