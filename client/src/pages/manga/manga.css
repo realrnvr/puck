@@ -84,9 +84,7 @@
   color: #000;
   flex: 1;
 }
-.manga__btn--flex-3 {
-  flex: 3;
-}
+
 .manga__btn--flex-none {
   flex: none;
 }
@@ -245,6 +243,10 @@
   background-color: rgba(25, 24, 21, 0.8);
 }
 
-.manga__fs-img {
-  /* width: 40%; */
+.no-scroll-fs {
+  overflow: hidden;
+}
+
+.manga__btn-fav {
+  border-radius: 7px;
 }
