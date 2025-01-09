@@ -1,9 +1,10 @@
 import axios from "axios";
-import { mangaIds } from "./mangaIds.js";
+import { caseManga } from "../caseManga.js";
 
 export const fetchMangaUpdates = async () => {
   try {
-    const randomMangaId = mangaIds[Math.floor(Math.random() * mangaIds.length)];
+    const randomMangaId =
+      caseManga[Math.floor(Math.random() * mangaIds.length)];
 
     const response = await axios.get(
       `https://api.mangadex.org/manga/${randomMangaId.mangaId}/feed`,
