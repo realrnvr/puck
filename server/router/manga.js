@@ -5,6 +5,7 @@ import {
   chapters,
   cover,
   mangas,
+  randomManga,
   search,
   statics,
 } from "../controller/manga.js";
@@ -18,5 +19,6 @@ router.route("/cover/:mangaId").get(cover);
 router.route("/chapters/:mangaId").get(chapters);
 router.route("/chapter-image/:chapterId").get(chapterImage);
 router.route("/search").get(search);
+router.route("/random-manga").get(randomManga);
 
 export default router;

@@ -319,3 +319,21 @@ export const search = async (req, res) => {
 
   res.status(200).json({ manga });
 };
+
+export const randomManga = async (req, res) => {
+  const { limit = 6 } = req.query;
+
+  const manga = await Manga.aggregate([
+    { $sample: { size: parseInt(limit) } },
+    {
+      $project: {
+        title: 1,
+        img: 1,
+        mangaId: 1,
+        authorId: 1,
+      },
+    },
+  ]);
+
+  res.status(StatusCodes.OK).json({ manga, length: manga.length });
+};
