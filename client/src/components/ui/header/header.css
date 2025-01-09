@@ -219,6 +219,44 @@
   margin-top: 1rem;
 }
 
+/* ********** */
+
+.header__form-wrapper {
+  margin-top: 2rem;
+  width: fit-content;
+  position: relative;
+}
+
+.header__form {
+  margin-top: 0;
+}
+
+.search__result {
+  /* margin-top: 0.3rem; */
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: absolute;
+  width: 100%;
+  top: 40px;
+  z-index: 999;
+}
+
+.search__item {
+  font-weight: var(--fw-200);
+  font-size: var(--fs-xs);
+  text-transform: capitalize;
+  background-color: var(--bg-clr-secondary);
+  padding: 0.3rem;
+  cursor: pointer;
+}
+
+.search__Skeleton:not(:first-child) {
+  margin-top: 0.3rem;
+}
+
+/* ********** */
+
 /* Xs */
 /* @media (min-width: 475px) {} */
 
