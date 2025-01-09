@@ -1,8 +1,9 @@
 import { memo, useState } from "react";
 import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
+import Markdown from "../utils/markdown/Markdown";
 
-const AuthorDropDown = ({ process, name, isAuthor }) => {
+const AuthorDropDown = ({ author, name, isAuthor }) => {
   const [drop, setDrop] = useState(false);
 
   return (
@@ -18,7 +19,7 @@ const AuthorDropDown = ({ process, name, isAuthor }) => {
         ) : (
           <p className="manga__author manga__author-tag">{name}</p>
         )}
-        {process ? (
+        {author ? (
           <button
             className="manga__btn manga__btn--flex-none"
             onClick={() => setDrop((prevDrop) => !prevDrop)}
@@ -32,17 +33,14 @@ const AuthorDropDown = ({ process, name, isAuthor }) => {
         ) : null}
       </div>
       {drop ? (
-        <p
-          className="manga__description manga__description--mt"
-          dangerouslySetInnerHTML={{ __html: process }}
-        ></p>
+        <Markdown content={author} className="manga__static-content" />
       ) : null}
     </>
   );
 };
 
 AuthorDropDown.propTypes = {
-  process: PropTypes.string,
+  author: PropTypes.string,
   name: PropTypes.string,
   isAuthor: PropTypes.bool,
 };
