@@ -4,12 +4,16 @@ import jwt from "jsonwebtoken";
 export const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new ForbiddenError("Forbidden");
+    console.log("authHeader error", authHeader);
+    // throw new ForbiddenError("Forbidden");
+    return res.json({ statusCode: 403, message: "Forbidden" });
   }
 
   const accessToken = authHeader.split(" ")[1];
   if (!accessToken) {
-    throw new ForbiddenError("Forbidden");
+    console.log("accessToken error");
+    // throw new ForbiddenError("Forbidden");
+    return res.json({ statusCode: 403, message: "Forbidden" });
   }
 
   try {
@@ -21,6 +25,8 @@ export const auth = (req, res, next) => {
     };
     next();
   } catch (error) {
-    throw new ForbiddenError("Forbidden");
+    console.log("payload error");
+    // throw new ForbiddenError("Forbidden");
+    return res.json({ statusCode: 403, message: "Forbidden" });
   }
 };
