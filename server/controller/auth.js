@@ -1,5 +1,6 @@
 import User from "../models/auth.js";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 import { UnauthorziedError } from "../errors/unauthorizedError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
@@ -9,7 +10,6 @@ import { NotFoundError } from "../errors/notFoundError.js";
 import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
 import { oauthClient } from "../config/oauthClient.js";
-import axios from "axios";
 
 export const signup = async (req, res) => {
   const { email } = req.body;
@@ -349,9 +349,11 @@ export const resendPasswordVerification = async (req, res) => {
 
 export const google = async (req, res) => {
   const { code } = req.body;
+
   if (!code) {
-    throw new UnauthorziedError("Please provide google auth code!");
+    throw new UnauthorziedError("Please provide Google auth code!");
   }
+
   console.log("Received code:", code);
 
   const { tokens } = await oauthClient.getToken(code);
@@ -359,19 +361,21 @@ export const google = async (req, res) => {
     throw new UnauthorziedError("Google code is invalid");
   }
 
-  const { refresh_token, access_token, id_token } = tokens;
+  const { refresh_token, id_token } = tokens;
 
   const ticket = await oauthClient.verifyIdToken({
     idToken: id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
+
   if (!ticket) {
-    throw new NotFoundError("User credentails can not be used");
+    throw new NotFoundError("User credentials cannot be used");
   }
 
   const payload = ticket.getPayload();
+
   if (!payload) {
-    throw BadRequestError("User credentials can not be fetched");
+    throw new BadRequestError("User credentials cannot be fetched");
   }
 
   const email = payload.email;
@@ -379,7 +383,9 @@ export const google = async (req, res) => {
   const username = payload.name;
 
   let user = await User.findOne({ email });
+
   if (!user) {
+    // User does not exist, create a new user
     user = new User({
       email,
       username,
@@ -387,19 +393,30 @@ export const google = async (req, res) => {
       refreshToken: refresh_token,
       isVerified: true,
     });
+    await user.save();
   } else {
-    user.isVerified = true;
+    // User exists
+    if (!user.isVerified) {
+      user.isVerified = true;
+    }
+
+    // Update refresh token if not already stored
     if (!user.refreshToken && refresh_token) {
       user.refreshToken = refresh_token;
     }
+
+    // Save changes only if necessary
+    if (user.isModified()) {
+      await user.save();
+    }
   }
 
-  await user.save();
-
+  // Generate tokens
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
   setRefreshTokenCookie(res, refreshToken);
 
+  // Return the response
   res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
     accessToken,
