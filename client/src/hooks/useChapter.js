@@ -27,8 +27,8 @@ export const useChapter = (mangaId) => {
   const chapters = chapter?.data?.data;
   const totalChapters = chapter?.data?.total;
   const chapterBound = {
-    first: chapter?.data?.chapterBound?.first,
-    last: chapter?.data?.chapterBound?.last,
+    first: chapter?.data?.chapterBound?.first || "-",
+    last: chapter?.data?.chapterBound?.last || "-",
   };
 
   const chapterId = chapters && chapters[state.chapterCount]?.id;
