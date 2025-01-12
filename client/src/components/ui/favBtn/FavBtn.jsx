@@ -45,7 +45,7 @@ const FavBtn = ({ mangaId, mangaData, className = "" }) => {
     },
     onSettled: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries(["isFavourite"]);
+      queryClient.invalidateQueries({ queryKey: ["isFavourite"] });
     },
   });
 
@@ -107,8 +107,8 @@ const FavBtn = ({ mangaId, mangaData, className = "" }) => {
     },
     onSettled: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries(["isFavourite"]);
-      queryClient.invalidateQueries(["all-favourites"]);
+      queryClient.invalidateQueries({ queryKey: ["isFavourite"] });
+      queryClient.invalidateQueries({ queryKey: ["all-favourites"] });
     },
   });
 
