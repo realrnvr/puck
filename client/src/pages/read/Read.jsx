@@ -16,9 +16,10 @@ const Read = () => {
 
   return (
     <>
+      <img src="/pattern.svg" className="read__bg-img" alt="" />
       <article className="read">
         <div className="read__top-wrapper | container">
-          <img src="/anime-bg.webp" className="read__img" alt="" />
+          <img src="/t-1px.webp" className="read__img" alt="" />
           <div className="read__intro-container">
             <h2 className="read__title">READ</h2>
             <p className="read__description">
