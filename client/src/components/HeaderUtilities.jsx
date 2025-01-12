@@ -1,0 +1,71 @@
+import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import Skeleton from "react-loading-skeleton";
+
+const HeaderUtilities = () => {
+  const { user, logout, isPending } = useAuth();
+
+  return (
+    <ul className="header__utilities">
+      {user ? (
+        <>
+          <li>
+            <Link to="/account" className="header__nav-btn">
+              {user?.username}
+            </Link>
+          </li>
+          <li>
+            <button
+              className="login__btn"
+              style={{ backgroundColor: "#631708ff" }}
+              onClick={logout}
+            >
+              Log out
+            </button>
+          </li>
+        </>
+      ) : isPending ? (
+        <Skeleton
+          baseColor="#202020"
+          highlightColor="#444"
+          height={"30px"}
+          width={"200px"}
+        />
+      ) : (
+        <>
+          <li>
+            <Link className="header__nav-btn" to="/login">
+              Log in
+            </Link>
+          </li>
+          <li>
+            <Link className="header__nav-btn" to="/signup">
+              Sign up
+            </Link>
+          </li>
+        </>
+      )}
+      <li>
+        <Link to="/favourite">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="header__icon header__icon--width"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+            />
+          </svg>
+          <span className="visually-hidden">My Favorites</span>
+        </Link>
+      </li>
+    </ul>
+  );
+};
+
+export default HeaderUtilities;
