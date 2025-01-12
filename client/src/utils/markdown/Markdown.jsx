@@ -1,5 +1,6 @@
 import "./markdown.css";
 import PropTypes from "prop-types";
+import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 
 const Markdown = ({ content, className = "" }) => {
@@ -15,4 +16,4 @@ Markdown.propTypes = {
   className: PropTypes.string,
 };
 
-export default Markdown;
+export default memo(Markdown);
