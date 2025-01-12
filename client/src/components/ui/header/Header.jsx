@@ -1,34 +1,13 @@
 import "./header.css";
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
-import { jwtDecode } from "jwt-decode";
-import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "../../../services/api/axios";
+import { Link } from "react-router-dom";
 import Search from "../../Search";
+import HeaderUtilities from "../../HeaderUtilities";
+import HeaderNavLink from "../../HeaderNavLink";
+import HeaderGoto from "../../HeaderGoto";
 
 const Header = () => {
   const [MobileMenu, setMobileMenu] = useState(false);
-  const auth = useAuth();
-
-  const { mutate: logoutMutate } = useMutation({
-    mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
-    onSuccess: () => {
-      auth.setToken(null);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  const user = () => {
-    if (auth.token) {
-      const payload = jwtDecode(auth.token);
-      return payload.username;
-    }
-
-    return null;
-  };
 
   const toggleMobileMenu = () => {
     setMobileMenu((prevMobileMenu) => {
@@ -44,36 +23,36 @@ const Header = () => {
             <li>
               <h2 className="header__title">Manga & Anime</h2>
             </li>
-            <li>
-              <Link className="header__sec-link" to="/berserk">
-                Berserk
-              </Link>
-            </li>
-            <li>
-              <Link className="header__sec-link" to="/monster">
-                Monster
-              </Link>
-            </li>
-            <li>
-              <Link className="header__sec-link" to="/bleach">
-                Bleach
-              </Link>
-            </li>
-            <li>
-              <Link className="header__sec-link" to="/naruto">
-                Naruto
-              </Link>
-            </li>
-            <li>
-              <Link className="header__sec-link" to="/vinland-saga">
-                Vinland Saga
-              </Link>
-            </li>
-            <li>
-              <Link className="header__sec-link" to="/death-note">
-                Death Note
-              </Link>
-            </li>
+            <HeaderGoto
+              title={"Berserk"}
+              mangaId={"801513ba-a712-498c-8f57-cae55b38cc92"}
+              authorId={"5863578d-4e4f-4b57-b64d-1dd45a893cb0"}
+            />
+            <HeaderGoto
+              title={"Monster"}
+              mangaId={"d9e30523-9d65-469e-92a2-302995770950"}
+              authorId={"508631f5-09de-4ae1-87ed-4b6179254ca1"}
+            />
+            <HeaderGoto
+              title={"Bleach"}
+              mangaId={"239d6260-d71f-43b0-afff-074e3619e3de"}
+              authorId={"246984d8-340d-4544-871b-c962da4bb28b"}
+            />
+            <HeaderGoto
+              title={"Naruto"}
+              mangaId={"6b1eb93e-473a-4ab3-9922-1a66d2a29a4a"}
+              authorId={"7f718dfa-e5be-45ea-a5cb-0fcd3ed52d5f"}
+            />
+            <HeaderGoto
+              title={"Vinland Saga"}
+              mangaId={"5d1fc77e-706a-4fc5-bea8-486c9be0145d"}
+              authorId={"f5d4fca1-d573-4383-af08-c06b0794ba4e"}
+            />
+            <HeaderGoto
+              title={"Death Note"}
+              mangaId={"75ee72ab-c6bf-4b87-badd-de839156934c"}
+              authorId={"0669bf79-ca27-4f50-9b48-741fb235137f"}
+            />
           </ul>
         </nav>
       </div>
@@ -85,7 +64,6 @@ const Header = () => {
             style={MobileMenu ? { opacity: 0 } : null}
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={2}
@@ -106,131 +84,15 @@ const Header = () => {
             aria-label="Primary Navigation"
           >
             <div className="header__actions">
-              <ul className="header__utilities">
-                {user() ? (
-                  <>
-                    <li>
-                      <span className="header__nav-btn">{user()}</span>
-                    </li>
-                    <li>
-                      <button
-                        className="login__btn"
-                        style={{ backgroundColor: "grey" }}
-                        onClick={logoutMutate}
-                      >
-                        Log out
-                      </button>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <Link className="header__nav-btn" to="/login">
-                        Log in
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="header__nav-btn" to="/signup">
-                        Sign up
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <Link to="#">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="header__icon header__icon--width"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                      />
-                    </svg>
-                    <span className="visually-hidden">My Favorites</span>
-                  </Link>
-                </li>
-              </ul>
-              {/* <Link className="header__link" to="/account">
-                  My Account
-                </Link> */}
+              <HeaderUtilities />
               <Search />
             </div>
             <div>
               <ul className="header__pri-ul header__pri-ul--flex-d">
-                <li>
-                  <NavLink
-                    style={({ isActive }) =>
-                      isActive
-                        ? {
-                            borderBottom: "5px solid #ffffe3",
-                            borderBottomRightRadius: "3px",
-                            borderBottomLeftRadius: "3px",
-                          }
-                        : null
-                    }
-                    className="header__pri-link"
-                    to="/read"
-                  >
-                    Read
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    style={({ isActive }) =>
-                      isActive
-                        ? {
-                            borderBottom: "5px solid #ffffe3",
-                            borderBottomRightRadius: "3px",
-                            borderBottomLeftRadius: "3px",
-                          }
-                        : null
-                    }
-                    className="header__pri-link"
-                    to="/watch"
-                  >
-                    Watch
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    style={({ isActive }) =>
-                      isActive
-                        ? {
-                            borderBottom: "5px solid #ffffe3",
-                            borderBottomRightRadius: "3px",
-                            borderBottomLeftRadius: "3px",
-                          }
-                        : null
-                    }
-                    className="header__pri-link"
-                    to="/community"
-                  >
-                    Community
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    style={({ isActive }) =>
-                      isActive
-                        ? {
-                            borderBottom: "5px solid #ffffe3",
-                            borderBottomRightRadius: "3px",
-                            borderBottomLeftRadius: "3px",
-                          }
-                        : null
-                    }
-                    className="header__pri-link"
-                    to="/about"
-                  >
-                    About
-                  </NavLink>
-                </li>
+                <HeaderNavLink value={"read"} />
+                <HeaderNavLink value={"watch"} />
+                <HeaderNavLink value={"community"} />
+                <HeaderNavLink value={"about"} />
               </ul>
             </div>
           </nav>
@@ -239,7 +101,7 @@ const Header = () => {
               <img
                 className="header__img"
                 src="/puckImg.webp"
-                alt=""
+                alt="logo"
                 aria-hidden="true"
               />
               <span className="visually-hidden">Go to Home page</span>
@@ -265,7 +127,6 @@ const Header = () => {
             onClick={toggleMobileMenu}
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={3}
@@ -277,83 +138,14 @@ const Header = () => {
             </svg>
             <span className="visually-hidden">Close Menu</span>
           </button>
-
-          {/* <Link className="header__link" to="/account">
-              My Account
-            </Link> */}
-          <ul className="header__utilities">
-            {user() ? (
-              <>
-                <li>
-                  <span className="header__nav-btn">{user()}</span>
-                </li>
-                <li>
-                  <button
-                    className="login__btn"
-                    style={{ backgroundColor: "grey" }}
-                    onClick={logoutMutate}
-                  >
-                    Log out
-                  </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link className="header__nav-btn" to="/login">
-                    Log in
-                  </Link>
-                </li>
-                <li>
-                  <Link className="header__nav-btn" to="/signup">
-                    Sign up
-                  </Link>
-                </li>
-              </>
-            )}
-            <li>
-              <Link to="#">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="header__icon header__icon--width"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                  />
-                </svg>
-                <span className="visually-hidden">My Favorites</span>
-              </Link>
-            </li>
-          </ul>
+          <HeaderUtilities />
         </div>
         <nav className="header__mobile-pri-nav" aria-label="Primary Navigation">
           <ul className="header__mobile-pri-ul">
-            <li>
-              <Link className="header__pri-link" to="/read">
-                Read
-              </Link>
-            </li>
-            <li>
-              <Link className="header__pri-link" to="/watch">
-                Watch
-              </Link>
-            </li>
-            <li>
-              <Link className="header__pri-link" to="/community">
-                Community
-              </Link>
-            </li>
-            <li>
-              <Link className="header__pri-link" to="/about">
-                About
-              </Link>
-            </li>
+            <HeaderNavLink value={"read"} />
+            <HeaderNavLink value={"watch"} />
+            <HeaderNavLink value={"community"} />
+            <HeaderNavLink value={"about"} />
           </ul>
           <Search />
         </nav>
@@ -364,38 +156,38 @@ const Header = () => {
           <h3 className="header__title">Manga & Anime</h3>
           <ul className="header__mobile-sec-ul">
             <div className="header__mobile-sec-li-wrapper">
-              <li>
-                <Link className="header__sec-link" to="/berserk">
-                  Berserk
-                </Link>
-              </li>
-              <li>
-                <Link className="header__sec-link" to="/monster">
-                  Monster
-                </Link>
-              </li>
-              <li>
-                <Link className="header__sec-link" to="/bleach">
-                  Bleach
-                </Link>
-              </li>
+              <HeaderGoto
+                title={"Berserk"}
+                mangaId={"801513ba-a712-498c-8f57-cae55b38cc92"}
+                authorId={"5863578d-4e4f-4b57-b64d-1dd45a893cb0"}
+              />
+              <HeaderGoto
+                title={"Monster"}
+                mangaId={"d9e30523-9d65-469e-92a2-302995770950"}
+                authorId={"508631f5-09de-4ae1-87ed-4b6179254ca1"}
+              />
+              <HeaderGoto
+                title={"Bleach"}
+                mangaId={"239d6260-d71f-43b0-afff-074e3619e3de"}
+                authorId={"246984d8-340d-4544-871b-c962da4bb28b"}
+              />
             </div>
             <div className="header__mobile-sec-li-wrapper">
-              <li>
-                <Link className="header__sec-link" to="/naruto">
-                  Naruto
-                </Link>
-              </li>
-              <li>
-                <Link className="header__sec-link" to="/vinland-saga">
-                  Vinland Saga
-                </Link>
-              </li>
-              <li>
-                <Link className="header__sec-link" to="/death-note">
-                  Death Note
-                </Link>
-              </li>
+              <HeaderGoto
+                title={"Naruto"}
+                mangaId={"6b1eb93e-473a-4ab3-9922-1a66d2a29a4a"}
+                authorId={"7f718dfa-e5be-45ea-a5cb-0fcd3ed52d5f"}
+              />
+              <HeaderGoto
+                title={"Vinland Saga"}
+                mangaId={"5d1fc77e-706a-4fc5-bea8-486c9be0145d"}
+                authorId={"f5d4fca1-d573-4383-af08-c06b0794ba4e"}
+              />
+              <HeaderGoto
+                title={"Death Note"}
+                mangaId={"75ee72ab-c6bf-4b87-badd-de839156934c"}
+                authorId={"0669bf79-ca27-4f50-9b48-741fb235137f"}
+              />
             </div>
           </ul>
         </nav>
