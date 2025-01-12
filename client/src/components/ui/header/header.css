@@ -87,6 +87,7 @@
   background-color: transparent;
   border: 0;
   cursor: pointer;
+  text-transform: capitalize;
 }
 
 .header__link {
@@ -159,6 +160,7 @@
 .header__pri-link {
   font-size: var(--fs-md);
   font-weight: var(--fw-500);
+  text-transform: capitalize;
 }
 
 .header__img-wrapper {
