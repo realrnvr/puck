@@ -42,7 +42,7 @@ export const signup = async (req, res) => {
     }),
   });
 
-  res.status(StatusCodes.CREATED).json({ user });
+  return res.status(StatusCodes.CREATED).json({ user });
 };
 
 export const verification = async (req, res) => {
@@ -74,7 +74,7 @@ export const verification = async (req, res) => {
   const refreshToken = user.createRefreshToken();
   setRefreshTokenCookie(res, refreshToken);
 
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
     accessToken,
   });
@@ -110,7 +110,7 @@ export const resendVerification = async (req, res) => {
     }),
   });
 
-  res
+  return res
     .status(StatusCodes.OK)
     .json({ user, message: "New verification link sent to your email." });
 };
@@ -127,7 +127,7 @@ export const loginAuthOne = async (req, res) => {
   }
 
   if (!user.isVerified) {
-    res.status(StatusCodes.CONFLICT).json({
+    return res.status(StatusCodes.CONFLICT).json({
       message: "user is not verified",
       type: "email",
       email: user.email,
@@ -140,7 +140,7 @@ export const loginAuthOne = async (req, res) => {
       .json({ user, navigate: "loginGoogleAuth" });
   }
 
-  res.status(StatusCodes.OK).json({ user, navigate: "loginTwo" });
+  return res.status(StatusCodes.OK).json({ user, navigate: "loginTwo" });
 };
 
 export const loginGoogleAuthTwo = async (req, res) => {
@@ -168,7 +168,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
   const refreshToken = user.createRefreshToken();
   setRefreshTokenCookie(res, refreshToken);
 
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
     accessToken,
   });
@@ -197,7 +197,7 @@ export const loginAuthTwo = async (req, res) => {
   const refreshToken = user.createRefreshToken();
   setRefreshTokenCookie(res, refreshToken);
 
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
     accessToken,
   });
@@ -206,10 +206,28 @@ export const loginAuthTwo = async (req, res) => {
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    throw new UnauthorziedError("Provide refresh token!");
+    return res
+      .status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED)
+      .json({
+        message: "Session expired please login again!",
+        type: "refresh-token-expired",
+      });
   }
 
-  const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  let payload;
+
+  try {
+    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  } catch (error) {
+    return res
+      .clearCookie("refreshToken")
+      .status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED)
+      .json({
+        message: "Session expired please login again!",
+        type: "refresh-token-expired",
+      });
+  }
+
   const { email } = payload;
 
   const user = await User.findOne({ email });
@@ -241,7 +259,14 @@ export const me = async (req, res) => {
     return res.json({ isAuthenticated: false });
   }
 
-  const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  let payload;
+
+  try {
+    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  } catch (error) {
+    return res.json({ isAuthenticated: false });
+  }
+
   const { email } = payload;
 
   const user = await User.findOne({ email });
@@ -251,12 +276,16 @@ export const me = async (req, res) => {
 
   const accessToken = user.createAccessToken();
 
-  res.status(StatusCodes.OK).json({ isAuthenticated: true, accessToken });
+  return res
+    .status(StatusCodes.OK)
+    .json({ isAuthenticated: true, accessToken });
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("refreshToken");
-  res.status(StatusCodes.OK).json({ message: "Logout successFull!" });
+  return res
+    .clearCookie("refreshToken")
+    .status(StatusCodes.OK)
+    .json({ message: "Logout successFull!" });
 };
 
 export const forgotPassword = async (req, res) => {
@@ -286,7 +315,7 @@ export const forgotPassword = async (req, res) => {
     }),
   });
 
-  res.status(StatusCodes.OK).json({ user, message: "Reset link sent!" });
+  return res.status(StatusCodes.OK).json({ user, message: "Reset link sent!" });
 };
 
 export const resetPassword = async (req, res) => {
@@ -309,7 +338,7 @@ export const resetPassword = async (req, res) => {
   user.password = newPassword;
   await user.save();
 
-  res.status(StatusCodes.OK).json({ message: "Password updated." });
+  return res.status(StatusCodes.OK).json({ message: "Password updated." });
 };
 
 export const resendPasswordVerification = async (req, res) => {
@@ -342,7 +371,7 @@ export const resendPasswordVerification = async (req, res) => {
     }),
   });
 
-  res
+  return res
     .status(StatusCodes.OK)
     .json({ user, message: "New verification link sent to your email." });
 };
@@ -417,7 +446,7 @@ export const google = async (req, res) => {
   setRefreshTokenCookie(res, refreshToken);
 
   // Return the response
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { username: user.username, email: user.email },
     accessToken,
   });
@@ -434,6 +463,7 @@ export const deleteUser = async (req, res) => {
   if (!user) {
     throw new NotFoundError("User not found");
   }
+  ``;
 
   // Revoke Google access if refreshToken exists
   if (user.googleId && user.refreshToken) {
@@ -441,5 +471,7 @@ export const deleteUser = async (req, res) => {
   }
 
   await User.deleteOne({ _id: userId });
-  res.status(StatusCodes.OK).json({ message: "User deleted successfully" });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "User deleted successfully" });
 };
