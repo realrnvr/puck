@@ -1,29 +1,47 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import PropTypes from "prop-types";
+import { useMutation } from "@tanstack/react-query";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
   console.log("token state", token);
 
-  useEffect(() => {
-    const fetchMe = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axiosInstance.post("/api/v1/auth/me");
-        setToken(response.data.accessToken);
-      } catch (error) {
-        setToken(null);
-        console.error("Error fetching user data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const user = useCallback(() => {
+    if (token) {
+      const payload = jwtDecode(token);
+      return payload;
+    }
 
-    fetchMe();
-  }, [setToken]);
+    return null;
+  }, [token]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => axiosInstance.post("/api/v1/auth/me"),
+    onSuccess: (data) => {
+      setToken(data.data.accessToken);
+    },
+    onError: (error) => {
+      setToken(null);
+      console.error("Error fetching user data:", error);
+    },
+  });
+
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
+
+  const { mutate: logoutMutate } = useMutation({
+    mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
+    onSuccess: () => {
+      setToken(null);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   useLayoutEffect(() => {
     const authInterceptor = axiosInstance.interceptors.request.use((config) => {
@@ -42,7 +60,6 @@ export const AuthProvider = ({ children }) => {
   useLayoutEffect(() => {
     const refreshInterceptor = axiosInstance.interceptors.response.use(
       async (response) => {
-        // Handle responses with a 403 statusCode in the body
         if (
           response.data?.statusCode === 403 &&
           response.data.message === "Forbidden"
@@ -84,14 +101,22 @@ export const AuthProvider = ({ children }) => {
     return () => {
       axiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, [setToken]);
+  }, []);
 
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        setToken,
+        user: user(),
+        logout: logoutMutate,
+        isPending,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
