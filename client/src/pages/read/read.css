@@ -11,8 +11,8 @@
 }
 
 .read__img {
-  width: 443px;
-  height: 177.2px;
+  /* width: 443px;
+  height: 177.2px; */
 }
 
 .read__title {
@@ -64,6 +64,16 @@
 
 .lg-screen {
   display: none;
+}
+
+.read__bg-img {
+  position: fixed;
+  top: 0;
+  z-index: -9;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  /* filter: invert(100%); */
 }
 
 /* Xs */
@@ -120,7 +130,7 @@
 
   .read__intro-container {
     margin-top: 0;
-    z-index: 999;
+    z-index: 99;
     position: absolute;
     bottom: 2.5rem;
     right: 2.5rem;
