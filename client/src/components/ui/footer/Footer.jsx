@@ -1,4 +1,5 @@
 import "./footer.css";
+import HeaderNavLink from "../../HeaderNavLink";
 
 const Footer = () => {
   return (
@@ -8,26 +9,10 @@ const Footer = () => {
           <h2 className="footer__title">PUCK</h2>
           <nav className="footer__nav">
             <ul className="footer__ul">
-              <li className="footer__li">
-                <a className="footer__link" href="#">
-                  Read
-                </a>
-              </li>
-              <li className="footer__li">
-                <a className="footer__link" href="#">
-                  Watch
-                </a>
-              </li>
-              <li className="footer__li">
-                <a className="footer__link" href="#">
-                  Community
-                </a>
-              </li>
-              <li className="footer__li">
-                <a className="footer__link" href="#">
-                  About
-                </a>
-              </li>
+              <HeaderNavLink value={"read"} />
+              <HeaderNavLink value={"watch"} />
+              <HeaderNavLink value={"community"} />
+              <HeaderNavLink value={"about"} />
             </ul>
           </nav>
         </div>
