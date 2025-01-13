@@ -29,6 +29,7 @@ const Input = ({ register, errors, watch, formData, className }) => {
           className={`input__field ${className} ${
             toggle && "input__field--password"
           }`}
+          autoComplete="off"
           type={toggle ? (showPassword ? "text" : "password") : type}
           id={name}
           style={{
