@@ -1,6 +1,7 @@
 import "./header.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDisableScroll } from "../../../hooks/useDisableScroll";
 import Search from "../../Search";
 import HeaderUtilities from "../../HeaderUtilities";
 import HeaderNavLink from "../../HeaderNavLink";
@@ -14,6 +15,8 @@ const Header = () => {
       return !prevMobileMenu;
     });
   };
+
+  useDisableScroll(MobileMenu);
 
   return (
     <header className="header">
