@@ -10,7 +10,7 @@
 }
 
 .footer__title {
-  font-size: var(--fs-md);
+  font-size: var(--fs-lg);
   font-weight: var(--fw-600);
 }
 
@@ -23,6 +23,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  text-align: center;
+}
+
+.footer__ul a {
+  font-size: var(--fs-sm);
 }
 
 .footer__link {
