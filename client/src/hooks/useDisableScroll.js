@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-export const useDisableScroll = (fsImg) => {
+export const useDisableScroll = (isState) => {
   useEffect(() => {
-    if (fsImg) {
+    if (isState) {
       document.body.classList.add("no-scroll-fs");
     } else {
       document.body.classList.remove("no-scroll-fs");
@@ -11,5 +11,5 @@ export const useDisableScroll = (fsImg) => {
     return () => {
       document.body.classList.remove("no-scroll-fs");
     };
-  }, [fsImg]);
+  }, [isState]);
 };
