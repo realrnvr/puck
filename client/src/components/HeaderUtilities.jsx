@@ -11,15 +11,11 @@ const HeaderUtilities = () => {
         <>
           <li>
             <Link to="/account" className="header__nav-btn">
-              {user?.username}
+              Account
             </Link>
           </li>
           <li>
-            <button
-              className="login__btn"
-              style={{ backgroundColor: "#631708ff" }}
-              onClick={logout}
-            >
+            <button className="header__log-out-btn" onClick={logout}>
               Log out
             </button>
           </li>
