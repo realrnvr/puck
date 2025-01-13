@@ -67,21 +67,21 @@ const NewsLetter = () => {
 
   return (
     <section className="newsletter">
-      <div className="newsletter__content | section-mg-top container">
-        <div className="newsletter__l-container">
-          <h2 className="newsletter__title">
-            Get the latest manga & anime news!
-          </h2>
-          <p className="newsletter__description">
-            You will never miss a beat when you subscribe to our newsletter.
-          </p>
-          <form className="newsletter__form" onSubmit={handleSubmit(onSubmit)}>
+      <img src="/pattern-1.svg" className="newsletter__bg-img" alt="" />
+      <div className="newsletter__container | container">
+        <h2 className="newsletter__title">
+          Get the latest manga & anime news!
+        </h2>
+        <p className="newsletter__description">
+          You will never miss a beat when you subscribe to our newsletter.
+        </p>
+        <form className="newsletter__form" onSubmit={handleSubmit(onSubmit)}>
+          <div className="newsletter__input-wrapper">
             <Input
               register={register}
               watch={watch}
               errors={errors}
               formData={{
-                // label: "Email",
                 name: "email",
                 type: "text",
                 serverErr: "Something went wrong",
@@ -97,9 +97,10 @@ const NewsLetter = () => {
             >
               {sub ? "Sign out" : "Sign in"}
             </button>
-          </form>
+          </div>
           {sub ? (
             <button
+              type="button"
               className="newsletter__unsub-btn"
               onClick={() => {
                 setSub(false);
@@ -109,6 +110,7 @@ const NewsLetter = () => {
             </button>
           ) : (
             <button
+              type="button"
               className="newsletter__unsub-btn"
               onClick={() => {
                 setSub(true);
@@ -117,10 +119,7 @@ const NewsLetter = () => {
               unsubscribe?
             </button>
           )}
-        </div>
-        <div className="newsletter__r-container">
-          <img className="newsletter__img" src="/news-letter.webp" alt="" />
-        </div>
+        </form>
       </div>
     </section>
   );
