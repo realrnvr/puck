@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
 
-const LIMIT = 4;
+const LIMIT = 8;
 
 const Read = () => {
   const { data, isPending } = useQuery({
@@ -16,10 +16,14 @@ const Read = () => {
 
   return (
     <>
-      <img src="/pattern.svg" className="read__bg-img" alt="" />
+      <img
+        src="/pattern.svg"
+        className="read__bg-img"
+        alt="pattern"
+        aria-hidden="true"
+      />
       <article className="read">
         <div className="read__top-wrapper | container">
-          <img src="/t-1px.webp" className="read__img" alt="" />
           <div className="read__intro-container">
             <h2 className="read__title">READ</h2>
             <p className="read__description">
@@ -51,7 +55,7 @@ const Read = () => {
               })}
               {isPending ? <MangaCardSkeleton count={LIMIT} /> : null}
             </div>
-            <Link to="/mangas" className="read__link sm-screen">
+            <Link to="/mangas" className="read__link read__link--mt sm-screen">
               See all manga series
             </Link>
           </div>
