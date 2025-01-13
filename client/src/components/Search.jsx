@@ -37,15 +37,13 @@ const Search = () => {
             type="text"
             name="search"
             className="header__input"
+            spellCheck="false"
+            autoComplete="off"
             placeholder="Search"
             value={query}
             onChange={handleQueryChange}
           />
-          <button
-            type="submit"
-            className="header__btn header__search-btn"
-            aria-label="Submit"
-          >
+          <button type="button" className="header__btn header__search-btn">
             <svg
               viewBox="0 0 16 16"
               className="header__icon header__icon--width header__icon--color"
@@ -81,6 +79,9 @@ const Search = () => {
               className="search__Skeleton"
               count={4}
             />
+          ) : null}
+          {query && !isLoading && !data?.data?.manga?.length ? (
+            <p>No results found.</p>
           ) : null}
         </ul>
       </div>
