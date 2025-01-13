@@ -4,9 +4,7 @@ const Community = () => {
   return (
     <section className="community | section-mg-top container">
       <div>
-        <a className="community__link" href="#">
-          Explore Community
-        </a>
+        <p className="community__link">Explore Community</p>
       </div>
       <div className="community__posts"></div>
     </section>
