@@ -1,3 +1,7 @@
+.community {
+  margin-bottom: 3rem;
+}
+
 .community__link {
   font-size: var(--fs-sm);
   font-weight: var(--fw-400);
