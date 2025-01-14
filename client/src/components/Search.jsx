@@ -4,8 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "@uidotdev/usehooks";
 import Skeleton from "react-loading-skeleton";
+import PropTypes from "prop-types";
 
-const Search = () => {
+const Search = ({ onClick }) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 400);
 
@@ -18,7 +19,7 @@ const Search = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["search", { debouncedQuery }],
     queryFn: () => fetchManga(debouncedQuery),
-    enabled: Boolean(debouncedQuery),
+    enabled: !!debouncedQuery,
   });
 
   const handleQueryChange = (e) => {
@@ -43,7 +44,7 @@ const Search = () => {
             value={query}
             onChange={handleQueryChange}
           />
-          <button type="button" className="header__btn header__search-btn">
+          <p className="header__search-btn">
             <svg
               viewBox="0 0 16 16"
               className="header__icon header__icon--width header__icon--color"
@@ -53,19 +54,20 @@ const Search = () => {
                 fill="currentColor"
               ></path>
             </svg>
-          </button>
+          </p>
         </form>
         <ul className="search__result">
           {data?.data?.manga?.map((manga) => (
             <li
               key={manga.mangaId}
               className="search__item"
-              onClick={() =>
+              onClick={() => {
+                onClick?.();
                 handleNavigate({
                   mangaId: manga?.mangaId,
                   authorId: manga?.authorId,
-                })
-              }
+                });
+              }}
             >
               {manga?.title}
             </li>
@@ -87,6 +89,10 @@ const Search = () => {
       </div>
     </>
   );
+};
+
+Search.propTypes = {
+  onClick: PropTypes.func,
 };
 
 export default Search;

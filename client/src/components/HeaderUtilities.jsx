@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Skeleton from "react-loading-skeleton";
+import PropTypes from "prop-types";
 
-const HeaderUtilities = () => {
+const HeaderUtilities = ({ onClick }) => {
   const { user, logout, isPending } = useAuth();
 
   return (
@@ -10,7 +11,7 @@ const HeaderUtilities = () => {
       {user ? (
         <>
           <li>
-            <Link to="/account" className="header__nav-btn">
+            <Link to="/account" className="header__nav-btn" onClick={onClick}>
               Account
             </Link>
           </li>
@@ -42,7 +43,7 @@ const HeaderUtilities = () => {
         </>
       )}
       <li>
-        <Link to="/favourite">
+        <Link to="/favourite" onClick={onClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -62,6 +63,10 @@ const HeaderUtilities = () => {
       </li>
     </ul>
   );
+};
+
+HeaderUtilities.propTypes = {
+  onClick: PropTypes.func,
 };
 
 export default HeaderUtilities;

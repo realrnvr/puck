@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const HeaderNavLink = ({ value }) => {
+const HeaderNavLink = ({ value, onClick }) => {
   return (
     <li>
       <NavLink
+        onClick={onClick}
         style={({ isActive }) =>
           isActive
             ? {
@@ -23,6 +24,7 @@ const HeaderNavLink = ({ value }) => {
 
 HeaderNavLink.propTypes = {
   value: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default HeaderNavLink;
