@@ -1,5 +1,5 @@
 import "./header.css";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDisableScroll } from "../../../hooks/useDisableScroll";
 import Search from "../../Search";
@@ -10,13 +10,17 @@ import HeaderGoto from "../../HeaderGoto";
 const Header = () => {
   const [MobileMenu, setMobileMenu] = useState(false);
 
+  useDisableScroll(MobileMenu);
+
   const toggleMobileMenu = () => {
     setMobileMenu((prevMobileMenu) => {
       return !prevMobileMenu;
     });
   };
 
-  useDisableScroll(MobileMenu);
+  const handleNavClick = () => {
+    setMobileMenu(false);
+  };
 
   return (
     <header className="header">
@@ -141,16 +145,16 @@ const Header = () => {
             </svg>
             <span className="visually-hidden">Close Menu</span>
           </button>
-          <HeaderUtilities />
+          <HeaderUtilities onClick={handleNavClick} />
         </div>
         <nav className="header__mobile-pri-nav" aria-label="Primary Navigation">
           <ul className="header__mobile-pri-ul">
-            <HeaderNavLink value={"read"} />
-            <HeaderNavLink value={"watch"} />
-            <HeaderNavLink value={"community"} />
-            <HeaderNavLink value={"about"} />
+            <HeaderNavLink value={"read"} onClick={handleNavClick} />
+            <HeaderNavLink value={"watch"} onClick={handleNavClick} />
+            <HeaderNavLink value={"community"} onClick={handleNavClick} />
+            <HeaderNavLink value={"about"} onClick={handleNavClick} />
           </ul>
-          <Search />
+          <Search onClick={handleNavClick} />
         </nav>
         <nav
           className="header__mobile-sec-nav"
@@ -163,16 +167,19 @@ const Header = () => {
                 title={"Berserk"}
                 mangaId={"801513ba-a712-498c-8f57-cae55b38cc92"}
                 authorId={"5863578d-4e4f-4b57-b64d-1dd45a893cb0"}
+                onClick={handleNavClick}
               />
               <HeaderGoto
                 title={"Monster"}
                 mangaId={"d9e30523-9d65-469e-92a2-302995770950"}
                 authorId={"508631f5-09de-4ae1-87ed-4b6179254ca1"}
+                onClick={handleNavClick}
               />
               <HeaderGoto
                 title={"Bleach"}
                 mangaId={"239d6260-d71f-43b0-afff-074e3619e3de"}
                 authorId={"246984d8-340d-4544-871b-c962da4bb28b"}
+                onClick={handleNavClick}
               />
             </div>
             <div className="header__mobile-sec-li-wrapper">
@@ -180,16 +187,19 @@ const Header = () => {
                 title={"Naruto"}
                 mangaId={"6b1eb93e-473a-4ab3-9922-1a66d2a29a4a"}
                 authorId={"7f718dfa-e5be-45ea-a5cb-0fcd3ed52d5f"}
+                onClick={handleNavClick}
               />
               <HeaderGoto
                 title={"Vinland Saga"}
                 mangaId={"5d1fc77e-706a-4fc5-bea8-486c9be0145d"}
                 authorId={"f5d4fca1-d573-4383-af08-c06b0794ba4e"}
+                onClick={handleNavClick}
               />
               <HeaderGoto
                 title={"Death Note"}
                 mangaId={"75ee72ab-c6bf-4b87-badd-de839156934c"}
                 authorId={"0669bf79-ca27-4f50-9b48-741fb235137f"}
+                onClick={handleNavClick}
               />
             </div>
           </ul>
@@ -199,4 +209,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
