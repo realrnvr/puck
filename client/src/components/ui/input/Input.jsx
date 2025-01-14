@@ -1,6 +1,6 @@
 import "./input.css";
-import PropTypes from "prop-types";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const Input = ({ register, errors, watch, formData, className }) => {
   const [showPassword, setShowPassword] = useState(false);
