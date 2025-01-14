@@ -3,11 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../services/api/axios";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
+import { useAuth } from "../../hooks/useAuth";
 
 const Favourite = () => {
-  const { data, isPending } = useQuery({
+  const { user } = useAuth();
+
+  const { data, isLoading } = useQuery({
     queryKey: ["all-favourites"],
     queryFn: () => axiosInstance.get("/api/v1/client/all-favourites"),
+    enabled: !!user,
   });
 
   return (
@@ -23,7 +27,7 @@ const Favourite = () => {
           />
         );
       })}
-      {isPending ? <MangaCardSkeleton count={5} /> : null}
+      {isLoading ? <MangaCardSkeleton count={5} /> : null}
     </article>
   );
 };
