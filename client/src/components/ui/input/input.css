@@ -18,9 +18,11 @@
   width: 100%;
   font-size: var(--fs-xss);
   font-weight: var(--fw-400);
+  padding: 0.5rem;
   border: 0;
   outline: 0;
   border-radius: 15px;
+  line-height: 1;
 }
 .input__field:focus {
   outline: 3px solid var(--clr-secondary);

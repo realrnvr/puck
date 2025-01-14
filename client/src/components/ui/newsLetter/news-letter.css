@@ -59,7 +59,7 @@
   background-color: var(--bg-clr-secondary);
   color: var(--clr-primary);
   height: fit-content;
-  padding: 0.7rem;
+  padding: 0.9rem;
   text-wrap: nowrap;
 }
 .newsletter__btn:disabled {

@@ -5,7 +5,7 @@
 }
 .verification__title--fs-mt {
   font-size: var(--fs-md);
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 }
 
 .verification__content {
@@ -49,7 +49,11 @@
 /* @media (min-width: 475px) {} */
 
 /* Sm */
-/* @media (min-width: 640px) {} */
+@media (min-width: 640px) {
+  .verification__title {
+    margin-top: 2rem;
+  }
+}
 
 /* Md */
 /* @media (min-width: 768px) {} */
@@ -67,12 +71,12 @@
 
   .verification__content {
     gap: 2rem;
-    padding-top: 3rem;
+    padding-top: 2.5rem;
     padding-inline: 1.5rem;
   }
 
   .verification__title--fs-mt {
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
 
   .verification__img {
