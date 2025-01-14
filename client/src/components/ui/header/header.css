@@ -157,6 +157,14 @@
   color: var(--clr-primary);
 }
 
+.header__input:focus ~ .header__search-btn .header__icon {
+  color: var(--clr-primary);
+}
+
+.header__input:hover ~ .header__search-btn .header__icon {
+  color: var(--clr-primary);
+}
+
 .header__search-btn {
   position: absolute;
   top: 50%;
