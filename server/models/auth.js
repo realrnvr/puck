@@ -31,6 +31,11 @@ const UserSchema = new mongoose.Schema({
       message: "Password must be at least 8 characters long.",
     },
   },
+  type: {
+    type: String,
+    enum: ["normal", "google", "both"],
+    default: "normal",
+  },
   googleId: {
     type: String, // Removed `unique: true` here
   },
