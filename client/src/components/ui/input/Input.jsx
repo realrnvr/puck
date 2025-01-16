@@ -2,7 +2,14 @@ import "./input.css";
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const Input = ({ register, errors, watch, formData, className }) => {
+const Input = ({
+  register,
+  errors,
+  watch,
+  formData,
+  className,
+  placeholder,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordToggle = () => {
@@ -29,6 +36,7 @@ const Input = ({ register, errors, watch, formData, className }) => {
           className={`input__field ${className} ${
             toggle && "input__field--password"
           }`}
+          placeholder={placeholder}
           autoComplete="off"
           spellCheck="off"
           type={toggle ? (showPassword ? "text" : "password") : type}
@@ -120,6 +128,7 @@ Input.propTypes = {
   watch: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   className: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 export default Input;
