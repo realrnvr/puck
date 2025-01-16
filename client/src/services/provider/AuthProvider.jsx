@@ -1,24 +1,30 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
-import { useMutation } from "@tanstack/react-query";
-import { jwtDecode } from "jwt-decode";
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(undefined);
   console.log("token state", token);
 
-  const user = useCallback(() => {
-    if (token) {
-      const payload = jwtDecode(token);
-      return payload;
-    }
+  const { data, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => axiosInstance.get("/api/v1/client/user"),
+    enabled: !!token,
+  });
 
-    return null;
-  }, [token]);
+  const { mutate: logoutMutate } = useMutation({
+    mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
+    onSuccess: () => {
+      setToken(null);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: () => axiosInstance.post("/api/v1/auth/me"),
     onSuccess: (data) => {
       setToken(data.data.accessToken);
@@ -32,16 +38,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     mutate();
   }, [mutate]);
-
-  const { mutate: logoutMutate } = useMutation({
-    mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
-    onSuccess: () => {
-      setToken(null);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
 
   useLayoutEffect(() => {
     const authInterceptor = axiosInstance.interceptors.request.use((config) => {
@@ -112,9 +108,9 @@ export const AuthProvider = ({ children }) => {
       value={{
         token,
         setToken,
-        user: user(),
+        user: data?.data,
         logout: logoutMutate,
-        isPending,
+        isPending: isLoading,
       }}
     >
       {children}
