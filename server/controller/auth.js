@@ -161,6 +161,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
     throw new UnauthorziedError("please verify your email.");
   }
 
+  user.type = "both";
   user.password = password;
   await user.save();
 
@@ -206,12 +207,10 @@ export const loginAuthTwo = async (req, res) => {
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    return res
-      .status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED)
-      .json({
-        message: "Session expired please login again!",
-        type: "refresh-token-expired",
-      });
+    return res.status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED).json({
+      message: "Session expired please login again!",
+      type: "refresh-token-expired",
+    });
   }
 
   let payload;
@@ -421,6 +420,7 @@ export const google = async (req, res) => {
       googleId,
       refreshToken: refresh_token,
       isVerified: true,
+      type: "google",
     });
     await user.save();
   } else {
@@ -432,6 +432,10 @@ export const google = async (req, res) => {
     // Update refresh token if not already stored
     if (!user.refreshToken && refresh_token) {
       user.refreshToken = refresh_token;
+    }
+
+    if (user.type === "normal") {
+      user.type = "both";
     }
 
     // Save changes only if necessary
@@ -463,7 +467,6 @@ export const deleteUser = async (req, res) => {
   if (!user) {
     throw new NotFoundError("User not found");
   }
-  ``;
 
   // Revoke Google access if refreshToken exists
   if (user.googleId && user.refreshToken) {
