@@ -11,6 +11,7 @@
   z-index: -9;
   opacity: 0.5;
   border-radius: 25px;
+  filter: blur(1px);
 }
 
 .newsletter__container {
