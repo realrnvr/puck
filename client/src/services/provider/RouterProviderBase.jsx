@@ -26,6 +26,8 @@ import Mangas from "../../pages/mangas/Mangas";
 import Viewer from "../../pages/viewer/Viewer";
 import Favourite from "../../pages/favourite/Favourite";
 import Test from "../../tests/Test";
+import AccountSetting from "../../pages/accountSetting/accountSetting";
+import ChangePassword from "../../pages/changePassword/ChangePassword";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +54,22 @@ const router = createBrowserRouter([
         path: "/favourite",
         element: <Favourite />,
       },
+      {
+        path: "/account",
+        element: (
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/account-setting",
+        element: <AccountSetting />,
+      },
+      {
+        path: "/change-password",
+        element: <ChangePassword />,
+      },
     ],
   },
   {
@@ -61,14 +79,6 @@ const router = createBrowserRouter([
   {
     path: "/test",
     element: <Test />,
-  },
-  {
-    path: "/account",
-    element: (
-      <ProtectedRoute>
-        <Account />
-      </ProtectedRoute>
-    ),
   },
   {
     path: "/login",
