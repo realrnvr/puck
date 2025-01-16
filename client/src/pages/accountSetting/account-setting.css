@@ -1,0 +1,28 @@
+.setting__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-500);
+}
+
+.setting__option {
+  margin-top: 1rem;
+}
+
+.setting__option > * + * {
+  margin-top: 1rem;
+}
+
+.setting__sec-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-400);
+}
+
+.setting__btn {
+  background-color: orange;
+  border: 0;
+  outline: 0;
+  padding: 0.3rem;
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+  border-radius: 7px;
+  cursor: pointer;
+}
