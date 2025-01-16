@@ -1,0 +1,25 @@
+.account {
+  margin-block: 2rem;
+}
+
+.account__username {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-400);
+}
+
+.account__settings {
+  margin-top: 1rem;
+  text-decoration: underline;
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-300);
+}
+
+.account__btn-container {
+  margin-top: 1rem;
+}
+
+.account__btn {
+  background-color: orange;
+  padding: 0.5rem;
+  border-radius: 7px;
+}
