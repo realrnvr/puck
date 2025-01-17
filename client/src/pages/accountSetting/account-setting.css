@@ -1,3 +1,12 @@
+.setting {
+  padding-block-start: 1rem;
+  padding-block-end: 3rem;
+}
+
+.setting > * + * {
+  margin-top: 1rem;
+}
+
 .setting__title {
   font-size: var(--fs-md);
   font-weight: var(--fw-500);
@@ -16,6 +25,10 @@
   font-weight: var(--fw-400);
 }
 
+.setting__input {
+  max-width: 300px;
+}
+
 .setting__btn {
   background-color: orange;
   border: 0;
@@ -26,3 +39,48 @@
   border-radius: 7px;
   cursor: pointer;
 }
+
+.setting__btn:disabled {
+  cursor: not-allowed;
+  background-color: var(--bg-clr-secondary);
+}
+
+.setting__opt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.setting__bottom-container > * + * {
+  margin-top: 1rem;
+}
+
+.setting__label {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+  text-decoration: underline;
+}
+
+.setting__link {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-300);
+  text-decoration: underline;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+/* @media (min-width: 1024px) {} */
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
