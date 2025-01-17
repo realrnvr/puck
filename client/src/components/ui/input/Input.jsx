@@ -7,7 +7,8 @@ const Input = ({
   errors,
   watch,
   formData,
-  className,
+  inputClassName,
+  inputWrapperClassName,
   placeholder,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,10 +31,10 @@ const Input = ({
           {label}
         </label>
       ) : null}
-      <div className="input__wrapper">
+      <div className={`input__wrapper ${inputWrapperClassName}`}>
         <input
           {...register(name)}
-          className={`input__field ${className} ${
+          className={`input__field ${inputClassName} ${
             toggle && "input__field--password"
           }`}
           placeholder={placeholder}
@@ -127,7 +128,8 @@ Input.propTypes = {
   errors: PropTypes.object.isRequired,
   watch: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
-  className: PropTypes.string,
+  inputClassName: PropTypes.string,
+  inputWrapperClassName: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
