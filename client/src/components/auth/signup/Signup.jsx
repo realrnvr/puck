@@ -10,7 +10,7 @@ import { hasErrors } from "../../../helper/hasErrors";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 import Loader from "../../ui/loader/Loader";
-import VerificationToast from "../verificationToast/VerificationToast";
+import NavigationToast from "../navigationToast/NavigationToast";
 
 const Signup = () => {
   const {
@@ -54,10 +54,21 @@ const Signup = () => {
         case "verification-incomplete":
           setError("email", { message });
           setFocus("email");
-          toast(<VerificationToast email={email} navigate={navigate} />, {
-            duration: 10000,
-            id: "verification-toast",
-          });
+          toast(
+            <NavigationToast
+              message={"Please verify your email to continue."}
+              btnText={"Verification here"}
+              email={email}
+              navigate={navigate}
+              to={"/verification"}
+              toastId={"verification-toast"}
+              path={"sign-mail"}
+            />,
+            {
+              duration: 10000,
+              id: "verification-toast",
+            }
+          );
           break;
         default:
           // make it better

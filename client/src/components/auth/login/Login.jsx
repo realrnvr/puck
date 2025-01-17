@@ -9,7 +9,7 @@ import { loginAuthOne } from "../../../services/mutation/authMutation";
 import { hasErrors } from "../../../helper/hasErrors";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
-import VerificationToast from "../verificationToast/VerificationToast";
+import NavigationToast from "../navigationToast/NavigationToast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,10 +40,21 @@ const Login = () => {
       setError("email", { message });
       setFocus("email");
       if (type === "email") {
-        toast(<VerificationToast email={email} navigate={navigate} />, {
-          duration: 10000,
-          id: "verification-toast",
-        });
+        toast(
+          <NavigationToast
+            message={"Please verify your email to continue."}
+            btnText={"Verification here"}
+            email={email}
+            to={"/verification"}
+            navigate={navigate}
+            toastId={"verification-toast"}
+            path={"sign-mail"}
+          />,
+          {
+            duration: 10000,
+            id: "verification-toast",
+          }
+        );
       }
     },
   });
