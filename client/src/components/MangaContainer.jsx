@@ -1,10 +1,9 @@
 import { Fragment, useEffect } from "react";
-import { memo } from "react";
-import MangaCard from "./ui/mangaCard/MangaCard";
-import Proptypes from "prop-types";
+import { useInView } from "react-intersection-observer";
 import { axiosInstance } from "../services/api/axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
+import MangaCard from "./ui/mangaCard/MangaCard";
+import Proptypes from "prop-types";
 import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
 
 const LIMIT = 10;
@@ -67,4 +66,4 @@ MangaContainer.propTypes = {
   caseManga: Proptypes.array,
 };
 
-export default memo(MangaContainer);
+export default MangaContainer;
