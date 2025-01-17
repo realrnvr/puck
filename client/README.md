@@ -13,7 +13,7 @@ Currently, two official plugins are available:
 2. Finish UI and general refactoring.
 3. To add show case in home page or not?
 4. Replace all the future updates with under construction holder.
-5. Error Boundaries for you know what.
+5. Error Boundaries for you know what + 404 pages + error pages (if any).
 6. One last time AUTH Test.
 7. Google AUTH conditional UI.
 8. Scroll bug? fix may be?
