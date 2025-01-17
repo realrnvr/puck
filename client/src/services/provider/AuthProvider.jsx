@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(undefined);
+  const queryClient = useQueryClient();
   console.log("token state", token);
 
   const { data, isLoading } = useQuery({
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const { mutate: logoutMutate } = useMutation({
     mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
     onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["user"] });
       setToken(null);
     },
     onError: (error) => {
