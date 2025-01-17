@@ -1,0 +1,24 @@
+.go {
+  border: 0;
+  outline: 0;
+  background-color: orange;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  border-radius: 7px;
+  padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+}
+
+.go__svg {
+  width: 25px;
+  aspect-ratio: 1 / 1;
+  color: var(--clr-primary);
+}
+
+.go__text {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-400);
+  text-decoration: underline;
+  text-transform: uppercase;
+}
