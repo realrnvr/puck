@@ -16,6 +16,7 @@
 .manga__top-container {
   display: flex;
   gap: 1rem;
+  margin-top: 2rem;
 }
 
 .manga__cover-wrapper {
