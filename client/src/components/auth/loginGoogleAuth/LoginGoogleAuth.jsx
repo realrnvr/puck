@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginGoogleAuthData } from "../../../assets/data/loginGoogleAuthData";
 import { loginGoogleAuthSchema } from "../../../assets/schema/loginGoogleAuthSchema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import { hasErrors } from "../../../helper/hasErrors";
 const LoginGoogleAuth = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit,
@@ -33,6 +34,7 @@ const LoginGoogleAuth = () => {
     onSuccess: (data) => {
       console.log(data);
       auth.setToken(data?.data?.accessToken);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/account");
     },
     onError: (error) => {
