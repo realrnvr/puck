@@ -21,7 +21,7 @@
   padding: 0.5rem;
   border: 0;
   outline: 0;
-  border-radius: 15px;
+  border-radius: 7px;
   line-height: 1;
 }
 .input__field:focus {
@@ -38,7 +38,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 5%;
+  right: 13px;
   background-color: transparent;
   border: 0;
   cursor: pointer;
