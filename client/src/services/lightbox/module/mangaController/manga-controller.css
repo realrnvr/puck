@@ -1,5 +1,7 @@
 :root {
   --height: 350px;
+  --controller-icon-width: 25px;
+  --controller-counter-fs: 14px;
 }
 
 .controller-close {
@@ -234,6 +236,19 @@
   display: none;
 }
 
+.controller__back-svg {
+  width: var(--controller-icon-width);
+  aspect-ratio: 1 / 1;
+}
+
+.yarl__icon {
+  width: var(--controller-icon-width);
+}
+
+.yarl__counter {
+  font-size: var(--controller-counter-fs);
+}
+
 /* scrollbar */
 .controller__chapter-list::-webkit-scrollbar {
   display: none;
@@ -264,6 +279,11 @@
 
 /* Xs */
 @media (min-width: 475px) {
+  :root {
+    --controller-icon-width: 28px;
+    --controller-counter-fs: 16px;
+  }
+
   .controller__curr-chapter {
     display: flex;
   }
@@ -290,6 +310,11 @@
 
 /* Md */
 @media (min-width: 768px) {
+  :root {
+    --controller-icon-width: 29px;
+    --controller-counter-fs: 17px;
+  }
+
   .controller__close-btn-sm {
     display: none;
   }
@@ -308,6 +333,10 @@
 
 /* Lg */
 @media (min-width: 1024px) {
+  :root {
+    --controller-icon-width: 32px;
+  }
+
   .controller__chapter-list {
     grid-template-columns: repeat(2, 1fr);
   }
