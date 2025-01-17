@@ -88,7 +88,7 @@ const NewsLetter = () => {
                 defaultMsg: "Valid email.",
                 toggle: false,
               }}
-              className="newsletter__input"
+              inputClassName="newsletter__input"
             />
             <button
               type="submit"
