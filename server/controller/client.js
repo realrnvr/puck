@@ -104,6 +104,10 @@ export const updatePassword = async (req, res) => {
     throw new NotFoundError("user does not exists");
   }
 
+  if (user.type === "google") {
+    throw new BadRequestError("Please create a password to change it");
+  }
+
   const isCorrect = await user.verifyPassword(oldPassword);
   if (!isCorrect) {
     return res
