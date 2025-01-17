@@ -26,7 +26,7 @@ import Mangas from "../../pages/mangas/Mangas";
 import Viewer from "../../pages/viewer/Viewer";
 import Favourite from "../../pages/favourite/Favourite";
 import Test from "../../tests/Test";
-import AccountSetting from "../../pages/accountSetting/accountSetting";
+import AccountSetting from "../../pages/accountSetting/AccountSetting";
 import ChangePassword from "../../pages/changePassword/ChangePassword";
 
 const router = createBrowserRouter([
