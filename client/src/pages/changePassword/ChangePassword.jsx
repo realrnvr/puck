@@ -30,7 +30,7 @@ const ChangePassword = () => {
     return axiosInstance.patch("/api/v1/client/update-password", data);
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending: mutateIsPending } = useMutation({
     mutationFn: updatePassword,
     onSuccess: (data) => {
       console.log(data);
@@ -64,13 +64,14 @@ const ChangePassword = () => {
               watch={watch}
               errors={errors}
               formData={val}
+              inputWrapperClassName={"change__input"}
             />
           );
         })}
         <button
           className="change__btn"
           type="submit"
-          disabled={isPending || !isValid || hasErrors(errors)}
+          disabled={mutateIsPending || !isValid || hasErrors(errors)}
         >
           save password
         </button>
