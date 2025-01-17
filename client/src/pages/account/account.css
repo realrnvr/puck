@@ -7,6 +7,11 @@
   font-weight: var(--fw-400);
 }
 
+.account__mail {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-300);
+}
+
 .account__settings {
   margin-top: 1rem;
   text-decoration: underline;
@@ -22,4 +27,41 @@
   background-color: orange;
   padding: 0.5rem;
   border-radius: 7px;
+  border: 0;
+  outline: 0;
 }
+
+.account__change-btn {
+  width: 100%;
+  background-color: transparent;
+  color: var(--clr-primary);
+  border-radius: 7px;
+  border: 0;
+  outline: 0;
+  margin-top: 0.5rem;
+  text-decoration: underline;
+  cursor: pointer;
+  width: fit-content;
+}
+.account__change-btn:disabled {
+  color: var(--bg-clr-secondary);
+  cursor: not-allowed;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+/* @media (min-width: 1024px) {} */
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
