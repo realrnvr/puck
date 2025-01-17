@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import AuthorDropDown from "../../components/AuthorDropDown";
 import MangaFsImg from "../../components/MangaFsImg";
 import Markdown from "../../utils/markdown/Markdown";
+import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
@@ -47,7 +48,7 @@ const Manga = () => {
   );
 
   return (
-    <article className="manga" style={{ marginTop: "3rem" }}>
+    <article className="manga" style={{ marginTop: "1.5rem" }}>
       <div className="manga__bg">
         <img
           className="manga__bg-img"
@@ -56,6 +57,7 @@ const Manga = () => {
         />
       </div>
       <div className="manga__wrapper | container">
+        <GoBackBtn />
         <div className="manga__top-container">
           <div
             className="manga__cover-wrapper"
