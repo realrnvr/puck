@@ -4,7 +4,7 @@ import "yet-another-react-lightbox/plugins/counter.css";
 // hooks
 import { useChapter } from "../../hooks/useChapter";
 // config
-import { animation, carousel, plugins, zoom } from "./config";
+import { animation, carousel, plugins, toolbar, zoom } from "./config";
 // lightbox
 import Lightbox from "yet-another-react-lightbox";
 // other
@@ -23,6 +23,7 @@ const LightBoxBase = ({ mangaId }) => {
       carousel={carousel}
       animation={animation}
       MangaControllerProps={{ chapter, nav, isChapterImage, isChapter }}
+      toolbar={toolbar}
     />
   );
 };
