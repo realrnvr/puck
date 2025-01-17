@@ -9,10 +9,5 @@ Currently, two official plugins are available:
 
 # Things remaining to implement
 
-1. Fix the Request on Mount Thing. (x)
-2. Google OAUTH credentials sync with DB. (x)
-3. Sync Google OAUTH tokens with App's tokens. (x)
-4. Modal to show when session expires (refresh token expiry). (x)
-5. General UI changes. (x)
-6. Some Refactoring. (x)
-7. Sync validation as same as zod. (x)
+1. Sync validation as same as zod. (x)
+2. create password UI (no forgot password option when user is present)
