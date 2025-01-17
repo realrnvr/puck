@@ -5,6 +5,7 @@ import Inline from "yet-another-react-lightbox/plugins/inline";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import MangaControllerPlugin from "./plugin/MangaControllerPlugin";
+import BackBtn from "./components/BackBtn";
 
 export const plugins = [
   Inline,
@@ -29,4 +30,8 @@ export const carousel = {
 
 export const animation = {
   zoom: 500,
+};
+
+export const toolbar = {
+  buttons: [<BackBtn key={"controller-back-btn"} />],
 };
