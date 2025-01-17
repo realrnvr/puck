@@ -2,23 +2,6 @@
   margin-top: 1.5rem;
 }
 
-.mangas__back {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.mangas__arrow-svg {
-  width: 22px;
-  aspect-ratio: 1 / 1;
-}
-
-.mangas__span-text {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-200);
-  text-decoration: underline;
-}
-
 .mangas__title {
   font-size: var(--fs-md);
   font-weight: var(--fw-400);
@@ -58,11 +41,6 @@
 @media (min-width: 768px) {
   .mangas__title {
     font-size: var(--fs-lg);
-  }
-
-  .mangas__span-text {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-300);
   }
 }
 
