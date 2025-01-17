@@ -1,32 +1,46 @@
 import "./account.css";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import ChangePasswordBtn from "../../components/ChangePasswordBtn";
 
 const Account = () => {
-  const { user } = useAuth();
-
-  console.log(user);
+  const { user, isPending } = useAuth();
 
   return (
     <section className="account | container">
       <div>
-        <h2 className="account__username">{user?.username}</h2>
+        <h2 className="account__username">
+          {isPending ? (
+            <Skeleton
+              baseColor="#202020"
+              highlightColor="#444"
+              height={"100%"}
+              width={"150px"}
+            />
+          ) : (
+            user?.username
+          )}
+        </h2>
+        <p className="account__mail">
+          {isPending ? (
+            <Skeleton
+              baseColor="#202020"
+              highlightColor="#444"
+              height={"100%"}
+              width={"150px"}
+            />
+          ) : (
+            user?.email
+          )}
+        </p>
         <div>
           <Link to="/account-setting" className="account__settings">
             Account Settings
           </Link>
         </div>
         <div>
-          <Link
-            to={
-              user?.type === "google"
-                ? console.log("google login pls create password first")
-                : "/change-password"
-            }
-            className="account__settings"
-          >
-            Change Password
-          </Link>
+          <ChangePasswordBtn user={user} isPending={isPending} />
         </div>
       </div>
       <div className="account__btn-container">
