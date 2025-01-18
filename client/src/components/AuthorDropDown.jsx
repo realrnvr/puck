@@ -21,13 +21,23 @@ const AuthorDropDown = ({ author, name, isAuthor }) => {
         )}
         {author ? (
           <button
-            className="manga__btn manga__btn--flex-none"
+            className="manga__drop-down-btn"
             onClick={() => setDrop((prevDrop) => !prevDrop)}
           >
             {drop ? (
-              <img className="manga__icon" src="/arrow-up.svg" alt="" />
+              <svg className="manga__drop-down-icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M8.12 14.71L12 10.83l3.88 3.88a.996.996 0 1 0 1.41-1.41L12.7 8.71a.996.996 0 0 0-1.41 0L6.7 13.3a.996.996 0 0 0 0 1.41c.39.38 1.03.39 1.42 0"
+                ></path>
+              </svg>
             ) : (
-              <img className="manga__icon" src="/arrow-down.svg" alt="" />
+              <svg className="manga__drop-down-icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6l-6-6z"
+                ></path>
+              </svg>
             )}
           </button>
         ) : null}
