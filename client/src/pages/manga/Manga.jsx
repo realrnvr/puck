@@ -112,7 +112,7 @@ const Manga = () => {
                   width={"100%"}
                 />
               ) : (
-                <span>
+                <span className="manga__created-by">
                   Created by {authorData?.data?.data?.attributes?.name}
                 </span>
               )}
@@ -161,7 +161,7 @@ const Manga = () => {
                   width={"150px"}
                 />
               ) : (
-                <span>
+                <span className="manga__publication">
                   Publication: {statics?.data?.data?.attributes?.year},{" "}
                   {statics?.data?.data?.attributes?.status}
                 </span>
@@ -256,7 +256,7 @@ const Manga = () => {
                   baseColor="#202020"
                   highlightColor="#444"
                   width={"100%"}
-                  count={15}
+                  count={10}
                 />
               ) : (
                 statics?.data?.data?.attributes?.altTitles?.map((val, idx) => {
