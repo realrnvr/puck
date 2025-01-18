@@ -331,9 +331,12 @@ export const randomManga = async (req, res) => {
         img: 1,
         mangaId: 1,
         authorId: 1,
+        description: 1,
       },
     },
   ]);
+
+  console.log(manga);
 
   res.status(StatusCodes.OK).json({ manga, length: manga.length });
 };
