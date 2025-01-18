@@ -9,6 +9,42 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-xss);
   font-weight: var(--fw-200);
 }
+
+.markdown hr {
+  border: 0;
+  height: 1px;
+  background-color: var(--clr-primary);
+  color: var(--clr-primary);
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+@media (min-width: 640px) {
+  .markdown p,
+  .markdown h1,
+  .markdown h2,
+  .markdown h3,
+  .markdown h4,
+  .markdown h5,
+  .markdown h6 {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-200);
+  }
+}
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+/* @media (min-width: 1024px) {} */
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
