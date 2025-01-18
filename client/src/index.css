@@ -83,6 +83,8 @@
   --clr-secondary: #606055;
 
   /* font size */
+  --fs-3xs: 0.75rem;
+  --fs-2xs: 0.9375rem;
   --fs-xxs: 1rem;
   --fs-xs: 1.15rem;
   --fs-sm: 1.5rem;
