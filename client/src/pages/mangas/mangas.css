@@ -13,7 +13,7 @@
 }
 
 .mangas__container {
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
@@ -21,10 +21,9 @@
   padding-block: 2rem;
 }
 
-.infi {
-  width: 100%;
-  height: 20px;
-  background-color: red;
+.mangas__visual {
+  height: 1px;
+  width: 1px;
 }
 
 /* Xs */
