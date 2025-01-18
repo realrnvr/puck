@@ -9,9 +9,8 @@
   width: 100%;
   height: 100%;
   z-index: -9;
-  opacity: 0.5;
+  opacity: 0.3;
   border-radius: 25px;
-  filter: blur(1px);
 }
 
 .newsletter__container {
@@ -36,7 +35,7 @@
 .newsletter__form {
   margin-top: 0.5rem;
   background-color: var(--bg-clr-primary);
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
   border-radius: 10px;
   width: fit-content;
 }
@@ -107,7 +106,7 @@
   }
 
   .newsletter__form {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 }
 

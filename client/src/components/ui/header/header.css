@@ -18,13 +18,13 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-400);
   color: var(--clr-secondary);
+  font-style: italic;
 }
 
 .header__sec-link {
   font-size: var(--fs-xxs);
   font-weight: var(--fw-300);
   text-decoration: underline;
-  font-style: italic;
 }
 
 .header__main-wrapper {

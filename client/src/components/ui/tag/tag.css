@@ -1,6 +1,6 @@
 .tag {
-  font-size: 12px;
-  font-weight: var(--fw-600);
+  font-size: var(--fs-3xs);
+  font-weight: var(--fw-500);
   background-color: rgb(232, 150, 63);
   color: #fff;
   padding: 0.3rem 0.5rem;
@@ -8,3 +8,25 @@
   text-transform: uppercase;
   width: fit-content;
 }
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+@media (min-width: 1024px) {
+  .tag {
+    font-size: var(--fs-2xs);
+  }
+}
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
