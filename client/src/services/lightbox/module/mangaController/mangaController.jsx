@@ -53,7 +53,9 @@ function MangaController({
                   />
                 ) : (
                   <>
-                    <span>Chapter - {chapter.currChapter}</span>
+                    <span className="controller__current-count">
+                      Chapter - {chapter.currChapter}
+                    </span>
                     <svg
                       className="controller__list-svg"
                       fill="currentColor"
@@ -89,7 +91,9 @@ function MangaController({
                   />
                 ) : (
                   <>
-                    <span>Volume - {chapter.currVolume}</span>
+                    <span className="controller__current-count">
+                      Volume - {chapter.currVolume}
+                    </span>
                     <svg
                       className="controller__list-svg"
                       fill="currentColor"
@@ -136,7 +140,9 @@ function MangaController({
         </div>
         <div className="controller__container-left">
           <div className="controller__drop-down">
-            <label htmlFor="quality">Quality</label>
+            <label className="controller__quality-label" htmlFor="quality">
+              Quality
+            </label>
             {isChapterImage || isChapter ? (
               <Skeleton
                 baseColor="#202020"
