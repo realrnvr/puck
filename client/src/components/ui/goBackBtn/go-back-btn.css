@@ -11,14 +11,31 @@
 }
 
 .go__svg {
-  width: 25px;
+  width: 20px;
   aspect-ratio: 1 / 1;
   color: var(--clr-primary);
 }
 
 .go__text {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-xss);
   font-weight: var(--fw-400);
-  text-decoration: underline;
   text-transform: uppercase;
 }
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+/* @media (min-width: 1024px) {} */
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
