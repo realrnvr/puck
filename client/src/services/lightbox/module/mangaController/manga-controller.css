@@ -1,11 +1,12 @@
 :root {
-  --height: 350px;
-  --controller-icon-width: 25px;
-  --controller-counter-fs: 14px;
+  --controller--height: 350px;
+  --controller--icon-width: 25px;
+  --controller--counter-fs: 14px;
+  --controller--control-btn-width: 18px;
 }
 
 .controller-close {
-  transform: translateY(calc(-1 * var(--height)));
+  transform: translateY(calc(-1 * var(--controller--height)));
 }
 
 .controller__close-btn {
@@ -33,7 +34,7 @@
 }
 
 .controller__close-svg {
-  width: 30px;
+  width: var(--controller--icon-width);
   aspect-ratio: 1 / 1;
   fill: #fff;
 }
@@ -42,8 +43,8 @@
   background-color: var(--bg-clr-primary);
   box-shadow: 0px 0px 32px rgba(0, 0, 0, 1);
   position: absolute;
-  bottom: calc(-1 * var(--height));
-  height: var(--height);
+  bottom: calc(-1 * var(--controller--height));
+  height: var(--controller--height);
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   transition: transform 0.3s ease-in;
@@ -84,7 +85,7 @@
 }
 
 .controller__nav-svg {
-  width: 20px;
+  width: var(--controller--control-btn-width);
   aspect-ratio: 1 / 1;
   fill: #fff;
 }
@@ -102,10 +103,6 @@
 .controller__counter-skeleton {
   width: 120px;
 }
-
-/* .controller__tc-skeleton-sm {
-  width: 50px;
-} */
 
 .controller__curr-chapter {
   display: none;
@@ -143,7 +140,7 @@
 }
 
 .controller__pg-svg {
-  width: 20px;
+  width: var(--controller--control-btn-width);
   aspect-ratio: 1 / 1;
   color: #fff;
 }
@@ -162,7 +159,7 @@
   grid-template-columns: repeat(1, 1fr);
   gap: 0.3rem;
   transition: transform 0.3s ease-in;
-  height: calc(var(--height) - 100px);
+  height: calc(var(--controller--height) - 100px);
 }
 
 .controller__chapter-btn {
@@ -237,12 +234,12 @@
 }
 
 .controller__back-svg {
-  width: var(--controller-icon-width);
+  width: var(--controller--icon-width);
   aspect-ratio: 1 / 1;
 }
 
 .yarl__icon {
-  width: var(--controller-icon-width);
+  width: var(--controller--icon-width);
 }
 
 .yarl__counter {
@@ -280,8 +277,8 @@
 /* Xs */
 @media (min-width: 475px) {
   :root {
-    --controller-icon-width: 28px;
-    --controller-counter-fs: 16px;
+    --controller--icon-width: 28px;
+    --controller--counter-fs: 16px;
   }
 
   .controller__curr-chapter {
@@ -311,8 +308,8 @@
 /* Md */
 @media (min-width: 768px) {
   :root {
-    --controller-icon-width: 29px;
-    --controller-counter-fs: 17px;
+    --controller--icon-width: 29px;
+    --controller--counter-fs: 17px;
   }
 
   .controller__close-btn-sm {
@@ -334,7 +331,7 @@
 /* Lg */
 @media (min-width: 1024px) {
   :root {
-    --controller-icon-width: 32px;
+    --controller--icon-width: 32px;
   }
 
   .controller__chapter-list {
