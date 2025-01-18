@@ -2,19 +2,15 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
 
 import Home from "../../pages/home/Home";
-import ProtectedRoute from "../auth/ProtectedRoute";
 import Account from "../../pages/account/Account";
 import Template from "../../utils/template/Template";
 import Login from "../../components/auth/login/Login";
 import Signup from "../../components/auth/signup/Signup";
-import VerificationGaurd from "../auth/VerificationGaurd";
 import Verification from "../../pages/auth/verification/Verification";
 import Verified from "../../pages/auth/verified/Verified";
-import LoginGaurd from "../auth/LoginGaurd";
 import ForgotPassword from "../../pages/auth/forgotPassword/ForgotPassword";
 import ResetPassword from "../../pages/auth/resetPassword/ResetPassword";
 import PasswordVerification from "../../pages/auth/passwordVerification/PasswordVerification";
-import PasswordVerifiedGaurd from "../auth/PasswordVerifiedGaurd";
 import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified";
 import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
@@ -28,6 +24,9 @@ import Favourite from "../../pages/favourite/Favourite";
 import Test from "../../tests/Test";
 import AccountSetting from "../../pages/accountSetting/AccountSetting";
 import ChangePassword from "../../pages/changePassword/ChangePassword";
+import RestrictAccountSection from "../auth/RestrictAccountSection";
+import ProcessGaurd from "../auth/ProcessGaurd";
+import AuthRedirectGaurd from "../auth/AuthRedirectGaurd";
 
 const router = createBrowserRouter([
   {
@@ -57,18 +56,26 @@ const router = createBrowserRouter([
       {
         path: "/account",
         element: (
-          <ProtectedRoute>
+          <RestrictAccountSection>
             <Account />
-          </ProtectedRoute>
+          </RestrictAccountSection>
         ),
       },
       {
         path: "/account-setting",
-        element: <AccountSetting />,
+        element: (
+          <RestrictAccountSection>
+            <AccountSetting />
+          </RestrictAccountSection>
+        ),
       },
       {
         path: "/change-password",
-        element: <ChangePassword />,
+        element: (
+          <RestrictAccountSection>
+            <ChangePassword />
+          </RestrictAccountSection>
+        ),
       },
     ],
   },
@@ -84,84 +91,88 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <GoogleOAuthProviderBase>
-        <Template template="login">
-          <Login />
-        </Template>
+        <AuthRedirectGaurd>
+          <Template template="login">
+            <Login />
+          </Template>
+        </AuthRedirectGaurd>
       </GoogleOAuthProviderBase>
     ),
   },
   {
     path: "/login/loginTwo",
     element: (
-      <LoginGaurd>
+      <ProcessGaurd value={"log-mail"} to={"/login"}>
         <LoginTwo />
-      </LoginGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/login/loginGoogleAuth",
     element: (
-      <LoginGaurd>
+      <ProcessGaurd value={"log-mail"} to={"/login"}>
         <LoginGoogleAuth />
-      </LoginGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/signup",
     element: (
       <GoogleOAuthProviderBase>
-        <Template template="signup">
-          <Signup />
-        </Template>
+        <AuthRedirectGaurd>
+          <Template template="signup">
+            <Signup />
+          </Template>
+        </AuthRedirectGaurd>
       </GoogleOAuthProviderBase>
     ),
   },
   {
     path: "/verification",
     element: (
-      <VerificationGaurd value="sign-mail">
+      <ProcessGaurd value={"sign-mail"} to={"/login"}>
         <Verification />
-      </VerificationGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/verified/:verificationId",
     element: (
-      <VerificationGaurd value="sign-mail">
+      <ProcessGaurd value={"sign-mail"} to={"/login"}>
         <Verified />
-      </VerificationGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/forgot-password",
     element: (
-      <LoginGaurd>
+      <ProcessGaurd value={"log-mail"} to={"/login"}>
         <ForgotPassword />
-      </LoginGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/reset-password/:verificationId",
     element: (
-      <VerificationGaurd value="pass-mail">
+      <ProcessGaurd value={"pass-mail"} to={"/forgot-password"}>
         <ResetPassword />
-      </VerificationGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/password-verification",
     element: (
-      <VerificationGaurd value="pass-mail">
+      <ProcessGaurd value={"pass-mail"} to={"/forgot-password"}>
         <PasswordVerification />
-      </VerificationGaurd>
+      </ProcessGaurd>
     ),
   },
   {
     path: "/password-verified",
     element: (
-      <PasswordVerifiedGaurd>
+      <ProcessGaurd value={"pass-mail"} to={"/login/loginTwo"}>
         <PasswordVerified />
-      </PasswordVerifiedGaurd>
+      </ProcessGaurd>
     ),
   },
   { path: "/redirect", element: <Redirect /> },
