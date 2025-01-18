@@ -2,7 +2,7 @@
   --controller--height: 350px;
   --controller--icon-width: 25px;
   --controller--counter-fs: 14px;
-  --controller--control-btn-width: 18px;
+  --controller--control-btn-width: 16px;
 }
 
 .controller-close {
@@ -100,6 +100,11 @@
   gap: 0.7rem;
 }
 
+.controller__current-count {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+}
+
 .controller__counter-skeleton {
   width: 120px;
 }
@@ -118,6 +123,8 @@
   background-color: orange;
   padding: 0.2rem 0.5rem;
   border-radius: 10px;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fs-300);
 }
 
 .controller__pag {
@@ -150,6 +157,8 @@
   width: fit-content;
   padding: 0.3rem;
   border-radius: 7px;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-300);
 }
 
 .controller__chapter-list {
@@ -163,6 +172,8 @@
 }
 
 .controller__chapter-btn {
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-300);
   background-color: var(--bg-clr-secondary);
   width: 100%;
   height: 100%;
@@ -194,7 +205,12 @@
 .controller__container-left {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  justify-content: space-between;
+}
+
+.controller__quality-label {
+  font-size: var(--fs-2xs);
+  font-weight: var(--fs-400);
 }
 
 .controller__drop-down {
@@ -204,17 +220,21 @@
   background-color: var(--bg-clr-secondary);
   padding: 0.5rem;
   border-radius: 10px;
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
 }
 
 .controller__select {
+  font-size: var(--fs-3xs);
+  font-weight: var(--fw-300);
+  background-color: var(--bg-clr-primary);
+  outline: 1px solid var(--clr-primary);
   border: 0;
   outline: 0;
-  background-color: var(--bg-clr-primary);
   color: #fff;
-  outline: 1px solid var(--clr-primary);
   border-radius: 7px;
   cursor: pointer;
-  width: 9ch;
+  padding: 0.2rem;
 }
 
 .controller__option {
@@ -222,7 +242,6 @@
   background: var(--bg-clr-secondary);
   color: #fff;
   padding: 0.3rem;
-  font-size: 14px;
 }
 
 .controller__lg-screen {
@@ -319,6 +338,11 @@
   .controller {
     width: 75%;
   }
+
+  .controller__container-left {
+    gap: 4rem;
+    justify-content: normal;
+  }
 }
 
 /* Md-Lg */
@@ -332,18 +356,30 @@
 @media (min-width: 1024px) {
   :root {
     --controller--icon-width: 32px;
+    --controller--control-btn-width: 18px;
+  }
+
+  .controller__quality-label {
+    font-size: var(--fs-xss);
+    font-weight: var(--fs-400);
+  }
+
+  .controller__select {
+    font-size: var(--fs-2xs);
   }
 
   .controller__chapter-list {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .controller__sm-screen {
-    display: none;
+  .controller__chapter-btn {
+    font-size: var(--fs-xss);
+    font-weight: var(--fw-400);
   }
 
-  .controller__lg-screen {
-    display: flex;
+  .controller__pag-counter {
+    font-size: var(--fs-xss);
+    font-weight: var(--fw-400);
   }
 
   .controller__tc-skeleton {
@@ -357,7 +393,15 @@
 }
 
 /* Xl */
-/* @media (min-width: 1280px) {} */
+@media (min-width: 1280px) {
+  .controller__sm-screen {
+    display: none;
+  }
+
+  .controller__lg-screen {
+    display: flex;
+  }
+}
 
 /* 2Xl */
 /* @media (min-width: 1440px) {} */
