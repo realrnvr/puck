@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
     enabled: !!token,
   });
 
-  const { mutate: logoutMutate } = useMutation({
+  const { mutate: logoutMutate, isPending: mutateLogoutPending } = useMutation({
     mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["user"] });
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isPending: mutateTokenPending } = useMutation({
     mutationFn: () => axiosInstance.post("/api/v1/auth/me"),
     onSuccess: (data) => {
       setToken(data.data.accessToken);
@@ -113,6 +113,8 @@ export const AuthProvider = ({ children }) => {
         user: data?.data,
         logout: logoutMutate,
         isPending: isLoading,
+        mutateTokenPending,
+        mutateLogoutPending,
       }}
     >
       {children}
