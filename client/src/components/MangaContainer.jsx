@@ -57,7 +57,7 @@ const MangaContainer = () => {
           <MangaCardSkeleton count={LIMIT} />
         )}
       </div>
-      <div ref={ref} style={{ height: "1px", width: "1px" }}></div>
+      <div ref={ref} className="mangas__visual"></div>
     </>
   );
 };
