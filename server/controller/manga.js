@@ -132,14 +132,17 @@ export const author = async (req, res) => {
 };
 
 export const cover = async (req, res) => {
-  const { mangaId } = req.params;
+  const {
+    params: { mangaId },
+    query: { volume = "desc" },
+  } = req;
 
   if (!mangaId) {
     throw new BadRequestError("provide manga Id");
   }
 
   try {
-    const cacheKey = `cover:${mangaId}`;
+    const cacheKey = `cover:${mangaId}:${volume}`;
 
     const cachedCover = await redisClient.get(cacheKey);
     if (cachedCover) {
@@ -155,7 +158,7 @@ export const cover = async (req, res) => {
         manga: [mangaId],
         limit: 1,
         order: {
-          volume: "desc",
+          volume: volume,
         },
         includes: ["manga"],
       },
@@ -306,9 +309,9 @@ export const search = async (req, res) => {
     {
       $project: {
         title: 1,
-        img: 1,
         mangaId: 1,
         authorId: 1,
+        description: 1,
         highlights: { $meta: "searchHighlights" },
         score: { $meta: "searchScore" },
       },
@@ -328,15 +331,12 @@ export const randomManga = async (req, res) => {
     {
       $project: {
         title: 1,
-        img: 1,
         mangaId: 1,
         authorId: 1,
         description: 1,
       },
     },
   ]);
-
-  console.log(manga);
 
   res.status(StatusCodes.OK).json({ manga, length: manga.length });
 };
