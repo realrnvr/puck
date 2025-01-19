@@ -1,8 +1,6 @@
 import "./manga.css";
-import { axiosInstance } from "../../services/api/axios";
-import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMangaData } from "../../hooks/useMangaData";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
 import Skeleton from "react-loading-skeleton";
@@ -14,38 +12,17 @@ import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 const Manga = () => {
   const { mangaId, authorId } = useParams();
 
-  const { data: statics, isPending: isStatics } = useQuery({
-    queryKey: ["static", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/statics/${mangaId}`),
-  });
-
-  const { data: authorData, isPending: isAuthor } = useQuery({
-    queryKey: ["author", { authorId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/author/${authorId}`),
-  });
-
-  const { data: coverImg, isPending: isCover } = useQuery({
-    queryKey: ["coverImg", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
-  });
-
-  const manga = statics?.data?.data?.attributes?.description?.en;
-  const author = authorData?.data?.data?.attributes?.biography?.en;
-
-  const mangaData = useMemo(
-    () => ({
-      mangaTitle: statics?.data?.data?.attributes?.title?.en,
-      mangaId: mangaId,
-      authorId: authorId,
-      coverUrl: coverImg?.data?.coverImgUrl,
-    }),
-    [
-      statics?.data?.data?.attributes?.title?.en,
-      mangaId,
-      authorId,
-      coverImg?.data?.coverImgUrl,
-    ]
-  );
+  const {
+    statics,
+    isStatics,
+    authorData,
+    isAuthor,
+    coverImg,
+    isCover,
+    manga,
+    author,
+    mangaData,
+  } = useMangaData({ mangaId, authorId });
 
   return (
     <article className="manga" style={{ marginTop: "1.5rem" }}>
