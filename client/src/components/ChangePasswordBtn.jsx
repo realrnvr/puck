@@ -27,6 +27,7 @@ const ChangePasswordBtn = ({ user, isPending }) => {
       navigate("/change-password");
     }
   };
+
   return (
     <button
       type="button"
