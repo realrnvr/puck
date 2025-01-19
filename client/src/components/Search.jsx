@@ -1,34 +1,16 @@
-import { useState } from "react";
-import { axiosInstance } from "../services/api/axios";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useSearch } from "../hooks/useSearch";
 import Skeleton from "react-loading-skeleton";
 import PropTypes from "prop-types";
 
 const Search = ({ onClick }) => {
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 400);
-
-  const navigate = useNavigate();
-
-  const fetchManga = (query) => {
-    return axiosInstance.get(`/api/v1/manga/search?query=${query}`);
-  };
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["search", { debouncedQuery }],
-    queryFn: () => fetchManga(debouncedQuery),
-    enabled: !!debouncedQuery,
-  });
-
-  const handleQueryChange = (e) => {
-    setQuery(e.target.value);
-  };
-
-  const handleNavigate = ({ mangaId, authorId }) => {
-    navigate(`/manga/${mangaId}/${authorId}`);
-  };
+  const {
+    query,
+    setQuery,
+    handleQueryChange,
+    data,
+    isLoading,
+    handleNavigate,
+  } = useSearch();
 
   return (
     <>
@@ -67,6 +49,7 @@ const Search = ({ onClick }) => {
                   mangaId: manga?.mangaId,
                   authorId: manga?.authorId,
                 });
+                setQuery("");
               }}
             >
               {manga?.title}
@@ -83,7 +66,7 @@ const Search = ({ onClick }) => {
             />
           ) : null}
           {query && !isLoading && !data?.data?.manga?.length ? (
-            <p>No results found.</p>
+            <p className="header__no-search">No results found.</p>
           ) : null}
         </ul>
       </div>
