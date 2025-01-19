@@ -1,0 +1,46 @@
+.case-manga {
+  margin-top: 3rem;
+}
+
+.case-manga__title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-400);
+  background-color: var(--bg-clr-secondary);
+  width: fit-content;
+  padding: 0.3rem 0.5rem;
+  border-radius: 7px;
+}
+
+.case-manga__slider {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-clr-secondary);
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+/* @media (min-width: 640px) {} */
+
+/* Md */
+@media (min-width: 768px) {
+  .case-manga__title {
+    font-size: var(--fs-md);
+  }
+}
+
+/* Lg */
+@media (min-width: 1024px) {
+  .case-manga__slider {
+    margin-top: 2.5rem;
+  }
+}
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
