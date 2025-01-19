@@ -10,8 +10,8 @@ Currently, two official plugins are available:
 # WORK TO DO:
 
 1. Make reusable guard components + no login, signup when user is there. (done)
-2. Finish UI and general refactoring + favourite page wrapper.
-3. To add show case in home page or not?
+2. Finish UI and general refactoring (done) + favourite page wrapper.
+3. To add show case in home page or not? (yes -> done)
 4. Replace all the future updates with under construction holder.
 5. Error Boundaries for you know what + 404 pages + error pages (if any).
 6. One last time AUTH Test.
