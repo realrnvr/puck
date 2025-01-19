@@ -271,6 +271,12 @@
   margin-top: 0.3rem;
 }
 
+.header__no-search {
+  margin-top: 0.2rem;
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-300);
+}
+
 /* ********** */
 
 /* Xs */
