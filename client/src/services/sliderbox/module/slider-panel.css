@@ -1,0 +1,43 @@
+.panel {
+  top: 20px;
+  right: 15px;
+  position: absolute;
+}
+
+.panel__btn {
+  font-size: var(--fs-xss);
+  font-weight: var(--fw-400);
+  background-color: orange;
+  outline: 0;
+  border: 0;
+  padding: 0.3rem;
+  border-radius: 7px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Xs */
+/* @media (min-width: 475px) {} */
+
+/* Sm */
+@media (min-width: 640px) {
+  .panel {
+    top: 25px;
+  }
+}
+
+/* Md */
+/* @media (min-width: 768px) {} */
+
+/* Lg */
+@media (min-width: 1024px) {
+  .panel__btn {
+    font-size: var(--fs-xs);
+  }
+}
+
+/* Xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-width: 1440px) {} */
