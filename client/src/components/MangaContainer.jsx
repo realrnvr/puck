@@ -1,7 +1,5 @@
-import { Fragment, useEffect } from "react";
-import { useInView } from "react-intersection-observer";
-import { axiosInstance } from "../services/api/axios";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { Fragment } from "react";
+import { useInfiniteManga } from "../hooks/useInfiniteManga";
 import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
 import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
@@ -9,30 +7,7 @@ import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
 const LIMIT = 10;
 
 const MangaContainer = () => {
-  const fetchMangas = async ({ pageParam = "" }) => {
-    const { data } = await axiosInstance.get(
-      `/api/v1/manga/mangas?limit=${LIMIT}&cursor=${pageParam}`
-    );
-    return data;
-  };
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ["mangas"],
-      queryFn: fetchMangas,
-      initialPageParam: "",
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    });
-
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  });
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const { data, isFetching, isFetchingNextPage, ref } = useInfiniteManga(LIMIT);
 
   return (
     <>
