@@ -54,9 +54,9 @@ const MangaCard = ({ title, mangaId, authorId }) => {
 
 MangaCard.propTypes = {
   img: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  mangaId: PropTypes.string.isRequired,
-  authorId: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  mangaId: PropTypes.string,
+  authorId: PropTypes.string,
 };
 
 export default memo(MangaCard);
