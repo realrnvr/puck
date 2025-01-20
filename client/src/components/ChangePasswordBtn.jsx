@@ -10,7 +10,9 @@ const ChangePasswordBtn = ({ user, isPending }) => {
     if (user.type === "google") {
       toast(
         <NavigationToast
-          message={"create password:"}
+          message={
+            "Looks like you are a google login please create a password first"
+          }
           btnText={"here"}
           email={user?.email}
           navigate={navigate}
