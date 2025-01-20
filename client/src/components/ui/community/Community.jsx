@@ -6,7 +6,12 @@ const Community = () => {
       <div>
         <h3 className="community__link">Explore Community</h3>
       </div>
-      <div className="community__posts"></div>
+      <div className="placeholder">
+        <p className="community__text">
+          This feature is coming soon. Stay tuned!
+        </p>
+        <img className="community__placeholder" src="/pattern-3.svg" alt="" />
+      </div>
     </section>
   );
 };
