@@ -1,34 +1,78 @@
 import "./favourite.css";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../services/api/axios";
+import { useAuth } from "../../hooks/useAuth";
+import { Fragment } from "react";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
-import { useAuth } from "../../hooks/useAuth";
+
+const LIMIT = 8;
 
 const Favourite = () => {
   const { user } = useAuth();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["all-favourites"],
-    queryFn: () => axiosInstance.get("/api/v1/client/all-favourites"),
-    enabled: !!user,
-  });
+  const fetchFavourites = async ({ pageParam = "" }) => {
+    const { data } = await axiosInstance.get(
+      `/api/v1/client/all-favourites?limit=${LIMIT}&cursor=${pageParam}`
+    );
+    return data;
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["all-favourites"],
+      queryFn: fetchFavourites,
+      initialPageParam: "",
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      enabled: !!user,
+    });
+
+  console.log();
 
   return (
-    <article className="mangas__container | container">
-      {data?.data?.client?.map((val, idx) => {
-        return (
-          <MangaCard
-            key={idx}
-            img={val?.coverUrl}
-            title={val?.mangaTitle}
-            mangaId={val?.mangaId}
-            authorId={val?.authorId}
-          />
-        );
-      })}
-      {isLoading ? <MangaCardSkeleton count={5} /> : null}
-    </article>
+    <section className="favourite | container">
+      <h2 className="favourite__title">Favourites</h2>
+      <div className="mangas__container">
+        {data?.pages?.map((page, idx) => {
+          return (
+            <Fragment key={idx}>
+              {page?.client?.map((val, idx) => {
+                return (
+                  <MangaCard
+                    key={idx}
+                    img={val?.coverUrl}
+                    title={val?.mangaTitle}
+                    mangaId={val?.mangaId}
+                    authorId={val?.authorId}
+                  />
+                );
+              })}
+            </Fragment>
+          );
+        })}
+        {isFetching && !isFetchingNextPage && !data?.pages?.[0] ? (
+          <MangaCardSkeleton count={LIMIT} />
+        ) : null}
+      </div>
+      {data?.pages?.[0].client.length ? (
+        <div className="favourite__bottom-container">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="favourite__load-more-btn"
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage
+              ? "Load More"
+              : "Nothing more to load"}
+          </button>
+        </div>
+      ) : null}
+      {!data?.pages?.[0].client.length ? (
+        <p className="favourite__alt">Your favorites list is empty.</p>
+      ) : null}
+    </section>
   );
 };
 
