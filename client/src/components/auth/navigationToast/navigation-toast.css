@@ -1,6 +1,34 @@
 .v-toast__t-container {
   margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+}
+
+.v-toast__t-verification-btn {
+  border: 0;
+  outline: 0;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background-color: orange;
+  cursor: pointer;
+}
+
+.v-toast__t-description {
+  padding: 0 !important;
+  max-width: 27ch;
+}
+
+.v-toast__t-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 10px;
+  padding: 0.3rem;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.v-toast__t-close-btn-svg {
+  width: 20px;
+  color: var(--bg-clr-primary);
 }
