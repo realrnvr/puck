@@ -27,6 +27,10 @@ import ChangePassword from "../../pages/changePassword/ChangePassword";
 import RestrictAccountSection from "../auth/RestrictAccountSection";
 import ProcessGaurd from "../auth/ProcessGaurd";
 import AuthRedirectGaurd from "../auth/AuthRedirectGaurd";
+import RestrictFavourite from "../auth/RestrictFavourite";
+import About from "../../pages/about/About";
+import Community from "../../pages/community/Community";
+import Watch from "../../pages/watch/Watch";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +46,18 @@ const router = createBrowserRouter([
         element: <Read />,
       },
       {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/community",
+        element: <Community />,
+      },
+      {
+        path: "/watch",
+        element: <Watch />,
+      },
+      {
         path: "/manga/:mangaId/:authorId",
         element: <Manga />,
       },
@@ -51,7 +67,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/favourite",
-        element: <Favourite />,
+        element: (
+          <RestrictFavourite>
+            <Favourite />
+          </RestrictFavourite>
+        ),
       },
       {
         path: "/account",
