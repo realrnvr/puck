@@ -9,7 +9,8 @@ const Account = () => {
 
   return (
     <section className="account | container">
-      <div>
+      <h2 className="account__title">Account section</h2>
+      <div className="acount__content">
         <h2 className="account__username">
           {isPending ? (
             <Skeleton
