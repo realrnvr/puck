@@ -1,9 +1,10 @@
 import "./fav-btn.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../../services/api/axios";
-import PropTypes from "prop-types";
 import { useTransition } from "react";
 import { useAuth } from "../../../hooks/useAuth";
+import PropTypes from "prop-types";
+import toast from "react-hot-toast";
 
 const FavBtn = ({ mangaId, mangaData, className = "" }) => {
   const [isPending, startTransition] = useTransition();
@@ -19,84 +20,99 @@ const FavBtn = ({ mangaId, mangaData, className = "" }) => {
   const { mutate: add } = useMutation({
     mutationFn: () =>
       axiosInstance.post(`/api/v1/client/add-favourite`, mangaData),
+
     onMutate: async () => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries(["isFavourite"]);
+      toast("Adding...", { duration: Infinity, id: "fav-add-toast" });
+      await queryClient.cancelQueries({
+        queryKey: ["isFavourite", { mangaId }],
+      });
 
-      // Snapshot the previous values
-      const previousIsFavourite = queryClient.getQueryData(["isFavourite"]);
+      const previousIsFavourite = queryClient.getQueryData([
+        "isFavourite",
+        { mangaId },
+      ]);
 
-      // Optimistically update isFavourite
-      queryClient.setQueryData(["isFavourite"], () => {
+      // Update isFavourite state
+      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
         return {
-          data: {
-            isFavourite: true,
-          },
+          ...old,
+          data: { isFavourite: true },
         };
       });
 
-      return { previousIsFavourite };
+      return {
+        previousIsFavourite,
+      };
     },
+
     onError: (err, newFavourite, context) => {
-      // Rollback on error
       if (context?.previousIsFavourite) {
-        queryClient.setQueryData(["isFavourite"], context.previousIsFavourite);
+        queryClient.setQueryData(
+          ["isFavourite", { mangaId }],
+          context.previousIsFavourite
+        );
       }
     },
+
     onSettled: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["isFavourite"] });
+      queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
+      toast.remove("fav-add-toast");
     },
   });
 
   const { mutate: remove } = useMutation({
     mutationFn: () =>
       axiosInstance.delete(`/api/v1/client/remove-favourite/${mangaId}`),
+
     onMutate: async () => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries(["isFavourite"]);
-      await queryClient.cancelQueries(["all-favourites"]);
+      toast("removing...", { duration: Infinity, id: "fav-remove-toast" });
+      await queryClient.cancelQueries({
+        queryKey: ["isFavourite", { mangaId }],
+      });
+      await queryClient.cancelQueries({ queryKey: ["all-favourites"] });
 
-      // Snapshot the previous values
-      const previousIsFavourite = queryClient.getQueryData(["isFavourite"]);
+      const previousIsFavourite = queryClient.getQueryData([
+        "isFavourite",
+        { mangaId },
+      ]);
       const previousAllFavourite = queryClient.getQueryData(["all-favourites"]);
+      console.log(previousAllFavourite);
 
-      // Optimistically update isFavourite
-      queryClient.setQueryData(["isFavourite"], () => {
+      // Update isFavourite state
+      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
         return {
-          data: {
-            isFavourite: false,
-          },
+          ...old,
+          data: { isFavourite: false },
         };
       });
-      // Optimistically update all-favourites
+
+      // Update all-favourites while maintaining structure
       queryClient.setQueryData(["all-favourites"], (old) => {
-        if (!old?.data?.data?.client) {
-          return {
-            data: {
-              data: {
-                client: [],
-              },
-            },
-          };
-        }
         return {
-          data: {
-            data: {
-              client: old.data.data.client.filter(
-                (val) => val.mangaId !== mangaId
-              ),
-            },
-          },
+          ...old,
+          pages: old.pages.map((page) => {
+            return {
+              ...page,
+              client: page.client.filter((val) => {
+                return val.mangaId !== mangaId;
+              }),
+            };
+          }),
         };
       });
 
-      return { previousIsFavourite, previousAllFavourite };
+      return {
+        previousIsFavourite,
+        previousAllFavourite,
+      };
     },
+
     onError: (err, newFavourite, context) => {
-      // Rollback on error
       if (context?.previousIsFavourite) {
-        queryClient.setQueryData(["isFavourite"], context.previousIsFavourite);
+        queryClient.setQueryData(
+          ["isFavourite", { mangaId }],
+          context.previousIsFavourite
+        );
       }
       if (context?.previousAllFavourite) {
         queryClient.setQueryData(
@@ -105,10 +121,11 @@ const FavBtn = ({ mangaId, mangaData, className = "" }) => {
         );
       }
     },
+
     onSettled: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["isFavourite"] });
+      queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
       queryClient.invalidateQueries({ queryKey: ["all-favourites"] });
+      toast.remove("fav-remove-toast");
     },
   });
 
@@ -120,12 +137,19 @@ const FavBtn = ({ mangaId, mangaData, className = "" }) => {
     });
   };
 
+  const handleUserCheck = () => {
+    if (auth.user) return;
+
+    toast("Please login!", { duration: 3000 });
+  };
+
   return (
     <button
       className={`fav-btn ${className} ${
         isLoading || isPending ? "fav-btn__disable" : null
       }`}
       onClick={(e) => {
+        handleUserCheck();
         handleFavourite();
         e.stopPropagation();
       }}
