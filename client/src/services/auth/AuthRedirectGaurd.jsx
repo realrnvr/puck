@@ -9,7 +9,7 @@ const AuthRedirectGaurd = ({ children }) => {
   if (isPending) {
     return (
       <div className="redirect">
-        <Loader />;
+        <Loader />
       </div>
     );
   }
