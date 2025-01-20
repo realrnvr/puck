@@ -17,6 +17,9 @@
   text-transform: uppercase;
   letter-spacing: -0.05em;
 }
+.read__title--fs {
+  font-size: 2.9rem;
+}
 
 .read__description {
   font-size: var(--fs-xs);
