@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const RestrictAccountSection = ({ children, to = "/login" }) => {
   const auth = useAuth();
 
-  if (auth.token === null) {
+  if (!auth.token) {
     return <Navigate to={to} replace />;
   }
 
