@@ -15,11 +15,23 @@ export const favourite = async (req, res) => {
 };
 
 export const Allfavourites = async (req, res) => {
+  const limit = Number(req.query.limit) || 8;
+  const cursor = req.query.cursor;
   const { userId } = req.user;
 
-  const client = await Client.find({ createdBy: userId }).sort("desc");
+  let query = { createdBy: userId };
+  if (cursor) {
+    query = { _id: { $gt: cursor } };
+  }
+
+  const client = await Client.find(query).sort({ _id: 1 }).limit(limit);
+
+  const nextCursor =
+    client.length === limit ? client[client.length - 1]._id : null;
+
   res.status(StatusCodes.OK).json({
     client,
+    nextCursor,
     length: client.length,
   });
 };
