@@ -9,16 +9,16 @@ Currently, two official plugins are available:
 
 # WORK TO DO:
 
-1. Make reusable guard components + no login, signup when user is there. (done)
-2. Finish UI and general refactoring (done) + favourite page wrapper.
+1. Make reusable guard components (done) + no login, signup when user is there. (done)
+2. Finish UI and general refactoring (done) + favourite page wrapper (done).
 3. To add show case in home page or not? (yes -> done)
-4. Replace all the future updates with under construction holder.
+4. Replace all the future updates with under construction holder. (done)
 5. Error Boundaries for you know what + 404 pages + error pages (if any).
-6. One last time AUTH Test.
-7. Google AUTH conditional UI.
+6. One last time AUTH Test. (done)
+7. Google AUTH conditional UI. (no need)
 8. Scroll bug? fix may be?
-9. Put blur background behind search results.
-10. Make Dynamic manga cover image size?
+9. Put blur background behind search results. (done)
+10. Make Dynamic manga cover image size? (yes -> done)
 11. Make About page and put credits there.
 12. Make all mutations & queries go into seperate files.
 13. Zod validation sync with frontend validation logic.
