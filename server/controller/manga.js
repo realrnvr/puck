@@ -134,7 +134,7 @@ export const author = async (req, res) => {
 export const cover = async (req, res) => {
   const {
     params: { mangaId },
-    query: { volume = "desc" },
+    query: { volume = "desc", width = 256 },
   } = req;
 
   if (!mangaId) {
@@ -142,7 +142,7 @@ export const cover = async (req, res) => {
   }
 
   try {
-    const cacheKey = `cover:${mangaId}:${volume}`;
+    const cacheKey = `cover:${mangaId}:${volume}:${width}`;
 
     const cachedCover = await redisClient.get(cacheKey);
     if (cachedCover) {
@@ -169,7 +169,7 @@ export const cover = async (req, res) => {
       throw new NotFoundError("Cover not found");
     }
 
-    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg`;
+    const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.${width}.jpg`;
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(coverImgUrl));
 
