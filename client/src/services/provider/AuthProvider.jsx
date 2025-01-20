@@ -1,11 +1,13 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import PropTypes from "prop-types";
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(undefined);
+  const [token, setToken] = useLocalStorage("token", undefined);
+  // const [isTokenLoading, setIsTokenLoading] = useState(false);
   const queryClient = useQueryClient();
   console.log("token state", token);
 
