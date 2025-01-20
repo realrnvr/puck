@@ -38,37 +38,39 @@ const Search = ({ onClick }) => {
             </svg>
           </p>
         </form>
-        <ul className="search__result">
-          {data?.data?.manga?.map((manga) => (
-            <li
-              key={manga.mangaId}
-              className="search__item"
-              onClick={() => {
-                onClick?.();
-                handleNavigate({
-                  mangaId: manga?.mangaId,
-                  authorId: manga?.authorId,
-                });
-                setQuery("");
-              }}
-            >
-              {manga?.title}
-            </li>
-          ))}
-          {isLoading ? (
-            <Skeleton
-              baseColor="#202020"
-              highlightColor="#444"
-              height={"25px"}
-              width={"100%"}
-              className="search__Skeleton"
-              count={4}
-            />
-          ) : null}
-          {query && !isLoading && !data?.data?.manga?.length ? (
-            <p className="header__no-search">No results found.</p>
-          ) : null}
-        </ul>
+        {data?.data?.manga?.length ? (
+          <ul className="search__result">
+            {data?.data?.manga?.map((manga) => (
+              <li
+                key={manga.mangaId}
+                className="search__item"
+                onClick={() => {
+                  onClick?.();
+                  handleNavigate({
+                    mangaId: manga?.mangaId,
+                    authorId: manga?.authorId,
+                  });
+                  setQuery("");
+                }}
+              >
+                {manga?.title}
+              </li>
+            ))}
+            {isLoading ? (
+              <Skeleton
+                baseColor="#202020"
+                highlightColor="#444"
+                height={"25px"}
+                width={"100%"}
+                className="search__Skeleton"
+                count={4}
+              />
+            ) : null}
+            {query && !isLoading && !data?.data?.manga?.length ? (
+              <p className="header__no-search">No results found.</p>
+            ) : null}
+          </ul>
+        ) : null}
       </div>
     </>
   );
