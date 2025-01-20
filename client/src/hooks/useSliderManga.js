@@ -12,7 +12,9 @@ export const useSliderManga = () => {
       data?.data?.manga?.map((val) => ({
         queryKey: ["manga-cover-slider", { mangaId: val.mangaId }],
         queryFn: () =>
-          axiosInstance.get(`/api/v1/manga/cover/${val.mangaId}?volume=asc`),
+          axiosInstance.get(
+            `/api/v1/manga/cover/${val.mangaId}?volume=asc&width=512`
+          ),
       })) ?? [],
   });
 
