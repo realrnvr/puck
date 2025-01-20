@@ -9,6 +9,7 @@ import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { hasErrors } from "../../../helper/hasErrors";
+import toast from "react-hot-toast";
 
 const LoginGoogleAuth = () => {
   const auth = useAuth();
@@ -35,6 +36,7 @@ const LoginGoogleAuth = () => {
       console.log(data);
       auth.setToken(data?.data?.accessToken);
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast("Password created");
       navigate("/account");
     },
     onError: (error) => {
