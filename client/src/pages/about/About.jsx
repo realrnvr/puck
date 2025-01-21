@@ -2,113 +2,83 @@ import "./about.css";
 
 const About = () => {
   return (
-    <>
-      <img
-        src="/pattern-4.svg"
-        className="read__bg-img"
-        alt="pattern"
-        aria-hidden="true"
-      />
-      <article className="read">
-        <div className="read__top-wrapper | container">
-          <div className="read__intro-container">
-            <h2 className="read__title">About</h2>
-            <p className="read__description">
-              Your gateway to discovering and enjoying the best of manga and
-              anime. Explore timeless classics, discover new favorites, and
-              immerse yourself in the stories you love—all in one place.
-            </p>
-          </div>
+    <div className="about | container">
+      <div>
+        <h3 className="about__title">Welcome to PUCK</h3>
+        <p className="about__description about__description--mt">
+          Your ultimate destination for all things anime and manga! At PUCK,
+          we&apos;re passionate about connecting fans with the worlds they love,
+          whether it&apos;s through watching epic anime series or exploring
+          captivating manga stories.
+        </p>
+      </div>
+      <div>
+        <h3 className="about__title">Our Mission</h3>
+        <p className="about__description about__description--mt">
+          To bring the vibrant world of anime and manga to life for fans
+          everywhere. We aim to create a space where enthusiasts can explore,
+          discover, and celebrate the art and stories that define this unique
+          culture.
+        </p>
+      </div>
+      <div>
+        <h3 className="about__title">What We Offer</h3>
+        <div className="about__description-container">
+          <p className="about__description about__description--mt">
+            <strong className="about__description-title">Stream Anime:</strong>{" "}
+            From the latest episodes to timeless classics, watch your favorite
+            series in high quality.
+          </p>
+          <p className="about__description">
+            <strong className="about__description-title">Explore Manga:</strong>{" "}
+            Dive into a library of manga titles, from action-packed adventures
+            to heartwarming tales.
+          </p>
+          <p className="about__description">
+            <strong className="about__description-title">Community hub:</strong>{" "}
+            Connect with fellow fans, share your thoughts, and join the
+            conversation about your favorite series.
+          </p>
+          <p className="about__description">
+            <strong className="about__description-title">
+              News & Updates:
+            </strong>{" "}
+            Stay up-to-date with the latest anime and manga releases, news, and
+            trends.
+          </p>
         </div>
-        <div className="read__manga-wrapper">
-          <div className="about | container">
-            <div>
-              <h3 className="about__title">Welcome to PUCK</h3>
-              <p className="about__description about__description--mt">
-                Your ultimate destination for all things anime and manga! At
-                PUCK, we&apos;re passionate about connecting fans with the
-                worlds they love, whether it&apos;s through watching epic anime
-                series or exploring captivating manga stories.
-              </p>
-            </div>
-            <div>
-              <h3 className="about__title">Our Mission</h3>
-              <p className="about__description about__description--mt">
-                To bring the vibrant world of anime and manga to life for fans
-                everywhere. We aim to create a space where enthusiasts can
-                explore, discover, and celebrate the art and stories that define
-                this unique culture.
-              </p>
-            </div>
-            <div>
-              <h3 className="about__title">What We Offer</h3>
-              <div className="about__description-container">
-                <p className="about__description about__description--mt">
-                  <strong className="about__description-title">
-                    Stream Anime:
-                  </strong>{" "}
-                  From the latest episodes to timeless classics, watch your
-                  favorite series in high quality.
-                </p>
-                <p className="about__description">
-                  <strong className="about__description-title">
-                    Explore Manga:
-                  </strong>{" "}
-                  Dive into a library of manga titles, from action-packed
-                  adventures to heartwarming tales.
-                </p>
-                <p className="about__description">
-                  <strong className="about__description-title">
-                    Community hub:
-                  </strong>{" "}
-                  Connect with fellow fans, share your thoughts, and join the
-                  conversation about your favorite series.
-                </p>
-                <p className="about__description">
-                  <strong className="about__description-title">
-                    News & Updates:
-                  </strong>{" "}
-                  Stay up-to-date with the latest anime and manga releases,
-                  news, and trends.
-                </p>
-              </div>
-            </div>
-            <div>
-              <h3 className="about__title">Our Motivation</h3>
-              <div className="about__description-container">
-                <p className="about__description about__description--mt">
-                  At PUCK, this journey is deeply personal. Anime and manga have
-                  been a significant part of my life, teaching me valuable
-                  lessons, inspiring me, and providing endless joy. This website
-                  is my way of giving back to the amazing community that has
-                  shaped me.
-                </p>
-                <p className="about__description">
-                  Through PUCK, I aim to pay homage to the vibrant world of
-                  anime and manga and contribute to the community. This platform
-                  is my way of sharing that passion and creating a space where
-                  fans like you can come together and celebrate what we love.
-                </p>
-                <p className="about__description">
-                  I understand that there are still features to be added, but
-                  this is only the beginning. I am fully committed to growing
-                  PUCK and improving it with time. As I continue to learn and
-                  put in the effort, those features will find their way here.
-                  Together, we can make this platform even better, one step at a
-                  time.
-                </p>
-                <p className="about__description about__description--fw-fs">
-                  culture shouldn&apos;t exist only for those who can afford it!
-                </p>
-                <p className="about__description">
-                  Thank you for being part of this journey!
-                </p>
-              </div>
-            </div>
-          </div>
+      </div>
+      <div>
+        <h3 className="about__title">Our Motivation</h3>
+        <div className="about__description-container">
+          <p className="about__description about__description--mt">
+            At PUCK, this journey is deeply personal. Anime and manga have been
+            a significant part of my life, teaching me valuable lessons,
+            inspiring me, and providing endless joy. This website is my way of
+            giving back to the amazing community that has shaped me.
+          </p>
+          <p className="about__description">
+            Through PUCK, I aim to pay homage to the vibrant world of anime and
+            manga and contribute to the community. This platform is my way of
+            sharing that passion and creating a space where fans like you can
+            come together and celebrate what we love.
+          </p>
+          <p className="about__description">
+            I understand that there are still features to be added, but this is
+            only the beginning. I am fully committed to growing PUCK and
+            improving it with time. As I continue to learn and put in the
+            effort, those features will find their way here. Together, we can
+            make this platform even better, one step at a time.
+          </p>
+          <p className="about__description about__description--fw-fs">
+            culture shouldn&apos;t exist only for those who can afford it!
+          </p>
+          <p className="about__description">
+            Thank you for being part of this journey!
+          </p>
         </div>
-      </article>
-    </>
+      </div>
+    </div>
   );
 };
 

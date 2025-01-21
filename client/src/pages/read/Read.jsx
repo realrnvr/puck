@@ -15,53 +15,31 @@ const Read = () => {
   });
 
   return (
-    <>
-      <img
-        src="/pattern.svg"
-        className="read__bg-img"
-        alt="pattern"
-        aria-hidden="true"
-      />
-      <article className="read">
-        <div className="read__top-wrapper | container">
-          <div className="read__intro-container">
-            <h2 className="read__title">READ</h2>
-            <p className="read__description">
-              Step into a world where ink meets magic. Each page is a portal,
-              each panel a universe waiting to be discovered. Ready to turn the
-              page? Your adventure starts now!
-            </p>
-          </div>
-        </div>
-        <div className="read__manga-wrapper">
-          <div className="read__manga | container">
-            <div className="read__text-wrapper">
-              <h3 className="read__manga-title">Read manga series!</h3>
-              <Link to="/mangas" className="read__link lg-screen">
-                See all manga series
-              </Link>
-            </div>
-            <div className="read__manga-container">
-              {data?.data?.manga.map((val, idx) => {
-                return (
-                  <MangaCard
-                    key={idx}
-                    img={val.img}
-                    title={val.title}
-                    mangaId={val.mangaId}
-                    authorId={val.authorId}
-                  />
-                );
-              })}
-              {isPending ? <MangaCardSkeleton count={LIMIT} /> : null}
-            </div>
-            <Link to="/mangas" className="read__link read__link--mt sm-screen">
-              See all manga series
-            </Link>
-          </div>
-        </div>
-      </article>
-    </>
+    <div className="read__manga | container">
+      <div className="read__text-wrapper">
+        <h3 className="read__manga-title">Read manga series!</h3>
+        <Link to="/mangas" className="read__link lg-screen">
+          See all manga series
+        </Link>
+      </div>
+      <div className="read__manga-container">
+        {data?.data?.manga.map((val, idx) => {
+          return (
+            <MangaCard
+              key={idx}
+              img={val.img}
+              title={val.title}
+              mangaId={val.mangaId}
+              authorId={val.authorId}
+            />
+          );
+        })}
+        {isPending ? <MangaCardSkeleton count={LIMIT} /> : null}
+      </div>
+      <Link to="/mangas" className="read__link read__link--mt sm-screen">
+        See all manga series
+      </Link>
+    </div>
   );
 };
 
