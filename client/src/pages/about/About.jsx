@@ -21,53 +21,91 @@ const About = () => {
           </div>
         </div>
         <div className="read__manga-wrapper">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio velit
-            minus unde sed, similique laboriosam iure labore deleniti deserunt
-            nihil esse sint eaque delectus rerum vero, et quos libero? Fugit
-            provident ex earum, quaerat architecto quasi eligendi fugiat enim,
-            tenetur modi sint est accusamus doloribus nemo sapiente omnis
-            voluptates ipsam eius minus pariatur hic voluptas nobis? Vitae
-            architecto expedita excepturi amet necessitatibus fuga officiis?
-            Suscipit harum ea quas qui dolorum asperiores ut id rem cupiditate
-            odio sunt voluptatum accusantium autem minima non totam vero iusto,
-            quaerat porro natus molestias nisi impedit consequatur. Ex sint
-            distinctio adipisci id atque magnam, velit placeat voluptate
-            necessitatibus quam voluptates dignissimos aspernatur aliquid ad
-            cupiditate aperiam voluptatum libero consequuntur cum. Natus tempora
-            nulla incidunt enim excepturi beatae minima repudiandae explicabo
-            tempore ad impedit voluptatibus, dolorum eos veniam quis, veritatis
-            quasi quos, cum sint quas? Adipisci ipsam consequuntur eius harum
-            quaerat laboriosam voluptatem fugit placeat! Accusamus consequuntur
-            vero alias reiciendis est dolore rerum consequatur, eligendi cum
-            sunt ratione adipisci facilis repellendus rem ad necessitatibus hic
-            odit. Quasi aspernatur corrupti labore nisi, minus magnam odit aut
-            iure culpa cupiditate natus soluta alias eaque quas ratione autem
-            harum! Quas asperiores, iure adipisci alias assumenda voluptates,
-            explicabo fugit, consequuntur quasi aut porro accusantium placeat
-            ut. Omnis porro dolore, animi minus fugiat magni, eos iste sint unde
-            mollitia blanditiis voluptatum qui vitae fugit, enim aperiam. At
-            quisquam quibusdam illo repellendus? Aliquid sint, nemo suscipit
-            unde rerum harum ab ad quaerat alias consequuntur ex ducimus
-            accusamus perspiciatis quo corrupti amet voluptate cumque
-            praesentium explicabo eveniet. Aspernatur fuga magnam minus
-            blanditiis numquam molestiae incidunt veritatis non dicta temporibus
-            harum error neque ipsam ducimus doloribus, at quam nihil aliquam
-            sint qui! Id quo mollitia excepturi quis dolor minus perspiciatis
-            obcaecati optio omnis sed quas quae repellendus architecto ipsam
-            sapiente iste minima non odio reiciendis amet quisquam, officiis
-            vero, at nemo. Earum ipsa unde voluptas, libero alias atque repellat
-            expedita, animi itaque quasi totam tempore minima laborum pariatur
-            dolore harum perspiciatis, dolor iste corporis ea eaque quibusdam
-            odio et iusto. Quis repudiandae voluptates itaque ipsa ratione
-            laborum vitae, deserunt nisi laboriosam corporis totam eos quod
-            necessitatibus porro, incidunt at fuga error. Tempore adipisci
-            praesentium, a rem vitae illo amet omnis nam molestiae temporibus
-            sequi neque ab quidem exercitationem quisquam consequuntur
-            voluptatum, eius ad soluta quas dignissimos possimus assumenda.
-            Accusamus molestias, adipisci est aspernatur ullam animi odit et
-            recusandae ipsa modi culpa fuga excepturi libero.
-          </p>
+          <div className="about | container">
+            <div>
+              <h3 className="about__title">Welcome to PUCK</h3>
+              <p className="about__description about__description--mt">
+                Your ultimate destination for all things anime and manga! At
+                PUCK, we&apos;re passionate about connecting fans with the
+                worlds they love, whether it&apos;s through watching epic anime
+                series or exploring captivating manga stories.
+              </p>
+            </div>
+            <div>
+              <h3 className="about__title">Our Mission</h3>
+              <p className="about__description about__description--mt">
+                To bring the vibrant world of anime and manga to life for fans
+                everywhere. We aim to create a space where enthusiasts can
+                explore, discover, and celebrate the art and stories that define
+                this unique culture.
+              </p>
+            </div>
+            <div>
+              <h3 className="about__title">What We Offer</h3>
+              <div className="about__description-container">
+                <p className="about__description about__description--mt">
+                  <strong className="about__description-title">
+                    Stream Anime:
+                  </strong>{" "}
+                  From the latest episodes to timeless classics, watch your
+                  favorite series in high quality.
+                </p>
+                <p className="about__description">
+                  <strong className="about__description-title">
+                    Explore Manga:
+                  </strong>{" "}
+                  Dive into a library of manga titles, from action-packed
+                  adventures to heartwarming tales.
+                </p>
+                <p className="about__description">
+                  <strong className="about__description-title">
+                    Community hub:
+                  </strong>{" "}
+                  Connect with fellow fans, share your thoughts, and join the
+                  conversation about your favorite series.
+                </p>
+                <p className="about__description">
+                  <strong className="about__description-title">
+                    News & Updates:
+                  </strong>{" "}
+                  Stay up-to-date with the latest anime and manga releases,
+                  news, and trends.
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="about__title">Our Motivation</h3>
+              <div className="about__description-container">
+                <p className="about__description about__description--mt">
+                  At PUCK, this journey is deeply personal. Anime and manga have
+                  been a significant part of my life, teaching me valuable
+                  lessons, inspiring me, and providing endless joy. This website
+                  is my way of giving back to the amazing community that has
+                  shaped me.
+                </p>
+                <p className="about__description">
+                  Through PUCK, I aim to pay homage to the vibrant world of
+                  anime and manga and contribute to the community. This platform
+                  is my way of sharing that passion and creating a space where
+                  fans like you can come together and celebrate what we love.
+                </p>
+                <p className="about__description">
+                  I understand that there are still features to be added, but
+                  this is only the beginning. I am fully committed to growing
+                  PUCK and improving it with time. As I continue to learn and
+                  put in the effort, those features will find their way here.
+                  Together, we can make this platform even better, one step at a
+                  time.
+                </p>
+                <p className="about__description about__description--fw-fs">
+                  culture shouldn&apos;t exist only for those who can afford it!
+                </p>
+                <p className="about__description">
+                  Thank you for being part of this journey!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
     </>
