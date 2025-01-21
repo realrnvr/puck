@@ -19,7 +19,7 @@ Currently, two official plugins are available:
 8. Scroll bug? fix may be?
 9. Put blur background behind search results. (done)
 10. Make Dynamic manga cover image size? (yes -> done)
-11. Make About page and put credits there.
+11. Make About page and put credits there. (done)
 12. Make all mutations & queries go into seperate files.
 13. Zod validation sync with frontend validation logic.
 14. General server clean up.
