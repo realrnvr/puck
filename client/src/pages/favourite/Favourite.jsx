@@ -6,7 +6,7 @@ import { Fragment } from "react";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
 
-const LIMIT = 8;
+const LIMIT = 10;
 
 const Favourite = () => {
   const { user } = useAuth();
@@ -18,16 +18,22 @@ const Favourite = () => {
     return data;
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ["all-favourites"],
-      queryFn: fetchFavourites,
-      initialPageParam: "",
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      enabled: !!user,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    isPending,
+  } = useInfiniteQuery({
+    queryKey: ["all-favourites"],
+    queryFn: fetchFavourites,
+    initialPageParam: "",
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    enabled: !!user,
+  });
 
-  console.log();
+  console.log(data);
 
   return (
     <section className="favourite | container">
@@ -69,7 +75,7 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
-      {!data?.pages?.[0].client.length ? (
+      {!data?.pages?.[0].client.length && !isPending ? (
         <p className="favourite__alt">Your favorites list is empty.</p>
       ) : null}
     </section>
