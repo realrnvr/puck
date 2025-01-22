@@ -13,7 +13,7 @@ import Lightbox from "yet-another-react-lightbox";
 import { useSliderManga } from "../../hooks/useSliderManga";
 
 const SliderBoxBase = () => {
-  const { slides, isCoversLoading, isMangaLoading } = useSliderManga();
+  const { slides, isCoversLoading, isMangaLoading, isError } = useSliderManga();
 
   if (isMangaLoading || isCoversLoading) {
     return <SliderBoxSkeleton />;
@@ -27,6 +27,7 @@ const SliderBoxBase = () => {
         thumbnails={thumbnails}
         carousel={carousel}
         slides={slides}
+        SliderPanelProps={{ isError }}
       />
     </div>
   );
