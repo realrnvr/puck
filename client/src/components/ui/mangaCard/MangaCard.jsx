@@ -8,7 +8,7 @@ import FavBtn from "../favBtn/FavBtn";
 import MangaCardSkeleton from "../../../utils/skeletons/MangaCard/MangaCardSkeleton";
 
 const MangaCard = ({ title, mangaId, authorId }) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["manga-cover", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
   });
@@ -38,7 +38,7 @@ const MangaCard = ({ title, mangaId, authorId }) => {
             <figure className="manga-card">
               <img
                 className="manga-card__img"
-                src={`${coverUrl}`}
+                src={isError ? "/1px.webp" : `${coverUrl}`}
                 alt="manga"
               />
               <figcaption className="manga-card__title">{title}</figcaption>
