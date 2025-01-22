@@ -32,6 +32,7 @@ import About from "../../pages/about/About";
 import Community from "../../pages/community/Community";
 import Watch from "../../pages/watch/Watch";
 import MainPageTemplate from "../../utils/mainPageTemplate/MainPageTemplate";
+import Error from "../../pages/error/Error";
 
 const router = createBrowserRouter([
   {
@@ -238,6 +239,10 @@ const router = createBrowserRouter([
     ),
   },
   { path: "/redirect", element: <Redirect /> },
+  {
+    path: "*",
+    element: <Error />,
+  },
 ]);
 
 export const RouterProviderBase = () => {
