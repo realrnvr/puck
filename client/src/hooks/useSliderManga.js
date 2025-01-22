@@ -2,7 +2,11 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../services/api/axios";
 
 export const useSliderManga = () => {
-  const { data, isLoading: isMangaLoading } = useQuery({
+  const {
+    data,
+    isLoading: isMangaLoading,
+    isError,
+  } = useQuery({
     queryKey: ["random-manga-slider"],
     queryFn: () => axiosInstance.get("/api/v1/manga/random-manga?limit=5"),
   });
@@ -25,5 +29,5 @@ export const useSliderManga = () => {
     ...val,
   }));
 
-  return { slides, isCoversLoading, isMangaLoading };
+  return { slides, isCoversLoading, isMangaLoading, isError };
 };
