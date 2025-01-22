@@ -1,0 +1,13 @@
+.error-comp {
+  background-color: var(--bg-clr-secondary);
+  border-radius: 7px;
+}
+.error-comp--mt-0_5 {
+  margin-top: 0.5rem;
+}
+.error-comp--mt-1 {
+  margin-top: 1rem;
+}
+.error-comp--mt-1_5 {
+  margin-top: 1.5rem;
+}
