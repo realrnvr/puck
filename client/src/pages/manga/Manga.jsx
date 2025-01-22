@@ -233,6 +233,8 @@ const Manga = () => {
                       isStaticsError ? "manga__link-disable" : null
                     }`}
                     href={statics?.data?.data?.attributes?.links?.raw}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Official Raw
                   </a>
@@ -241,6 +243,8 @@ const Manga = () => {
                       isStaticsError ? "manga__link-disable" : null
                     }`}
                     href={statics?.data?.data?.attributes?.links?.engtl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Official English
                   </a>
@@ -249,6 +253,8 @@ const Manga = () => {
                       isStaticsError ? "manga__link-disable" : null
                     }`}
                     href={statics?.data?.data?.attributes?.links?.amz}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Amazon
                   </a>
@@ -257,6 +263,8 @@ const Manga = () => {
                       isStaticsError ? "manga__link-disable" : null
                     }`}
                     href={statics?.data?.data?.attributes?.links?.ebj}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     eBookJapan
                   </a>
@@ -265,6 +273,8 @@ const Manga = () => {
                       isStaticsError ? "manga__link-disable" : null
                     }`}
                     href={statics?.data?.data?.attributes?.links?.cdj}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     CDJapan
                   </a>
