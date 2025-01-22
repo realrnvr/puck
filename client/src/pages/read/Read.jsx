@@ -4,11 +4,12 @@ import { axiosInstance } from "../../services/api/axios";
 import { useQuery } from "@tanstack/react-query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
+import MangaCardError from "../../utils/errors/MangaCardError";
 
 const LIMIT = 8;
 
 const Read = () => {
-  const { data, isPending } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ["random-manga"],
     queryFn: () =>
       axiosInstance.get(`/api/v1/manga/random-manga?limit=${LIMIT}`),
@@ -35,6 +36,7 @@ const Read = () => {
           );
         })}
         {isPending ? <MangaCardSkeleton count={LIMIT} /> : null}
+        {isError ? <MangaCardError count={LIMIT} /> : null}
       </div>
       <Link to="/mangas" className="read__link read__link--mt sm-screen">
         See all manga series
