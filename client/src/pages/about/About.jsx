@@ -78,6 +78,17 @@ const About = () => {
           </p>
         </div>
       </div>
+      <div>
+        <h3 className="about__title">Credits</h3>
+        <div className="about__description-container">
+          <p className="about__description about__description--mt">
+            Special thanks to{" "}
+            <strong className="about__description-title">MangaDex</strong> for
+            providing an incredible platform and API that allows fans to explore
+            and enjoy manga from around the world.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
