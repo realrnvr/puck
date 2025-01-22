@@ -3,8 +3,8 @@ import SliderPanel from "../module/SliderPanel";
 
 const SliderPanelModule = createModule("SliderPanelModule", SliderPanel);
 
-function SliderPanelPlugin({ addModule }) {
-  addModule(SliderPanelModule);
+function SliderPanelPlugin({ addModule, SliderPanelProps }) {
+  addModule(SliderPanelModule, { SliderPanelProps });
 }
 
 export default SliderPanelPlugin;
