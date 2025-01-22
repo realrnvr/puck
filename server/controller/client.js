@@ -21,7 +21,7 @@ export const Allfavourites = async (req, res) => {
 
   let query = { createdBy: userId };
   if (cursor) {
-    query = { _id: { $gt: cursor } };
+    query._id = { $gt: cursor };
   }
 
   const client = await Client.find(query).sort({ _id: 1 }).limit(limit);
