@@ -16,6 +16,11 @@
   text-decoration: underline;
 }
 
+.panel__btn:disabled {
+  cursor: not-allowed;
+  background-color: var(--bg-clr-secondary);
+}
+
 /* Xs */
 /* @media (min-width: 475px) {} */
 
