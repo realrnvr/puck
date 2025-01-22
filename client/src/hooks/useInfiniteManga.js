@@ -11,23 +11,29 @@ export const useInfiniteManga = (LIMIT) => {
     return data;
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ["mangas"],
-      queryFn: fetchMangas,
-      initialPageParam: "",
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["mangas"],
+    queryFn: fetchMangas,
+    initialPageParam: "",
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
 
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage && !isError) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage, isError]);
 
-  return { data, isFetching, isFetchingNextPage, ref };
+  return { data, isFetching, isFetchingNextPage, isError, ref };
 };
