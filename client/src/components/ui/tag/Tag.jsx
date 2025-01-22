@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const Tag = ({ tag, clr }) => {
   return (
     <p style={{ backgroundColor: clr ? "orange" : "#2e2d2d" }} className="tag">
-      {tag}
+      {tag || "-----"}
     </p>
   );
 };
