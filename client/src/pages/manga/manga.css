@@ -198,6 +198,12 @@
   opacity: 0.7;
 }
 
+.manga__link-disable {
+  background-color: var(--bg-clr-secondary);
+  color: var(--bg-clr-primary);
+  pointer-events: none;
+}
+
 /* *********** */
 
 .manga__skeleton {
