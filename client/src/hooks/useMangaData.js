@@ -3,17 +3,29 @@ import { axiosInstance } from "../services/api/axios";
 import { useMemo } from "react";
 
 export const useMangaData = ({ mangaId, authorId }) => {
-  const { data: statics, isPending: isStatics } = useQuery({
+  const {
+    data: statics,
+    isPending: isStatics,
+    isError: isStaticsError,
+  } = useQuery({
     queryKey: ["static", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/statics/${mangaId}`),
   });
 
-  const { data: authorData, isPending: isAuthor } = useQuery({
+  const {
+    data: authorData,
+    isPending: isAuthor,
+    isError: isAuthorError,
+  } = useQuery({
     queryKey: ["author", { authorId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/author/${authorId}`),
   });
 
-  const { data: coverImg, isPending: isCover } = useQuery({
+  const {
+    data: coverImg,
+    isPending: isCover,
+    isError: isCoverError,
+  } = useQuery({
     queryKey: ["coverImg", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
   });
@@ -39,10 +51,13 @@ export const useMangaData = ({ mangaId, authorId }) => {
   return {
     statics,
     isStatics,
+    isStaticsError,
     authorData,
     isAuthor,
+    isAuthorError,
     coverImg,
     isCover,
+    isCoverError,
     manga,
     author,
     mangaData,
