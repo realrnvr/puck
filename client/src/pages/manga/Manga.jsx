@@ -8,6 +8,7 @@ import AuthorDropDown from "../../components/AuthorDropDown";
 import MangaFsImg from "../../components/MangaFsImg";
 import Markdown from "../../utils/markdown/Markdown";
 import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
+import ErrorComp from "../../utils/errorComp/ErrorComp";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
@@ -15,10 +16,13 @@ const Manga = () => {
   const {
     statics,
     isStatics,
+    isStaticsError,
     authorData,
     isAuthor,
+    isAuthorError,
     coverImg,
     isCover,
+    isCoverError,
     manga,
     author,
     mangaData,
@@ -29,7 +33,7 @@ const Manga = () => {
       <div className="manga__bg">
         <img
           className="manga__bg-img"
-          src={coverImg?.data?.coverImgUrl || "/t-1px.webp"}
+          src={!isCoverError ? coverImg?.data?.coverImgUrl : "/t-1px.webp"}
           alt=""
         />
       </div>
@@ -42,7 +46,7 @@ const Manga = () => {
           >
             <img
               className="manga__cover-img"
-              src={coverImg?.data?.coverImgUrl || "/t-1px.webp"}
+              src={!isCoverError ? coverImg?.data?.coverImgUrl : "/1px.webp"}
               alt=""
             />
             <MangaFsImg coverImgUrl={coverImg?.data?.coverImgUrl} />
@@ -68,6 +72,9 @@ const Manga = () => {
                   width={"130px"}
                 />
               ) : null}
+              {isStaticsError ? (
+                <ErrorComp height="50px" width="130px" />
+              ) : null}
             </h2>
             <p className="manga__author" style={{ marginBottom: "1rem" }}>
               {statics?.data?.data?.attributes?.altTitleJa}
@@ -79,6 +86,13 @@ const Manga = () => {
                   width={"130px"}
                 />
               ) : null}
+              {isStaticsError ? (
+                <ErrorComp
+                  height="30px"
+                  width="130px"
+                  className={"error-comp--mt-0_5"}
+                />
+              ) : null}
             </p>
             <p className="manga__author" style={{ marginBottom: "1rem" }}>
               {isAuthor ? (
@@ -88,9 +102,11 @@ const Manga = () => {
                   height={"100%"}
                   width={"100%"}
                 />
+              ) : isAuthorError ? (
+                <ErrorComp height={"30px"} width={"130px"} />
               ) : (
                 <span className="manga__created-by">
-                  Created by {authorData?.data?.data?.attributes?.name}
+                  Created by {authorData?.data?.data?.attributes?.name || "---"}
                 </span>
               )}
             </p>
@@ -114,19 +130,28 @@ const Manga = () => {
               })
             ) : (
               <>
-                <Tag
-                  clr={true}
-                  tag={statics?.data?.data?.attributes?.publicationDemographic}
-                />
-                <Tag
-                  clr={true}
-                  tag={statics?.data?.data?.attributes?.contentRating}
-                />
+                {!isStaticsError ? (
+                  <Tag
+                    clr={true}
+                    tag={
+                      statics?.data?.data?.attributes?.publicationDemographic
+                    }
+                  />
+                ) : null}
+                {!isStaticsError ? (
+                  <Tag
+                    clr={true}
+                    tag={statics?.data?.data?.attributes?.contentRating}
+                  />
+                ) : null}
                 {statics?.data?.data?.attributes?.tags.map((val, idx) => {
                   return <Tag key={idx} tag={val?.attributes?.name?.en} />;
                 })}
               </>
             )}
+            {isStaticsError ? (
+              <ErrorComp height={"25px"} width={"100px"} count={20} />
+            ) : null}
           </div>
           <div>
             <p className="manga__para">
@@ -137,10 +162,12 @@ const Manga = () => {
                   height={"100%"}
                   width={"150px"}
                 />
+              ) : isStaticsError ? (
+                <ErrorComp height={"25px"} width={"150px"} />
               ) : (
                 <span className="manga__publication">
-                  Publication: {statics?.data?.data?.attributes?.year},{" "}
-                  {statics?.data?.data?.attributes?.status}
+                  Publication: {statics?.data?.data?.attributes?.year || "---"},{" "}
+                  {statics?.data?.data?.attributes?.status || "---"}
                 </span>
               )}
             </p>
@@ -163,17 +190,27 @@ const Manga = () => {
                 height={"300px"}
                 width={"100%"}
               />
+            ) : isAuthorError ? (
+              <ErrorComp height={"300px"} />
             ) : (
               <Markdown content={manga} />
             )}
           </div>
           <div className="manga__author-container">
             <p className="manga__sec-title">Author</p>
-            <AuthorDropDown
-              name={authorData?.data?.data?.attributes?.name}
-              author={author}
-              isAuthor={isAuthor}
-            />
+            {isAuthorError ? (
+              <ErrorComp
+                width="150px"
+                height="25px"
+                className={"error-comp--mt-0_5"}
+              />
+            ) : (
+              <AuthorDropDown
+                name={authorData?.data?.data?.attributes?.name}
+                author={author}
+                isAuthor={isAuthor}
+              />
+            )}
           </div>
           <div className="manga__read-or-buy">
             <p className="manga__sec-title">Read or Buy</p>
@@ -192,31 +229,41 @@ const Manga = () => {
               ) : (
                 <>
                   <a
-                    className="manga__link"
+                    className={`manga__link ${
+                      isStaticsError ? "manga__link-disable" : null
+                    }`}
                     href={statics?.data?.data?.attributes?.links?.raw}
                   >
                     Official Raw
                   </a>
                   <a
-                    className="manga__link"
+                    className={`manga__link ${
+                      isStaticsError ? "manga__link-disable" : null
+                    }`}
                     href={statics?.data?.data?.attributes?.links?.engtl}
                   >
                     Official English
                   </a>
                   <a
-                    className="manga__link"
+                    className={`manga__link ${
+                      isStaticsError ? "manga__link-disable" : null
+                    }`}
                     href={statics?.data?.data?.attributes?.links?.amz}
                   >
                     Amazon
                   </a>
                   <a
-                    className="manga__link"
+                    className={`manga__link ${
+                      isStaticsError ? "manga__link-disable" : null
+                    }`}
                     href={statics?.data?.data?.attributes?.links?.ebj}
                   >
                     eBookJapan
                   </a>
                   <a
-                    className="manga__link"
+                    className={`manga__link ${
+                      isStaticsError ? "manga__link-disable" : null
+                    }`}
                     href={statics?.data?.data?.attributes?.links?.cdj}
                   >
                     CDJapan
@@ -244,6 +291,7 @@ const Manga = () => {
                   );
                 })
               )}
+              {isStaticsError ? <ErrorComp height={"20px"} count={10} /> : null}
             </div>
           </div>
         </div>
