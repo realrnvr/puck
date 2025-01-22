@@ -3,11 +3,14 @@ import { useInfiniteManga } from "../hooks/useInfiniteManga";
 import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
 import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
+import MangaCardError from "../utils/errors/MangaCardError";
+import Loader from "./ui/loader/Loader";
 
 const LIMIT = 10;
 
 const MangaContainer = () => {
-  const { data, isFetching, isFetchingNextPage, ref } = useInfiniteManga(LIMIT);
+  const { data, isFetching, isFetchingNextPage, isError, ref } =
+    useInfiniteManga(LIMIT);
 
   return (
     <>
@@ -28,9 +31,13 @@ const MangaContainer = () => {
             </Fragment>
           );
         })}
-        {isFetching && !isFetchingNextPage && (
+        {isFetching && !isFetchingNextPage ? (
           <MangaCardSkeleton count={LIMIT} />
-        )}
+        ) : null}
+        {isError ? <MangaCardError count={LIMIT} /> : null}
+      </div>
+      <div className="mangas__loader">
+        {isFetchingNextPage ? <Loader /> : null}
       </div>
       <div ref={ref} className="mangas__visual"></div>
     </>
