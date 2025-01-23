@@ -47,6 +47,13 @@ export const errorHandlerMiddleware = (err, req, res, next) => {
     errObj.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
   }
 
+  // mangadex api error
+  if (err.response.status && err.response.statusText) {
+    errObj.type = "dex-api-error";
+    errObj.message = err.response.statusText;
+    errObj.statusCode = err.response.status;
+  }
+
   res
     .status(errObj.statusCode)
     .json({ message: errObj.message, type: errObj.type });
