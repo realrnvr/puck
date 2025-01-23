@@ -13,7 +13,7 @@ Currently, two official plugins are available:
 2. Finish UI and general refactoring (done) + favourite page wrapper (done).
 3. To add show case in home page or not? (yes -> done)
 4. Replace all the future updates with under construction holder. (done)
-5. Error Boundaries for you know what + 404 pages (done) + error pages (if any) (yes -> done).
+5. Error Boundaries for you know what (done) + 404 pages (done) + error pages (if any) (yes -> done).
 6. One last time AUTH Test. (done)
 7. Google AUTH conditional UI. (no need)
 8. Scroll bug? fix may be?
@@ -24,3 +24,10 @@ Currently, two official plugins are available:
 13. Zod validation sync with frontend validation logic.
 14. General server clean up.
 15. Code split + lazy load required components + General optimization.
+
+# Additional checks:
+
+1. check loader margin of infinite manga is it fine?
+2. to put refresh option on chapter-image error and chapter-list error and chapter-image (mangadex.org one) error?
+3. general retry option?
+4. test favourite page once.
