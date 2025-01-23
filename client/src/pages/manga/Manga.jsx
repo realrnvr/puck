@@ -1,5 +1,5 @@
 import "./manga.css";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMangaData } from "../../hooks/useMangaData";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
@@ -12,14 +12,17 @@ import ErrorComp from "../../utils/errorComp/ErrorComp";
 
 const Manga = () => {
   const { mangaId, authorId } = useParams();
+  const navigate = useNavigate();
 
   const {
     statics,
     isStatics,
     isStaticsError,
+    staticsError,
     authorData,
     isAuthor,
     isAuthorError,
+    authorError,
     coverImg,
     isCover,
     isCoverError,
@@ -27,6 +30,14 @@ const Manga = () => {
     author,
     mangaData,
   } = useMangaData({ mangaId, authorId });
+
+  const handleNavigateClick = () => {
+    navigate(`/viewer/${mangaId}`);
+  };
+
+  const isBtnDisabled =
+    staticsError?.response?.data?.type === "dex-api-error" ||
+    authorError?.response?.data?.type === "dex-api-error";
 
   return (
     <article className="manga" style={{ marginTop: "1.5rem" }}>
@@ -41,7 +52,9 @@ const Manga = () => {
         <GoBackBtn />
         <div className="manga__top-container">
           <div
-            className="manga__cover-wrapper"
+            className={`manga__cover-wrapper ${
+              isCoverError ? "manga__cover-wrapper-disabled" : null
+            }`}
             style={{ pointerEvents: isCover ? "none" : "auto" }}
           >
             <img
@@ -49,7 +62,9 @@ const Manga = () => {
               src={!isCoverError ? coverImg?.data?.coverImgUrl : "/1px.webp"}
               alt=""
             />
-            <MangaFsImg coverImgUrl={coverImg?.data?.coverImgUrl} />
+            {!isCoverError ? (
+              <MangaFsImg coverImgUrl={coverImg?.data?.coverImgUrl} />
+            ) : null}
             {isCover ? (
               <div className="manga__skeleton">
                 <Skeleton
@@ -177,10 +192,15 @@ const Manga = () => {
               mangaId={mangaId}
               mangaData={mangaData}
               className="manga__btn-fav"
+              isDisabled={isBtnDisabled || isStatics || isAuthor}
             />
-            <Link to={`/viewer/${mangaId}`} className="manga__btn signup__btn">
+            <button
+              className="manga__btn"
+              onClick={handleNavigateClick}
+              disabled={isBtnDisabled || isStatics || isAuthor}
+            >
               Read
-            </Link>
+            </button>
           </div>
           <div className="manga__description-container">
             {isStatics ? (
@@ -190,7 +210,7 @@ const Manga = () => {
                 height={"300px"}
                 width={"100%"}
               />
-            ) : isAuthorError ? (
+            ) : isStaticsError ? (
               <ErrorComp height={"300px"} />
             ) : (
               <Markdown content={manga} />
