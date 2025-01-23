@@ -1,8 +1,15 @@
-import PropTypes from "prop-types";
 import { memo } from "react";
 import Skeleton from "react-loading-skeleton";
+import ErrorComp from "../../../utils/errorComp/ErrorComp";
+import PropTypes from "prop-types";
 
-const ChapterList = ({ chapters, setChapter, chapterCount, isChapter }) => {
+const ChapterList = ({
+  chapters,
+  setChapter,
+  chapterCount,
+  isChapter,
+  isChapterError,
+}) => {
   return (
     <ul className="controller__chapter-list">
       {isChapter
@@ -40,6 +47,7 @@ const ChapterList = ({ chapters, setChapter, chapterCount, isChapter }) => {
               </li>
             );
           })}
+      {isChapterError ? <ErrorComp height="60px" count={8} /> : null}
     </ul>
   );
 };
@@ -49,6 +57,7 @@ ChapterList.propTypes = {
   setChapter: PropTypes.func,
   chapterCount: PropTypes.number,
   isChapter: PropTypes.bool,
+  isChapterError: PropTypes.bool,
 };
 
 export default memo(ChapterList);
