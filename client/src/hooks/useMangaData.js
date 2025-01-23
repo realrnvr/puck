@@ -7,6 +7,7 @@ export const useMangaData = ({ mangaId, authorId }) => {
     data: statics,
     isPending: isStatics,
     isError: isStaticsError,
+    error: staticsError,
   } = useQuery({
     queryKey: ["static", { mangaId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/statics/${mangaId}`),
@@ -16,6 +17,7 @@ export const useMangaData = ({ mangaId, authorId }) => {
     data: authorData,
     isPending: isAuthor,
     isError: isAuthorError,
+    error: authorError,
   } = useQuery({
     queryKey: ["author", { authorId }],
     queryFn: () => axiosInstance.get(`/api/v1/manga/author/${authorId}`),
@@ -52,9 +54,11 @@ export const useMangaData = ({ mangaId, authorId }) => {
     statics,
     isStatics,
     isStaticsError,
+    staticsError,
     authorData,
     isAuthor,
     isAuthorError,
+    authorError,
     coverImg,
     isCover,
     isCoverError,
