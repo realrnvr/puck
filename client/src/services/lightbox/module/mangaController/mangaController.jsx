@@ -8,13 +8,22 @@ import Skeleton from "react-loading-skeleton";
 
 function MangaController({
   children,
-  MangaControllerProps: { chapter, nav, isChapterImage, isChapter },
+  MangaControllerProps: {
+    chapter,
+    nav,
+    isChapterImage,
+    isChapter,
+    isChapterError,
+    isChapterImageError,
+  },
 }) {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
 
   const handleToggleButton = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
+
+  console.log(isChapterError, isChapterImageError);
 
   return (
     <>
