@@ -25,6 +25,8 @@ const Favourite = () => {
     isFetchingNextPage,
     isFetching,
     isPending,
+    isError,
+    error,
   } = useInfiniteQuery({
     queryKey: ["all-favourites"],
     queryFn: fetchFavourites,
@@ -75,9 +77,10 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
-      {!data?.pages?.[0].client.length && !isPending ? (
+      {!data?.pages?.[0].client.length && !isPending && !isError ? (
         <p className="favourite__alt">Your favorites list is empty.</p>
       ) : null}
+      {isError ? <p className="favourite__alt">{error?.message}</p> : null}
     </section>
   );
 };
