@@ -103,32 +103,26 @@ export const author = async (req, res) => {
     throw new BadRequestError("Please provide author id");
   }
 
-  try {
-    const cacheKey = `author:${authorId}`;
+  const cacheKey = `author:${authorId}`;
 
-    const cachedAuthor = await redisClient.get(cacheKey);
-    if (cachedAuthor) {
-      console.log("author cache value");
-      return res
-        .status(StatusCodes.OK)
-        .json({ data: JSON.parse(cachedAuthor) });
-    }
-
-    const response = await axios.get(`${BASE_URL}/author/${authorId}`);
-
-    const authorData = response.data.data;
-    if (!authorData) {
-      throw new NotFoundError("Author data is not available");
-    }
-
-    console.log("author response value");
-
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify(authorData));
-
-    res.status(StatusCodes.OK).json({ data: authorData });
-  } catch (error) {
-    throw new BadRequestError("something went wrong");
+  const cachedAuthor = await redisClient.get(cacheKey);
+  if (cachedAuthor) {
+    console.log("author cache value");
+    return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
   }
+
+  const response = await axios.get(`${BASE_URL}/author/${authorId}`);
+
+  const authorData = response.data.data;
+  if (!authorData) {
+    throw new NotFoundError("Author data is not available");
+  }
+
+  console.log("author response value");
+
+  await redisClient.setEx(cacheKey, 3600, JSON.stringify(authorData));
+
+  res.status(StatusCodes.OK).json({ data: authorData });
 };
 
 export const cover = async (req, res) => {
