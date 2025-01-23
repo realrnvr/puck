@@ -48,7 +48,7 @@ export const errorHandlerMiddleware = (err, req, res, next) => {
   }
 
   // mangadex api error
-  if (err.response.status && err.response.statusText) {
+  if (err.response && err.response.status && err.response.statusText) {
     errObj.type = "dex-api-error";
     errObj.message = err.response.statusText;
     errObj.statusCode = err.response.status;
