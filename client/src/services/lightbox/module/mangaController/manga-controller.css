@@ -83,11 +83,16 @@
   border-radius: 8px;
   cursor: pointer;
 }
-
-.controller__nav-svg {
+.controller__nav-btn:disabled {
+  cursor: not-allowed;
+}
+.controller__nav-btn .controller__nav-svg {
   width: var(--controller--control-btn-width);
   aspect-ratio: 1 / 1;
   fill: #fff;
+}
+.controller__nav-btn:disabled .controller__nav-svg {
+  fill: var(--bg-clr-primary);
 }
 
 .controller__counter {
@@ -191,15 +196,6 @@
 
 .controller__chapter-details:first-child {
   border-bottom: 1px solid var(--clr-primary);
-}
-
-.disabled__btn {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.disabled__btn:hover {
-  opacity: none;
 }
 
 .controller__container-left {
