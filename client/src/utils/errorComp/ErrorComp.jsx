@@ -9,11 +9,11 @@ const ErrorComp = ({
 }) => {
   return Array.from({ length: count }, (_, idx) => {
     return (
-      <div
+      <span
         key={idx}
         className={`${className} error-comp`}
         style={{ width, height }}
-      ></div>
+      ></span>
     );
   });
 };
