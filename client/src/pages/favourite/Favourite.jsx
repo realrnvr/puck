@@ -6,7 +6,7 @@ import { Fragment } from "react";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
 
-const LIMIT = 10;
+const LIMIT = 6;
 
 const Favourite = () => {
   const { user } = useAuth();
@@ -24,7 +24,7 @@ const Favourite = () => {
     hasNextPage,
     isFetchingNextPage,
     isFetching,
-    isPending,
+    isLoading,
     isError,
     error,
   } = useInfiniteQuery({
@@ -40,28 +40,38 @@ const Favourite = () => {
   return (
     <section className="favourite | container">
       <h2 className="favourite__title">Favourites</h2>
-      <div className="mangas__container">
-        {data?.pages?.map((page, idx) => {
-          return (
-            <Fragment key={idx}>
-              {page?.client?.map((val, idx) => {
-                return (
-                  <MangaCard
-                    key={idx}
-                    img={val?.coverUrl}
-                    title={val?.mangaTitle}
-                    mangaId={val?.mangaId}
-                    authorId={val?.authorId}
-                  />
-                );
-              })}
-            </Fragment>
-          );
-        })}
-        {isFetching && !isFetchingNextPage && !data?.pages?.[0] ? (
-          <MangaCardSkeleton count={LIMIT} />
-        ) : null}
-      </div>
+      {!data?.pages?.[0].client.length && !isLoading && !isError ? (
+        <div className="favourite__null">
+          <h4 className="favourite__null-title">NOTHING!</h4>
+          <p className="favourite__null-description">
+            Your favourite list is empty!
+          </p>
+          <img className="favourite__null-img" src="/no-fav.png" alt="" />
+        </div>
+      ) : (
+        <div className="mangas__container">
+          {data?.pages?.map((page, idx) => {
+            return (
+              <Fragment key={idx}>
+                {page?.client?.map((val, idx) => {
+                  return (
+                    <MangaCard
+                      key={idx}
+                      img={val?.coverUrl}
+                      title={val?.mangaTitle}
+                      mangaId={val?.mangaId}
+                      authorId={val?.authorId}
+                    />
+                  );
+                })}
+              </Fragment>
+            );
+          })}
+          {isFetching && !isFetchingNextPage && !data?.pages?.[0] ? (
+            <MangaCardSkeleton count={LIMIT} />
+          ) : null}
+        </div>
+      )}
       {data?.pages?.[0].client.length ? (
         <div className="favourite__bottom-container">
           <button
@@ -77,9 +87,15 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
-      {!data?.pages?.[0].client.length && !isPending && !isError ? (
-        <p className="favourite__alt">Your favorites list is empty.</p>
-      ) : null}
+      {/* {!data?.pages?.[0].client.length && !isPending && !isError ? (
+        <div className="favourite__null">
+          <h4 className="favourite__null-title">NOTHING!</h4>
+          <p className="favourite__null-description">
+            Your favourite list is empty!
+          </p>
+          <img className="favourite__null-img" src="/no-fav.png" alt="" />
+        </div>
+      ) : null} */}
       {isError ? <p className="favourite__alt">{error?.message}</p> : null}
     </section>
   );
