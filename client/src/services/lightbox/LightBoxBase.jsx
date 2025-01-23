@@ -13,8 +13,15 @@ import { memo } from "react";
 import BackBtn from "./components/BackBtn";
 
 const LightBoxBase = ({ mangaId }) => {
-  const { slides, isChapterImage, isChapter, chapter, nav } =
-    useChapter(mangaId);
+  const {
+    slides,
+    isChapterImage,
+    isChapter,
+    chapter,
+    nav,
+    isChapterError,
+    isChapterImageError,
+  } = useChapter(mangaId);
 
   return (
     <Lightbox
@@ -23,7 +30,14 @@ const LightBoxBase = ({ mangaId }) => {
       zoom={zoom}
       carousel={carousel}
       animation={animation}
-      MangaControllerProps={{ chapter, nav, isChapterImage, isChapter }}
+      MangaControllerProps={{
+        chapter,
+        nav,
+        isChapterImage,
+        isChapter,
+        isChapterError,
+        isChapterImageError,
+      }}
       toolbar={{
         buttons: [<BackBtn key={"controller-back-btn"} />],
       }}
