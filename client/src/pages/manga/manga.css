@@ -98,6 +98,10 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-400);
 }
+.manga__btn:disabled {
+  cursor: not-allowed;
+  background-color: var(--bg-clr-secondary);
+}
 
 .manga__drop-down-icon {
   margin-inline: auto;
@@ -222,6 +226,10 @@
 
 .manga__cover-wrapper:hover {
   cursor: pointer;
+}
+
+.manga__cover-wrapper.manga__cover-wrapper-disabled:hover {
+  cursor: auto;
 }
 
 .manga__cover-wrapper:hover .manga__full-screen-button {
