@@ -6,6 +6,9 @@
   /* border-radius: 7px; */
   cursor: pointer;
 }
+.fav-btn:disabled {
+  cursor: not-allowed;
+}
 
 .fav-btn__svg {
   width: 25px;
@@ -13,6 +16,6 @@
   fill: #fff;
 }
 
-.fav-btn__disable {
-  cursor: not-allowed;
+.fav-btn:disabled .fav-btn__svg {
+  fill: var(--bg-clr-primary);
 }
