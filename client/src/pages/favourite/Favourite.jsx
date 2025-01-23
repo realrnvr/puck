@@ -46,7 +46,7 @@ const Favourite = () => {
           <p className="favourite__null-description">
             Your favourite list is empty!
           </p>
-          <img className="favourite__null-img" src="/no-fav.png" alt="" />
+          <img className="favourite__null-img" src="/no-fav.webp" alt="" />
         </div>
       ) : (
         <div className="mangas__container">
