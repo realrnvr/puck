@@ -4,8 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EmailSchema } from "../../../assets/schema/EmailSchema";
 import { hasErrors } from "../../../helper/hasErrors";
 import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "../../../services/api/axios";
 import { useState } from "react";
+import {
+  addSubscriber,
+  removeSubscriber,
+} from "../../../services/mutation/clientMutation";
 import Input from "../input/Input";
 import toast from "react-hot-toast";
 
@@ -28,8 +31,7 @@ const NewsLetter = () => {
   });
 
   const { mutate: addSubscriberMutate, isPending: asmIsPending } = useMutation({
-    mutationFn: (data) =>
-      axiosInstance.post("/api/v1/newsletter/add-subscriber", data),
+    mutationFn: (data) => addSubscriber(data),
     onSuccess: (data) => {
       toast(data.data.message);
     },
@@ -40,20 +42,18 @@ const NewsLetter = () => {
     },
   });
 
-  const { mutate: removeSubscriberMutate, rsmisPending } = useMutation({
-    mutationFn: (data) =>
-      axiosInstance.delete(
-        `/api/v1/newsletter/remove-subscriber/${data.email}`
-      ),
-    onSuccess: (data) => {
-      toast(data.data.message);
-    },
-    onError: (error) => {
-      const { message } = error.response.data;
-      setError("email", { message });
-      setFocus("email");
-    },
-  });
+  const { mutate: removeSubscriberMutate, isPending: rsmisPending } =
+    useMutation({
+      mutationFn: (data) => removeSubscriber(data.email),
+      onSuccess: (data) => {
+        toast(data.data.message);
+      },
+      onError: (error) => {
+        const { message } = error.response.data;
+        setError("email", { message });
+        setFocus("email");
+      },
+    });
 
   const onSubmit = (data) => {
     if (sub) {
