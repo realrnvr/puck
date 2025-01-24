@@ -32,6 +32,10 @@
   font-weight: var(--fw-400);
   cursor: pointer;
 }
+.favourite__load-more-btn--cs-bg {
+  cursor: auto;
+  background-color: transparent;
+}
 .favourite__load-more-btn:disabled {
   background-color: var(--bg-clr-secondary);
   cursor: not-allowed;
