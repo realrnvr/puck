@@ -11,12 +11,17 @@ import SliderBoxSkeleton from "./skeleton/SliderBoxSkeleton";
 import Lightbox from "yet-another-react-lightbox";
 // hooks
 import { useSliderManga } from "../../hooks/useSliderManga";
+import SliderErrorPlaceholder from "./error/SliderErrorPlaceholder";
 
 const SliderBoxBase = () => {
-  const { slides, isCoversLoading, isMangaLoading, isError } = useSliderManga();
+  const { slides, isLoading, isError } = useSliderManga();
 
-  if (isMangaLoading || isCoversLoading) {
+  if (isLoading) {
     return <SliderBoxSkeleton />;
+  }
+
+  if (isError) {
+    return <SliderErrorPlaceholder />;
   }
 
   return (
