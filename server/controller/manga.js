@@ -13,11 +13,12 @@ export const mangas = async (req, res) => {
 
   let query = {};
   if (cursor) {
-    query = { _id: { $gt: cursor } };
+    query._id = { $gt: cursor };
   }
 
   const cacheKey = `mangas:${cursor || "start"}:${limit}`;
   const cachedManga = await redisClient.get(cacheKey);
+
   if (cachedManga) {
     console.log("Manga cache hit");
     return res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
@@ -25,8 +26,11 @@ export const mangas = async (req, res) => {
 
   const mangaData = await Manga.find(query).sort({ _id: 1 }).limit(limit);
 
-  const nextCursor =
-    mangaData.length === limit ? mangaData[mangaData.length - 1]._id : null;
+  const hasMore = await Manga.exists({
+    _id: { $gt: mangaData[mangaData.length - 1]?._id },
+  });
+
+  const nextCursor = hasMore ? mangaData[mangaData.length - 1]?._id : null;
 
   const responseData = {
     manga: mangaData,

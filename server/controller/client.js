@@ -26,8 +26,12 @@ export const Allfavourites = async (req, res) => {
 
   const client = await Client.find(query).sort({ _id: 1 }).limit(limit);
 
-  const nextCursor =
-    client.length === limit ? client[client.length - 1]._id : null;
+  const hasMore = await Client.exists({
+    createdBy: userId,
+    _id: { $gt: client[client.length - 1]?._id },
+  });
+
+  const nextCursor = hasMore ? client[client.length - 1]?._id : null;
 
   res.status(StatusCodes.OK).json({
     client,
