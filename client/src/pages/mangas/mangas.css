@@ -20,6 +20,9 @@
   place-items: center;
   padding-block: 2rem;
 }
+.mangas__container--pd {
+  padding-block: 0;
+}
 
 .mangas__visual {
   height: 1px;
