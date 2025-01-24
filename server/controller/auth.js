@@ -281,10 +281,21 @@ export const me = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  return res
-    .clearCookie("refreshToken")
-    .status(StatusCodes.OK)
-    .json({ message: "Logout successFull!" });
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "No refresh token found. Already logged out?" });
+  }
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    SameSite: "Strict",
+  });
+
+  return res.status(StatusCodes.OK).json({ message: "Logout successful!" });
 };
 
 export const forgotPassword = async (req, res) => {
@@ -456,7 +467,7 @@ export const google = async (req, res) => {
   });
 };
 
-// User updates
+// dev only
 export const deleteUser = async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
