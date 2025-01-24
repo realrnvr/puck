@@ -25,7 +25,6 @@ export const useFavourite = ({ mangaId, mangaData }) => {
     mutationFn: () => addFavourite(mangaData),
 
     onMutate: async () => {
-      toast("Adding...", { duration: Infinity, id: "fav-add-toast" });
       await queryClient.cancelQueries({
         queryKey: ["isFavourite", { mangaId }],
       });
@@ -59,7 +58,6 @@ export const useFavourite = ({ mangaId, mangaData }) => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      toast.remove("fav-add-toast");
     },
   });
 
@@ -67,7 +65,6 @@ export const useFavourite = ({ mangaId, mangaData }) => {
     mutationFn: () => removeFavourite(mangaId),
 
     onMutate: async () => {
-      toast("removing...", { duration: Infinity, id: "fav-remove-toast" });
       await queryClient.cancelQueries({
         queryKey: ["isFavourite", { mangaId }],
       });
@@ -130,7 +127,6 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       if (queryClient.getQueryData(["all-favourites"])) {
         queryClient.invalidateQueries({ queryKey: ["all-favourites"] });
       }
-      toast.remove("fav-remove-toast");
     },
   });
 
