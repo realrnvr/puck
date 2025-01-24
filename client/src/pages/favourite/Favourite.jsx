@@ -1,8 +1,8 @@
 import "./favourite.css";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../services/api/axios";
 import { useAuth } from "../../hooks/useAuth";
 import { Fragment } from "react";
+import { fetchFavourites } from "../../services/query/query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
 
@@ -10,14 +10,6 @@ const LIMIT = 6;
 
 const Favourite = () => {
   const { user } = useAuth();
-
-  const fetchFavourites = async ({ pageParam = "" }) => {
-    const { data } = await axiosInstance.get(
-      `/api/v1/client/all-favourites?limit=${LIMIT}&cursor=${pageParam}`
-    );
-    return data;
-  };
-
   const {
     data,
     fetchNextPage,
@@ -29,13 +21,11 @@ const Favourite = () => {
     error,
   } = useInfiniteQuery({
     queryKey: ["all-favourites"],
-    queryFn: fetchFavourites,
+    queryFn: ({ pageParam = "" }) => fetchFavourites({ LIMIT, pageParam }),
     initialPageParam: "",
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: !!user,
   });
-
-  console.log(data);
 
   return (
     <section className="favourite | container">
