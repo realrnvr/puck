@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../services/api/axios";
 import { useMemo } from "react";
+import {
+  fetchStatics,
+  fetchAuthor,
+  fetchCoverImg,
+} from "../services/query/query";
 
 export const useMangaData = ({ mangaId, authorId }) => {
   const {
@@ -9,8 +13,8 @@ export const useMangaData = ({ mangaId, authorId }) => {
     isError: isStaticsError,
     error: staticsError,
   } = useQuery({
-    queryKey: ["static", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/statics/${mangaId}`),
+    queryKey: ["statics", { mangaId }],
+    queryFn: () => fetchStatics({ mangaId }),
   });
 
   const {
@@ -20,7 +24,7 @@ export const useMangaData = ({ mangaId, authorId }) => {
     error: authorError,
   } = useQuery({
     queryKey: ["author", { authorId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/author/${authorId}`),
+    queryFn: () => fetchAuthor({ authorId }),
   });
 
   const {
@@ -29,7 +33,7 @@ export const useMangaData = ({ mangaId, authorId }) => {
     isError: isCoverError,
   } = useQuery({
     queryKey: ["coverImg", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
+    queryFn: () => fetchCoverImg({ mangaId }),
   });
 
   const manga = statics?.data?.data?.attributes?.description?.en;

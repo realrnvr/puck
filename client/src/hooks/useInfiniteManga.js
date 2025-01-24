@@ -1,16 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../services/api/axios";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { fetchMangas } from "../services/query/query";
 
 export const useInfiniteManga = (LIMIT) => {
-  const fetchMangas = async ({ pageParam = "" }) => {
-    const { data } = await axiosInstance.get(
-      `/api/v1/manga/mangas?limit=${LIMIT}&cursor=${pageParam}`
-    );
-    return data;
-  };
-
   const {
     data,
     fetchNextPage,
@@ -19,8 +12,8 @@ export const useInfiniteManga = (LIMIT) => {
     isFetching,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["mangas"],
-    queryFn: fetchMangas,
+    queryKey: ["mangas", { LIMIT }],
+    queryFn: ({ pageParam = "" }) => fetchMangas({ LIMIT, pageParam }),
     initialPageParam: "",
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });

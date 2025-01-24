@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../services/api/axios";
 import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import { fetchChapter, fetchChapterImage } from "../services/query/query";
 
 const CHUNK_SIZE = 100;
 
@@ -20,10 +20,7 @@ export const useChapter = (mangaId) => {
     isError: isChapterError,
   } = useQuery({
     queryKey: ["chapter", { mangaId, CHUNK_SIZE, offset: state.offset }],
-    queryFn: () =>
-      axiosInstance.get(
-        `/api/v1/manga/chapters/${mangaId}?limit=${CHUNK_SIZE}&offset=${state.offset}`
-      ),
+    queryFn: () => fetchChapter({ mangaId, CHUNK_SIZE, offset: state.offset }),
     placeholderData: keepPreviousData,
   });
 
@@ -52,12 +49,7 @@ export const useChapter = (mangaId) => {
     isError: isChapterImageError,
   } = useQuery({
     queryKey: ["chapter-image", { chapterId, quality: state.quality }],
-    queryFn: () =>
-      axiosInstance.get(`/api/v1/manga/chapter-image/${chapterId}`, {
-        params: {
-          quality: state.quality,
-        },
-      }),
+    queryFn: () => fetchChapterImage({ chapterId, quality: state.quality }),
     placeholderData: keepPreviousData,
     enabled: !!chapterId,
   });
