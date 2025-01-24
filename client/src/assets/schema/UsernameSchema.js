@@ -4,6 +4,7 @@ export const UsernameSchema = z.object({
   newUsername: z
     .string()
     .min(4, "At least 4 characters")
+    .max(50, "Cannot exceed 50 characters")
     .trim()
     .regex(/^[a-zA-Z0-9._]+$/, {
       message: "Only letters, numbers, dots, and underscores allowed.",
