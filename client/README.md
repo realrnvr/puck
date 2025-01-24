@@ -21,13 +21,13 @@ Currently, two official plugins are available:
 10. Make Dynamic manga cover image size? (yes -> done)
 11. Make About page and put credits there. (done)
 12. Make all mutations & queries go into seperate files. (done)
-13. Zod validation sync with frontend validation logic. (3)
-14. General server clean up. (4)
+13. Zod validation sync with frontend validation logic. (future patch + mongoose validation synced)
+14. General server clean up.
 15. Code split + lazy load required components + General optimization. (finale)
 
 # Additional checks:
 
 1. to put refresh option on chapter-image error and chapter-list error and chapter-image (mangadex.org one) error? (finale)
-2. test favourite page once. (done -> cls improvement patch next) (2) (done) (fixed -> improved)
-3. handle toasts. (1) (done)
-4. auth loading state + favourite wrapper check. (5)
+2. server side cache, to put or not in diff controllers?
+3. auth loading state + favourite wrapper check.
+4. toasts addition.
