@@ -4,55 +4,52 @@ dotenv.config();
 import express from "express";
 const app = express();
 
-import cors from "cors";
-import "express-async-errors";
 // import "./populate.js";
-import nodeCron from "node-cron";
+import "express-async-errors";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
 import { notFound } from "./middleware/notFound.js";
-import { StatusCodes } from "http-status-codes";
 import { connectDB } from "./connectDB/connectDB.js";
 import { auth } from "./middleware/authorization.js";
 import { redisClient } from "./config/redisClient.js";
-
+import { sendNewsLetter } from "./services/newsletter.js";
+import { StatusCodes } from "http-status-codes";
+import cors from "cors";
+import nodeCron from "node-cron";
+import cookieParser from "cookie-parser";
+// routers
 import authRouter from "./router/auth.js";
 import mangaRouter from "./router/manga.js";
 import clientRouter from "./router/client.js";
 import newsletterRouter from "./router/newsletter.js";
-import cookieParser from "cookie-parser";
-import Client from "./models/client.js";
-import { sendNewsLetter } from "./services/newsletter.js";
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:4173",
-    ],
+    origin: process.env.CLIENT_APP_URL,
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(cookieParser());
 
+// health check
+
 app.get("/", (req, res) => {
   res.send("API spining!");
 });
+
+app.get("/api/v1/ping", (req, res) => {
+  res.status(StatusCodes.OK).send("PONG!");
+});
+
+// ... //
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/manga", mangaRouter);
 app.use("/api/v1/client", auth, clientRouter);
 app.use("/api/v1/newsletter", newsletterRouter);
 
-// test route
-
-app.get("/api/v1/users", auth, async (req, res) => {
-  const client = await Client.findOne({ createdBy: req.user.userId });
-  res.status(StatusCodes.OK).json({ msg: "Yahoo you made it!" });
-});
-
 // every Saturday at midnight
+
 nodeCron.schedule("0 0 * * 6", async () => {
   console.log("Sending weekly newsletter...");
   sendNewsLetter();
