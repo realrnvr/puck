@@ -1,150 +1,15 @@
 import "./fav-btn.css";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosInstance } from "../../../services/api/axios";
-import { useTransition } from "react";
-import { useAuth } from "../../../hooks/useAuth";
+import { useFavourite } from "../../../hooks/useFavourite";
 import PropTypes from "prop-types";
-import toast from "react-hot-toast";
 
 const FavBtn = ({ mangaId, mangaData, className = "", isDisabled }) => {
-  const [isPending, startTransition] = useTransition();
-  const auth = useAuth();
-  const queryClient = useQueryClient();
-
-  const { data: Favourite, isLoading } = useQuery({
-    queryKey: ["isFavourite", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/client/favourite/${mangaId}`),
-    enabled: !!auth.token,
-  });
-
-  const { mutate: add } = useMutation({
-    mutationFn: () =>
-      axiosInstance.post(`/api/v1/client/add-favourite`, mangaData),
-
-    onMutate: async () => {
-      toast("Adding...", { duration: Infinity, id: "fav-add-toast" });
-      await queryClient.cancelQueries({
-        queryKey: ["isFavourite", { mangaId }],
-      });
-
-      const previousIsFavourite = queryClient.getQueryData([
-        "isFavourite",
-        { mangaId },
-      ]);
-
-      // Update isFavourite state
-      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
-        return {
-          ...old,
-          data: { isFavourite: true },
-        };
-      });
-
-      return {
-        previousIsFavourite,
-      };
-    },
-
-    onError: (err, newFavourite, context) => {
-      if (context?.previousIsFavourite) {
-        queryClient.setQueryData(
-          ["isFavourite", { mangaId }],
-          context.previousIsFavourite
-        );
-      }
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      toast.remove("fav-add-toast");
-    },
-  });
-
-  const { mutate: remove } = useMutation({
-    mutationFn: () =>
-      axiosInstance.delete(`/api/v1/client/remove-favourite/${mangaId}`),
-
-    onMutate: async () => {
-      toast("removing...", { duration: Infinity, id: "fav-remove-toast" });
-      await queryClient.cancelQueries({
-        queryKey: ["isFavourite", { mangaId }],
-      });
-      await queryClient.cancelQueries({ queryKey: ["all-favourites"] });
-
-      const previousIsFavourite = queryClient.getQueryData([
-        "isFavourite",
-        { mangaId },
-      ]);
-      const previousAllFavourite = queryClient.getQueryData(["all-favourites"]);
-
-      // Update isFavourite state
-      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
-        return {
-          ...old,
-          data: { isFavourite: false },
-        };
-      });
-
-      // Update all-favourites while maintaining structure
-      if (previousAllFavourite) {
-        queryClient.setQueryData(["all-favourites"], (old) => {
-          return {
-            ...old,
-            pages: old.pages.map((page) => {
-              return {
-                ...page,
-                client: page.client.filter((val) => {
-                  return val.mangaId !== mangaId;
-                }),
-              };
-            }),
-          };
-        });
-      }
-
-      return {
-        previousIsFavourite,
-        previousAllFavourite,
-      };
-    },
-
-    onError: (err, newFavourite, context) => {
-      if (context?.previousIsFavourite) {
-        queryClient.setQueryData(
-          ["isFavourite", { mangaId }],
-          context.previousIsFavourite
-        );
-      }
-      if (context?.previousAllFavourite) {
-        queryClient.setQueryData(
-          ["all-favourites"],
-          context.previousAllFavourite
-        );
-      }
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      if (queryClient.getQueryData(["all-favourites"])) {
-        queryClient.invalidateQueries({ queryKey: ["all-favourites"] });
-      }
-      toast.remove("fav-remove-toast");
-    },
-  });
-
-  const handleFavourite = () => {
-    startTransition(() => {
-      if (auth.token) {
-        Favourite?.data?.isFavourite ? remove() : add();
-      }
-    });
-  };
-
-  const handleUserCheck = () => {
-    if (auth.user) return;
-
-    toast("Please login!", { duration: 3000 });
-  };
+  const {
+    isFavourite,
+    isPending,
+    isLoading,
+    handleFavourite,
+    handleUserCheck,
+  } = useFavourite({ mangaId, mangaData });
 
   return (
     <button
@@ -156,7 +21,7 @@ const FavBtn = ({ mangaId, mangaData, className = "", isDisabled }) => {
       }}
       disabled={isLoading || isPending || isDisabled}
     >
-      {Favourite?.data?.isFavourite ? (
+      {isFavourite ? (
         <svg
           fill="currentColor"
           viewBox="0 0 1024 1024"
