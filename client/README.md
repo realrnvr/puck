@@ -28,6 +28,6 @@ Currently, two official plugins are available:
 # Additional checks:
 
 1. to put refresh option on chapter-image error and chapter-list error and chapter-image (mangadex.org one) error? (finale)
-2. test favourite page once. (done -> cls improvement patch next) (2)
-3. handle toasts. (1)
+2. test favourite page once. (done -> cls improvement patch next) (2) (done) (fixed -> improved)
+3. handle toasts. (1) (done)
 4. auth loading state + favourite wrapper check. (5)
