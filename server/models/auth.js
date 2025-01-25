@@ -18,6 +18,7 @@ const UserSchema = new mongoose.Schema({
       "Please provide a valid email",
     ],
     unique: true,
+    trim: true,
   },
   password: {
     type: String,
@@ -37,7 +38,7 @@ const UserSchema = new mongoose.Schema({
     default: "normal",
   },
   googleId: {
-    type: String, // Removed `unique: true` here
+    type: String,
   },
   verificationToken: {
     type: String,
@@ -79,7 +80,7 @@ UserSchema.methods.verifyPassword = async function (stringPassword) {
 
 UserSchema.methods.createAccessToken = function () {
   const accessToken = jwt.sign(
-    { username: this.username, userId: this._id, email: this.email },
+    { userId: this._id, email: this.email },
     process.env.JWT_ACCESS_SECRET,
     { expiresIn: process.env.JWT_ACCESS_TIMESPAN }
   );
@@ -88,7 +89,7 @@ UserSchema.methods.createAccessToken = function () {
 
 UserSchema.methods.createRefreshToken = function () {
   const refreshToken = jwt.sign(
-    { username: this.username, userId: this._id, email: this.email },
+    { userId: this._id, email: this.email },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) }
   );
