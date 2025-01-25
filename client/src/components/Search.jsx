@@ -9,6 +9,8 @@ const Search = ({ onClick }) => {
     handleQueryChange,
     data,
     isLoading,
+    isError,
+    error,
     handleNavigate,
   } = useSearch();
 
@@ -38,8 +40,14 @@ const Search = ({ onClick }) => {
             </svg>
           </p>
         </form>
-        {data?.data?.manga?.length ? (
-          <ul className="search__result">
+        {
+          <ul
+            className={`search__result ${
+              !data?.data?.manga?.length && !isLoading
+                ? "search__result--pd"
+                : null
+            }`}
+          >
             {data?.data?.manga?.map((manga) => (
               <li
                 key={manga.mangaId}
@@ -56,7 +64,7 @@ const Search = ({ onClick }) => {
                 {manga?.title}
               </li>
             ))}
-            {isLoading ? (
+            {isLoading && !isError ? (
               <Skeleton
                 baseColor="#202020"
                 highlightColor="#444"
@@ -66,10 +74,14 @@ const Search = ({ onClick }) => {
                 count={4}
               />
             ) : null}
-            {query && !isLoading && !data?.data?.manga?.length ? (
-              <p className="header__no-search">No results found.</p>
-            ) : null}
           </ul>
+        }
+        {(query && !isLoading && data?.data?.manga?.length === 0) || isError ? (
+          <p className="header__no-search">
+            {isError
+              ? error?.response?.data?.message || "Something went wrong."
+              : "No results found."}
+          </p>
         ) : null}
       </div>
     </>
