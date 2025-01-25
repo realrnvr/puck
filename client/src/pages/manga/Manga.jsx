@@ -40,7 +40,7 @@ const Manga = () => {
     authorError?.response?.data?.type === "dex-api-error";
 
   return (
-    <article className="manga" style={{ marginTop: "1.5rem" }}>
+    <article className="manga">
       <div className="manga__bg">
         <img
           className="manga__bg-img"
@@ -91,7 +91,7 @@ const Manga = () => {
                 <ErrorComp height="50px" width="130px" />
               ) : null}
             </h2>
-            <p className="manga__author" style={{ marginBottom: "1rem" }}>
+            <p className="manga__kin">
               {statics?.data?.data?.attributes?.altTitleJa}
               {isStatics ? (
                 <Skeleton
@@ -109,7 +109,7 @@ const Manga = () => {
                 />
               ) : null}
             </p>
-            <p className="manga__author" style={{ marginBottom: "1rem" }}>
+            <p className="manga__kin">
               {isAuthor ? (
                 <Skeleton
                   baseColor="#202020"
