@@ -46,7 +46,6 @@ const Favourite = () => {
                     return (
                       <MangaCard
                         key={idx}
-                        img={val?.coverUrl}
                         title={val?.mangaTitle}
                         mangaId={val?.mangaId}
                         authorId={val?.authorId}
