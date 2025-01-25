@@ -1,22 +1,17 @@
 import { useDebounce } from "@uidotdev/usehooks";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../services/api/axios";
 import { useQuery } from "@tanstack/react-query";
+import { fetchSearch } from "../services/query/query";
 
 export const useSearch = () => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 400);
-
   const navigate = useNavigate();
 
-  const fetchManga = (query) => {
-    return axiosInstance.get(`/api/v1/manga/search?query=${query}`);
-  };
-
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["search", { debouncedQuery }],
-    queryFn: () => fetchManga(debouncedQuery),
+    queryFn: () => fetchSearch({ query: debouncedQuery }),
     enabled: !!debouncedQuery,
   });
 
@@ -37,6 +32,8 @@ export const useSearch = () => {
     handleQueryChange,
     data,
     isLoading,
+    isError,
+    error,
     handleNavigate,
   };
 };
