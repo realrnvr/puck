@@ -7,12 +7,11 @@ const Newsletter = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      lowercase: true,
       validate: {
         validator: function (v) {
           return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
         },
-        message: "Invalid email format.",
+        message: "please provide valid email",
       },
     },
     isSubscribed: {
