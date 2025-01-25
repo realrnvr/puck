@@ -9,12 +9,17 @@
   filter: blur(8px);
 }
 
+.manga {
+  margin-top: 1.5rem;
+}
+
 .manga > * + * {
   margin-top: 1rem;
 }
 
 .manga__top-container {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-top: 2rem;
 }
@@ -30,13 +35,14 @@
 }
 
 .manga__title {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-600);
   letter-spacing: -0.05em;
   text-transform: capitalize;
 }
 
-.manga__author {
+.manga__kin {
+  margin-top: 1rem;
   font-size: var(--fs-xss);
   font-weight: var(--fw-300);
   text-transform: capitalize;
@@ -293,10 +299,22 @@
 }
 
 /* Xs */
-/* @media (min-width: 475px) {} */
+@media (min-width: 475px) {
+  .manga__top-container {
+    flex-direction: row;
+  }
+
+  .manga__title {
+    font-size: var(--fs-md);
+  }
+}
 
 /* Sm */
-/* @media (min-width: 640px) {} */
+@media (min-width: 640px) {
+  .manga__title {
+    font-size: var(--fs-lg);
+  }
+}
 
 /* Md */
 @media (min-width: 768px) {
@@ -318,7 +336,7 @@
     text-transform: capitalize;
   }
 
-  .manga__author {
+  .manga__kin {
     font-size: var(--fs-xs);
     font-weight: var(--fw-300);
     text-transform: capitalize;
