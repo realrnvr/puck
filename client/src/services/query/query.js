@@ -53,3 +53,7 @@ export const fetchFavourites = async ({ LIMIT, pageParam = "" }) => {
 export const fetchFavourite = ({ mangaId }) => {
   return axiosInstance.get(`/api/v1/client/favourite/${mangaId}`);
 };
+
+export const fetchSearch = ({ query }) => {
+  return axiosInstance.get(`/api/v1/manga/search?query=${query}`);
+};
