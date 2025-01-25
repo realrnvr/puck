@@ -15,7 +15,7 @@
 .mangas__container {
   margin-top: 0.5rem;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
   place-items: center;
   padding-block: 2rem;
@@ -38,7 +38,11 @@
 }
 
 /* Xs */
-/* @media (min-width: 475px) {} */
+@media (min-width: 475px) {
+  .mangas__container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 /* Sm */
 @media (min-width: 640px) {
