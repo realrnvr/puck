@@ -4,15 +4,16 @@ const ClientSchema = new mongoose.Schema(
   {
     mangaTitle: {
       type: String,
+      required: [true, "please provide manga title"],
     },
     mangaId: {
       type: String,
+      required: [true, "please provide manga id"],
+      unique: true,
     },
     authorId: {
       type: String,
-    },
-    coverUrl: {
-      type: String,
+      required: [true, "please provide author id"],
     },
     createdBy: {
       type: mongoose.Types.ObjectId,
