@@ -11,5 +11,5 @@ export const validateResetPassword = (req, res, next) => {
     throw new BadRequestError("Passwords does not match!");
   }
 
-  +next();
+  next();
 };
