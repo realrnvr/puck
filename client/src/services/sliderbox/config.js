@@ -14,7 +14,7 @@ export const plugins = [
 
 export const slideshow = {
   autoplay: true,
-  delay: 5000,
+  delay: 3000,
 };
 
 export const thumbnails = {
