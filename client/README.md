@@ -30,6 +30,6 @@ Currently, two official plugins are available:
 1. to put refresh option on chapter-image error and chapter-list error and chapter-image (mangadex.org one) error? (finale)
 2. server side cache, to put or not in diff controllers? (done) (no -> only manga controllers)
 3. auth loading state + favourite wrapper check.
-4. toasts addition.
+4. toasts addition. (done)
 5. search single character serach. (done)
 6. cache headers. (done)
