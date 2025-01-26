@@ -1,36 +1,43 @@
 import "./verified.css";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { verify } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import Loader from "../../../components/ui/loader/Loader";
+import toast from "react-hot-toast";
 
 const Verified = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const { verificationId } = useParams();
+  const hasRun = useRef(false);
 
   const { mutate: verifyMutate, error } = useMutation({
     mutationFn: verify,
     onSuccess: (data) => {
-      console.log(data);
       auth.setToken(data?.data?.accessToken);
+      toast.success("hello :)");
       navigate("/account");
       localStorage.removeItem("sign-mail");
     },
     onError: (error) => {
+      toast.success("Something went wrong");
       console.log(error);
     },
   });
 
   useEffect(() => {
-    const signMail = localStorage.getItem("sign-mail");
-    if (verificationId && signMail)
-      verifyMutate({
-        verificationId,
-        email: signMail,
-      });
+    if (!hasRun.current) {
+      const signMail = localStorage.getItem("sign-mail");
+      if (verificationId && signMail) {
+        verifyMutate({
+          verificationId,
+          email: signMail,
+        });
+      }
+      hasRun.current = true;
+    }
   }, [verificationId, verifyMutate]);
 
   if (!error)
