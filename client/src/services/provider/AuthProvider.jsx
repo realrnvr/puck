@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       axiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, [setToken]);
+  }, []);
 
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
