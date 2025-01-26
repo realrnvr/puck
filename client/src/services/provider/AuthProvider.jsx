@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   console.log("token state", token);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["user"],
     queryFn: () => axiosInstance.get("/api/v1/client/user"),
     enabled: !!token,
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     const refreshInterceptor = axiosInstance.interceptors.response.use(
       async (response) => {
         if (
-          response.data?.statusCode === 403 &&
+          response.data.statusCode === 403 &&
           response.data.message === "Forbidden"
         ) {
           const originalRequest = response.config;
@@ -82,10 +82,10 @@ export const AuthProvider = ({ children }) => {
 
               originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
               return axiosInstance(originalRequest);
-            } catch (refreshError) {
+            } catch (error) {
               setToken(null);
-              console.error("Refresh token failed:", refreshError);
-              return Promise.reject(refreshError);
+              console.error("Refresh token failed:", error);
+              return Promise.reject(error);
             }
           }
 
@@ -117,6 +117,7 @@ export const AuthProvider = ({ children }) => {
         token,
         setToken,
         user: data?.data,
+        userError: isError,
         logout: logoutMutate,
         isPending: isLoading,
         mutateTokenPending: isPending,
