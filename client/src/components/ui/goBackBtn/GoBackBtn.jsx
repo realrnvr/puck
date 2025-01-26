@@ -1,16 +1,21 @@
 import "./go-back-btn.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const GoBackBtn = ({ text = "back" }) => {
+const GoBackBtn = ({ text = "back", redirectPath = "/account" }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handelClick = () => {
-    navigate(-1);
+  const handleClick = () => {
+    if (location.pathname === redirectPath) {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
-    <button className="go" onClick={handelClick}>
+    <button className="go" onClick={handleClick}>
       <svg className="go__svg" fill="currentColor" viewBox="0 0 512 512">
         <path
           fill="none"
@@ -28,6 +33,7 @@ const GoBackBtn = ({ text = "back" }) => {
 
 GoBackBtn.propTypes = {
   text: PropTypes.string,
+  redirectPath: PropTypes.string, // Path to check where the user came from
 };
 
 export default GoBackBtn;
