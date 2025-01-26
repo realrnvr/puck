@@ -9,9 +9,12 @@ import { hasErrors } from "../../helper/hasErrors";
 import Input from "../../components/ui/input/Input";
 import ChangePasswordBtn from "../../components/ChangePasswordBtn";
 import Skeleton from "react-loading-skeleton";
+import ErrorComp from "../../utils/errorComp/ErrorComp";
+import toast from "react-hot-toast";
+import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const AccountSetting = () => {
-  const { user, isPending } = useAuth();
+  const { user, isPending, userError } = useAuth();
   const queryClient = useQueryClient();
 
   const {
@@ -20,6 +23,7 @@ const AccountSetting = () => {
     setError,
     watch,
     setFocus,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -36,11 +40,13 @@ const AccountSetting = () => {
   const { mutate, isPending: mutateIsPending } = useMutation({
     mutationFn: updateUsername,
     onSuccess: () => {
+      toast.success("username updated!");
+      setValue("newUsername", "");
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error) => {
-      console.log(error);
       const message = error.response.data.message;
+      toast.error(message);
       setError("newUsername", { message });
       setFocus("newUsername");
     },
@@ -52,6 +58,7 @@ const AccountSetting = () => {
 
   return (
     <section className="setting | container">
+      <GoBackBtn />
       <div>
         <h2 className="setting__title">Edit Account Settings</h2>
         <div className="setting__option">
@@ -69,7 +76,7 @@ const AccountSetting = () => {
                 defaultMsg: "At least 4 characters",
                 toggle: false,
               }}
-              placeholder={user?.username}
+              placeholder={user?.username || "----"}
               inputWrapperClassName={"setting__input"}
             />
             <button
@@ -97,11 +104,16 @@ const AccountSetting = () => {
             ) : (
               user?.email
             )}
+            {userError ? <ErrorComp height="20px" width="200px" /> : null}
           </span>
         </div>
         <div className="setting__opt-container">
           <span className="setting__label">Password:</span>
-          <ChangePasswordBtn user={user} isPending={isPending} />
+          <ChangePasswordBtn
+            user={user}
+            isPending={isPending}
+            disabled={userError}
+          />
         </div>
       </div>
     </section>

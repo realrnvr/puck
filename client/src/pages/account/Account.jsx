@@ -3,13 +3,16 @@ import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import ChangePasswordBtn from "../../components/ChangePasswordBtn";
+import ErrorComp from "../../utils/errorComp/ErrorComp";
+import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const Account = () => {
-  const { user, isPending } = useAuth();
+  const { user, isPending, userError } = useAuth();
 
   return (
     <section className="account | container">
-      <h2 className="account__title">Account section</h2>
+      <GoBackBtn />
+      <h2 className="account__title account__title--mt">Account section</h2>
       <div className="acount__content">
         <h2 className="account__username">
           {isPending ? (
@@ -22,6 +25,7 @@ const Account = () => {
           ) : (
             user?.username
           )}
+          {userError ? <ErrorComp height="70px" width="150px" /> : null}
         </h2>
         <p className="account__mail">
           {isPending ? (
@@ -34,6 +38,13 @@ const Account = () => {
           ) : (
             user?.email
           )}
+          {userError ? (
+            <ErrorComp
+              height="20px"
+              width="150px"
+              className={"error-comp--mt-0_5"}
+            />
+          ) : null}
         </p>
         <div>
           <Link to="/account-setting" className="account__settings">
@@ -41,7 +52,11 @@ const Account = () => {
           </Link>
         </div>
         <div>
-          <ChangePasswordBtn user={user} isPending={isPending} />
+          <ChangePasswordBtn
+            user={user}
+            isPending={isPending}
+            disabled={userError}
+          />
         </div>
       </div>
       <div className="account__btn-container">
