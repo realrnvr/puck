@@ -71,7 +71,6 @@ const Signup = () => {
           );
           break;
         default:
-          // make it better
           toast.error("Something went wrong");
       }
     },

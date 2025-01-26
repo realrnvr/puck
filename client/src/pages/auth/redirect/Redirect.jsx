@@ -3,8 +3,9 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { axiosInstance } from "../../../services/api/axios";
-import Loader from "../../../components/ui/loader/Loader";
 import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import Loader from "../../../components/ui/loader/Loader";
 
 const Redirect = () => {
   const auth = useAuth();
@@ -17,11 +18,13 @@ const Redirect = () => {
     onSuccess: (data) => {
       console.log("Response from backend:", data.data);
       auth.setToken(data.data?.accessToken);
+      toast.success("hello :)", { duration: 3000 });
       navigate("/account");
       isMutating.current = false;
     },
     onError: (error) => {
       console.error("Error during Google login:", error);
+      toast.error("Something went wrong");
       navigate("/login");
       isMutating.current = false;
     },

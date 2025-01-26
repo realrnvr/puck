@@ -7,8 +7,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAuthTwo } from "../../../services/mutation/authMutation";
-import Input from "../../ui/input/Input";
 import { hasErrors } from "../../../helper/hasErrors";
+import Input from "../../ui/input/Input";
+import toast from "react-hot-toast";
 
 const LoginTwo = () => {
   const auth = useAuth();
@@ -33,6 +34,7 @@ const LoginTwo = () => {
     onSuccess: (data) => {
       console.log(data);
       auth.setToken(data?.data?.accessToken);
+      toast.success("logged in.");
       navigate("/account");
       localStorage.removeItem("log-mail");
     },
