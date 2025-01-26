@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import NavigationToast from "./auth/navigationToast/NavigationToast";
 
-const ChangePasswordBtn = ({ user, isPending }) => {
+const ChangePasswordBtn = ({ user, isPending, disabled }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -35,7 +35,7 @@ const ChangePasswordBtn = ({ user, isPending }) => {
       type="button"
       className="account__change-btn"
       onClick={handleClick}
-      disabled={isPending}
+      disabled={isPending || disabled}
     >
       Change Password
     </button>
@@ -45,6 +45,7 @@ const ChangePasswordBtn = ({ user, isPending }) => {
 ChangePasswordBtn.propTypes = {
   user: PropTypes.object,
   isPending: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default ChangePasswordBtn;
