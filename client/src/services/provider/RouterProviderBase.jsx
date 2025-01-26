@@ -119,7 +119,7 @@ const router = createBrowserRouter([
       {
         path: "/account",
         element: (
-          <RestrictAccountSection>
+          <RestrictAccountSection type="account">
             <Account />
           </RestrictAccountSection>
         ),
@@ -127,7 +127,7 @@ const router = createBrowserRouter([
       {
         path: "/account-setting",
         element: (
-          <RestrictAccountSection>
+          <RestrictAccountSection type="accountSetting">
             <AccountSetting />
           </RestrictAccountSection>
         ),
@@ -135,7 +135,7 @@ const router = createBrowserRouter([
       {
         path: "/change-password",
         element: (
-          <RestrictAccountSection>
+          <RestrictAccountSection type="changePassword">
             <ChangePassword />
           </RestrictAccountSection>
         ),
