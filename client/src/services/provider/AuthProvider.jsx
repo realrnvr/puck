@@ -2,15 +2,14 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-// import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(undefined);
   const [isPending, setIsPending] = useState(true);
-  // const [isTokenLoading, setIsTokenLoading] = useState(false);
   const queryClient = useQueryClient();
+
   console.log("token state", token);
 
   const { data, isLoading } = useQuery({
@@ -111,8 +110,6 @@ export const AuthProvider = ({ children }) => {
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
   };
-
-  console.log(isPending);
 
   return (
     <AuthContext.Provider
