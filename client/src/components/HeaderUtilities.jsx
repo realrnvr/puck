@@ -4,11 +4,11 @@ import Skeleton from "react-loading-skeleton";
 import PropTypes from "prop-types";
 
 const HeaderUtilities = ({ onClick }) => {
-  const { user, logout, isPending } = useAuth();
+  const { token, logout, mutateTokenPending } = useAuth();
 
   return (
     <ul className="header__utilities">
-      {user ? (
+      {token ? (
         <>
           <li>
             <Link to="/account" className="header__nav-btn" onClick={onClick}>
@@ -21,7 +21,7 @@ const HeaderUtilities = ({ onClick }) => {
             </button>
           </li>
         </>
-      ) : isPending ? (
+      ) : mutateTokenPending ? (
         <Skeleton
           baseColor="#202020"
           highlightColor="#444"
