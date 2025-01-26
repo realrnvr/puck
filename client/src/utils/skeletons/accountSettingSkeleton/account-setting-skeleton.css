@@ -1,0 +1,35 @@
+.setting-skeleton {
+  padding-block: 2rem;
+}
+
+.setting-skeleton__title {
+  max-width: 200px;
+  height: 40px;
+}
+
+.setting-skeleton__sec-title {
+  max-width: 150px;
+  height: 30px;
+}
+
+.setting-skeleton__input {
+  max-width: 250px;
+  height: 70px;
+}
+
+.setting-skeleton__btn {
+  margin-top: 1rem;
+  max-width: 50px;
+  height: 20px;
+}
+
+.setting-skeleton__sec-title {
+  margin-top: 1rem;
+  max-width: 200px;
+  height: 40px;
+}
+
+.setting-skeleton__label {
+  max-width: 200px;
+  height: 20px;
+}

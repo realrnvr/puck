@@ -1,0 +1,35 @@
+.account-skeleton {
+  padding-block: 1rem;
+}
+
+.account-skeleton__title {
+  max-width: 150px;
+  height: 40px;
+}
+
+.account-skeleton__username {
+  margin-top: 2rem;
+  max-width: 150px;
+  height: 50px;
+}
+
+.account-skeleton__mail {
+  margin-top: 0.5rem;
+  max-width: 200px;
+  height: 20px;
+}
+
+.account-skeleton__settings {
+  margin-top: 1rem;
+  max-width: 150px;
+}
+
+.account-skeleton__settings--mt {
+  margin-top: 0.5rem;
+}
+
+.account-skeleton__btn {
+  margin-top: 1rem;
+  max-width: 120px;
+  height: 30px;
+}

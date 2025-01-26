@@ -1,0 +1,32 @@
+.favourite-skeleton {
+  padding-block: 1rem;
+}
+
+.favourite-skeleton__title {
+  max-width: 200px;
+  height: 40px;
+}
+
+.favourite-skeleton__container {
+  margin-top: 2rem;
+  max-width: 100%;
+  height: 372.75px;
+}
+
+/* Xs */
+/* @media (min-max-width: 475px) {} */
+
+/* Sm */
+/* @media (min-max-width: 640px) {} */
+
+/* Md */
+/* @media (min-max-width: 768px) {} */
+
+/* Lg */
+/* @media (min-max-width: 1024px) {} */
+
+/* Xl */
+/* @media (min-max-width: 1280px) {} */
+
+/* 2Xl */
+/* @media (min-max-width: 1440px) {} */
