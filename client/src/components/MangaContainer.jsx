@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { useInfiniteManga } from "../hooks/useInfiniteManga";
 import MangaCard from "./ui/mangaCard/MangaCard";
 import Proptypes from "prop-types";
-import MangaCardSkeleton from "../utils/skeletons/MangaCard/MangaCardSkeleton";
+import MangaCardSkeleton from "../utils/skeletons/mangaCard/MangaCardSkeleton";
 import MangaCardError from "../utils/errors/MangaCardError";
 import Loader from "./ui/loader/Loader";
 
