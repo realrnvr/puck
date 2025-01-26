@@ -4,23 +4,32 @@ import Skeleton from "react-loading-skeleton";
 import PropTypes from "prop-types";
 
 const HeaderUtilities = ({ onClick }) => {
-  const { token, logout, mutateTokenPending } = useAuth();
+  const { token, logout, mutateTokenPending, mutateLogoutPending } = useAuth();
 
   return (
     <ul className="header__utilities">
       {token ? (
-        <>
-          <li>
-            <Link to="/account" className="header__nav-btn" onClick={onClick}>
-              Account
-            </Link>
-          </li>
-          <li>
-            <button className="header__log-out-btn" onClick={logout}>
-              Log out
-            </button>
-          </li>
-        </>
+        mutateLogoutPending ? (
+          <Skeleton
+            baseColor="#202020"
+            highlightColor="#444"
+            height={"30px"}
+            width={"200px"}
+          />
+        ) : (
+          <>
+            <li>
+              <Link to="/account" className="header__nav-btn" onClick={onClick}>
+                Account
+              </Link>
+            </li>
+            <li>
+              <button className="header__log-out-btn" onClick={logout}>
+                Log out
+              </button>
+            </li>
+          </>
+        )
       ) : mutateTokenPending ? (
         <Skeleton
           baseColor="#202020"
