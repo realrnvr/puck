@@ -1,12 +1,14 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../api/axios.js";
 import { AuthContext } from "../../hooks/useAuth.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalStorage } from "../../hooks/useLocalStorage.js";
+// import { useLocalStorage } from "../../hooks/useLocalStorage.js";
+import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useLocalStorage("token", undefined);
+  const [token, setToken] = useState(undefined);
+  const [isPending, setIsPending] = useState(true);
   // const [isTokenLoading, setIsTokenLoading] = useState(false);
   const queryClient = useQueryClient();
   console.log("token state", token);
@@ -21,27 +23,30 @@ export const AuthProvider = ({ children }) => {
     mutationFn: () => axiosInstance.post("/api/v1/auth/logout"),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["user"] });
+      toast.success("logged out!");
       setToken(null);
     },
     onError: (error) => {
+      toast.success("Something went wrong!");
       console.log(error);
     },
   });
 
-  const { mutate, isPending: mutateTokenPending } = useMutation({
-    mutationFn: () => axiosInstance.post("/api/v1/auth/me"),
-    onSuccess: (data) => {
-      setToken(data.data.accessToken);
-    },
-    onError: (error) => {
-      setToken(null);
-      console.error("Error fetching user data:", error);
-    },
-  });
-
   useEffect(() => {
-    mutate();
-  }, [mutate]);
+    const fetchMe = async () => {
+      try {
+        const response = await axiosInstance.post("/api/v1/auth/me");
+        setToken(response.data.accessToken);
+      } catch (error) {
+        console.log(error);
+        setToken(null);
+      } finally {
+        setIsPending(false);
+      }
+    };
+
+    fetchMe();
+  }, []);
 
   useLayoutEffect(() => {
     const authInterceptor = axiosInstance.interceptors.request.use((config) => {
@@ -107,6 +112,8 @@ export const AuthProvider = ({ children }) => {
     children: PropTypes.node.isRequired,
   };
 
+  console.log(isPending);
+
   return (
     <AuthContext.Provider
       value={{
@@ -115,7 +122,7 @@ export const AuthProvider = ({ children }) => {
         user: data?.data,
         logout: logoutMutate,
         isPending: isLoading,
-        mutateTokenPending,
+        mutateTokenPending: isPending,
         mutateLogoutPending,
       }}
     >
