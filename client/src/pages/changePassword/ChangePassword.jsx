@@ -7,6 +7,7 @@ import { axiosInstance } from "../../services/api/axios";
 import { ChangePasswordSchema } from "../../assets/schema/ChangePasswordSchema";
 import { changePassword } from "../../assets/data/changePasswordData";
 import Input from "../../components/ui/input/Input";
+import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const ChangePassword = () => {
   const {
@@ -50,6 +51,7 @@ const ChangePassword = () => {
 
   return (
     <section className="change | container">
+      <GoBackBtn />
       <h2 className="change__title">Change Your Password</h2>
       <p className="change__description">
         You can use this page to change your password. Please enter a new
