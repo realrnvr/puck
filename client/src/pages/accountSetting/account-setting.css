@@ -1,6 +1,5 @@
 .setting {
-  padding-block-start: 1rem;
-  padding-block-end: 3rem;
+  padding-block: 2rem;
 }
 
 .setting > * + * {
