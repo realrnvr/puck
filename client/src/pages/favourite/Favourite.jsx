@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { Fragment } from "react";
 import { fetchFavourites } from "../../services/query/query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
-import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
+import MangaCardSkeleton from "../../utils/skeletons/mangaCard/MangaCardSkeleton";
 import Skeleton from "react-loading-skeleton";
 
 const LIMIT = 6;
