@@ -1,18 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import PropTypes from "prop-types";
-import Loader from "../../components/ui/loader/Loader";
 
 const AuthRedirectGaurd = ({ children }) => {
-  const { token, isPending } = useAuth();
-
-  if (isPending) {
-    return (
-      <div className="redirect">
-        <Loader />
-      </div>
-    );
-  }
+  const { token } = useAuth();
 
   if (token) {
     return <Navigate to="/" replace />;
