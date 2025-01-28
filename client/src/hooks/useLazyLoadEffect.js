@@ -4,7 +4,7 @@ export function useLazyLoadEffect({ carouselRef, lzImgsRef }) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries, observer) => {
-        entries.forEach((entry) => {
+        entries?.forEach((entry) => {
           if (entry.isIntersecting) {
             let img = entry.target;
             img.src = img.dataset.src;
@@ -15,15 +15,17 @@ export function useLazyLoadEffect({ carouselRef, lzImgsRef }) {
         });
       },
       {
-        root: carouselRef.current,
+        root: carouselRef?.current,
         rootMargin: "100px",
         threshold: 0.01,
       }
     );
 
-    lzImgsRef.current?.forEach((img) => {
-      observer.observe(img);
-    });
+    Array.isArray(lzImgsRef.current)
+      ? lzImgsRef.current.forEach((img) => {
+          observer.observe(img);
+        })
+      : observer.observe(lzImgsRef.current);
 
     return () => {
       observer.disconnect();
