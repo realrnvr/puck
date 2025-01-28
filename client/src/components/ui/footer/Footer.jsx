@@ -1,7 +1,13 @@
 import "./footer.css";
 import HeaderNavLink from "../../HeaderNavLink";
+import { useLazyLoadEffect } from "../../../hooks/useLazyLoadEffect";
+import { useRef } from "react";
 
 const Footer = () => {
+  const imgRef = useRef(null);
+
+  useLazyLoadEffect({ carouselRef: null, lzImgsRef: imgRef });
+
   return (
     <footer className="footer | section-mg-top">
       <div className="footer__content | container">
@@ -18,7 +24,14 @@ const Footer = () => {
         </div>
         <div className="footer__contact">
           <div className="footer__img-wrapper">
-            <img className="footer__img" src="/footer-filler.webp" alt="" />
+            <img
+              ref={imgRef}
+              className="footer__img | loading"
+              src="/1px.webp"
+              data-src={"/footer-filler.webp"}
+              alt="footer-img"
+              aria-hidden={true}
+            />
           </div>
           <div className="footer__contact-text">
             <h3 className="footer__text">Contact us:</h3>
