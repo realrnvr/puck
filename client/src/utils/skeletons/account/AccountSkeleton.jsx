@@ -10,6 +10,12 @@ const AccountSkeleton = () => {
       highlightColor="#444"
     >
       <section className="account-skeleton | container">
+        <Skeleton
+          height={"30px"}
+          width={"80px"}
+          baseColor="#202020"
+          highlightColor="#444"
+        />
         <h2 className="account-skeleton__title">
           <Skeleton />
         </h2>
