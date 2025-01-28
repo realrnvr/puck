@@ -12,6 +12,7 @@
 }
 
 .case-manga__slider {
+  height: var(--slider--height);
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
