@@ -10,9 +10,18 @@ const ChangePasswordSkeleton = () => {
       highlightColor="#444"
     >
       <section className="change-skeleton | container">
+        <Skeleton
+          height={"30px"}
+          width={"80px"}
+          baseColor="#202020"
+          highlightColor="#444"
+        />
         <h2 className="change-skeleton__title">
           <Skeleton />
         </h2>
+        <p className="change-skeleton__description">
+          <Skeleton />
+        </p>
         <p className="change-skeleton__description">
           <Skeleton />
         </p>
