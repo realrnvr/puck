@@ -174,8 +174,8 @@ const Manga = () => {
                 <Skeleton
                   baseColor="#202020"
                   highlightColor="#444"
-                  height={"100%"}
-                  width={"150px"}
+                  height={"25px"}
+                  width={"200px"}
                 />
               ) : isStaticsError ? (
                 <ErrorComp height={"25px"} width={"150px"} />
