@@ -22,7 +22,7 @@ export const mangas = async (req, res) => {
   const cachedManga = await redisClient.get(cacheKey);
 
   if (cachedManga) {
-    setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
+    // setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
   }
 
@@ -40,7 +40,7 @@ export const mangas = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
+  // setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
 };
