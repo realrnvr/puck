@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import PropTypes from "prop-types";
-import AccountSkeleton from "../../utils/skeletons/account/AccountSkeleton";
 import AccountSettingSkeleton from "../../utils/skeletons/accountSettingSkeleton/AccountSettingSkeleton";
 import ChangePasswordSkeleton from "../../utils/skeletons/changePassword/ChangePasswordSkeleton";
+import AccountSkeleton from "../../utils/skeletons/account/AccountSkeleton";
 
 const RestrictAccountSection = ({
   children,
