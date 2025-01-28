@@ -57,6 +57,7 @@ import AccountSettingSkeleton from "../../utils/skeletons/accountSettingSkeleton
 import ChangePasswordSkeleton from "../../utils/skeletons/changePassword/ChangePasswordSkeleton";
 import FavouriteSkeleton from "../../utils/skeletons/favourite/FavouriteSkeleton";
 import MangaSkeleton from "../../utils/skeletons/manga/MangaSkeleton";
+import ViewerSkeleton from "../../utils/skeletons/viewer/ViewerSkeleton";
 
 const router = createBrowserRouter([
   {
@@ -185,11 +186,10 @@ const router = createBrowserRouter([
   {
     path: "/viewer/:mangaId",
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ViewerSkeleton />}>
         <LazyViewer />
       </Suspense>
     ),
-    // <Viewer />
   },
   {
     path: "/test",
