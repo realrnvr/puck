@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRandomManga } from "../../services/query/query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
-import MangaCardSkeleton from "../../utils/skeletons/MangaCard/MangaCardSkeleton";
 import MangaCardError from "../../utils/errors/MangaCardError";
+import MangaCardSkeleton from "../../utils/skeletons/mangaCard/MangaCardSkeleton";
 
 const LIMIT = 8;
 
