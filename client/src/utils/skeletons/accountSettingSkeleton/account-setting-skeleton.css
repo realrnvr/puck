@@ -3,6 +3,7 @@
 }
 
 .setting-skeleton__title {
+  margin-top: 1rem;
   max-width: 200px;
   height: 40px;
 }
@@ -30,6 +31,7 @@
 }
 
 .setting-skeleton__label {
+  margin-top: 0.3rem;
   max-width: 200px;
   height: 20px;
 }

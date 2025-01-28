@@ -1,5 +1,6 @@
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "../../../pages/accountSetting/account-setting.css";
 import "./account-setting-skeleton.css";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const AccountSettingSkeleton = () => {
   return (
@@ -10,6 +11,12 @@ const AccountSettingSkeleton = () => {
       highlightColor="#444"
     >
       <section className="setting-skeleton | container">
+        <Skeleton
+          height={"30px"}
+          width={"80px"}
+          baseColor="#202020"
+          highlightColor="#444"
+        />
         <div>
           <h2 className="setting-skeleton__title">
             <Skeleton />
