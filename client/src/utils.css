@@ -16,6 +16,10 @@
 /* 2Xl */
 /* @media (min-width: 1440px) {} */
 
+:root {
+  --slider--height: 600px;
+}
+
 .container {
   width: calc(100%);
   margin-inline: auto;
@@ -80,6 +84,10 @@
 
 /* Lg */
 @media (min-width: 1024px) {
+  :root {
+    --slider--height: 700px;
+  }
+
   .container {
     max-width: 1024px;
   }
