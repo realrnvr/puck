@@ -1,11 +1,15 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
+import { lazy, Suspense } from "react";
 
 import Home from "../../pages/home/Home";
-import Account from "../../pages/account/Account";
+const LazyAccount = lazy(() => import("../../pages/account/Account"));
+// import Account from "../../pages/account/Account";
 import Template from "../../utils/template/Template";
-import Login from "../../components/auth/login/Login";
-import Signup from "../../components/auth/signup/Signup";
+const LazyLogin = lazy(() => import("../../components/auth/login/Login"));
+// import Login from "../../components/auth/login/Login";
+const LazySignup = lazy(() => import("../../components/auth/signup/Signup"));
+// import Signup from "../../components/auth/signup/Signup";
 import Verification from "../../pages/auth/verification/Verification";
 import Verified from "../../pages/auth/verified/Verified";
 import ForgotPassword from "../../pages/auth/forgotPassword/ForgotPassword";
@@ -15,24 +19,44 @@ import PasswordVerified from "../../pages/auth/passwordVerified/PasswordVerified
 import Redirect from "../../pages/auth/redirect/Redirect";
 import LoginTwo from "../../components/auth/loginTwo/LoginTwo";
 import LoginGoogleAuth from "../../components/auth/loginGoogleAuth/LoginGoogleAuth";
-import Read from "../../pages/read/Read";
+const LazyRead = lazy(() => import("../../pages/read/Read"));
+// import Read from "../../pages/read/Read";
 import Layout from "../../pages/layout/Layout";
-import Manga from "../../pages/manga/Manga";
+const LazyManga = lazy(() => import("../../pages/manga/Manga"));
+// import Manga from "../../pages/manga/Manga";
 import Mangas from "../../pages/mangas/Mangas";
-import Viewer from "../../pages/viewer/Viewer";
-import Favourite from "../../pages/favourite/Favourite";
+const LazyViewer = lazy(() => import("../../pages/viewer/Viewer"));
+// import Viewer from "../../pages/viewer/Viewer";
+const LazyFavourite = lazy(() => import("../../pages/favourite/Favourite"));
+// import Favourite from "../../pages/favourite/Favourite";
 import Test from "../../tests/Test";
-import AccountSetting from "../../pages/accountSetting/AccountSetting";
-import ChangePassword from "../../pages/changePassword/ChangePassword";
+const LazyAccountSetting = lazy(() =>
+  import("../../pages/accountSetting/AccountSetting")
+);
+// import AccountSetting from "../../pages/accountSetting/AccountSetting";
+const LazyChangePassword = lazy(() =>
+  import("../../pages/changePassword/ChangePassword")
+);
+// import ChangePassword from "../../pages/changePassword/ChangePassword";
 import RestrictAccountSection from "../auth/RestrictAccountSection";
 import ProcessGaurd from "../auth/ProcessGaurd";
 import AuthRedirectGaurd from "../auth/AuthRedirectGaurd";
 import RestrictFavourite from "../auth/RestrictFavourite";
-import About from "../../pages/about/About";
+const LazyAbout = lazy(() => import("../../pages/about/About"));
+// import About from "../../pages/about/About";
 import Community from "../../pages/community/Community";
 import Watch from "../../pages/watch/Watch";
 import MainPageTemplate from "../../utils/mainPageTemplate/MainPageTemplate";
 import Error from "../../pages/error/Error";
+import ReadSkeleton from "../../utils/skeletons/read/ReadSkeleton";
+import AboutSkeleton from "../../utils/skeletons/about/AboutSkeleton";
+import LoginSkeleton from "../../utils/skeletons/login/LoginSkeleton";
+import SignupSkeleton from "../../utils/skeletons/signup/SignupSkeleton";
+import AccountSkeleton from "../../utils/skeletons/account/AccountSkeleton";
+import AccountSettingSkeleton from "../../utils/skeletons/accountSettingSkeleton/AccountSettingSkeleton";
+import ChangePasswordSkeleton from "../../utils/skeletons/changePassword/ChangePasswordSkeleton";
+import FavouriteSkeleton from "../../utils/skeletons/favourite/FavouriteSkeleton";
+import MangaSkeleton from "../../utils/skeletons/manga/MangaSkeleton";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +77,9 @@ const router = createBrowserRouter([
               "Step into a world where ink meets magic. Each page is a portal, each panel a universe waiting to be discovered. Ready to turn the page? Your adventure starts now!"
             }
           >
-            <Read />
+            <Suspense fallback={<ReadSkeleton />}>
+              <LazyRead />
+            </Suspense>
           </MainPageTemplate>
         ),
       },
@@ -67,7 +93,9 @@ const router = createBrowserRouter([
               "Your gateway to discovering and enjoying the best of manga and anime. Explore timeless classics, discover new favorites, and immerse yourself in the stories you love—all in one place."
             }
           >
-            <About />
+            <Suspense fallback={<AboutSkeleton />}>
+              <LazyAbout />
+            </Suspense>
           </MainPageTemplate>
         ),
       },
@@ -102,7 +130,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/manga/:mangaId/:authorId",
-        element: <Manga />,
+        element: (
+          <Suspense fallback={<MangaSkeleton />}>
+            <LazyManga />
+          </Suspense>
+        ),
       },
       {
         path: "/mangas",
@@ -112,7 +144,9 @@ const router = createBrowserRouter([
         path: "/favourite",
         element: (
           <RestrictFavourite>
-            <Favourite />
+            <Suspense fallback={<FavouriteSkeleton />}>
+              <LazyFavourite />
+            </Suspense>
           </RestrictFavourite>
         ),
       },
@@ -120,7 +154,9 @@ const router = createBrowserRouter([
         path: "/account",
         element: (
           <RestrictAccountSection type="account">
-            <Account />
+            <Suspense fallback={<AccountSkeleton />}>
+              <LazyAccount />
+            </Suspense>
           </RestrictAccountSection>
         ),
       },
@@ -128,7 +164,9 @@ const router = createBrowserRouter([
         path: "/account-setting",
         element: (
           <RestrictAccountSection type="accountSetting">
-            <AccountSetting />
+            <Suspense fallback={<AccountSettingSkeleton />}>
+              <LazyAccountSetting />
+            </Suspense>
           </RestrictAccountSection>
         ),
       },
@@ -136,7 +174,9 @@ const router = createBrowserRouter([
         path: "/change-password",
         element: (
           <RestrictAccountSection type="changePassword">
-            <ChangePassword />
+            <Suspense fallback={<ChangePasswordSkeleton />}>
+              <LazyChangePassword />
+            </Suspense>
           </RestrictAccountSection>
         ),
       },
@@ -144,7 +184,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/viewer/:mangaId",
-    element: <Viewer />,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyViewer />
+      </Suspense>
+    ),
+    // <Viewer />
   },
   {
     path: "/test",
@@ -156,7 +201,9 @@ const router = createBrowserRouter([
       <GoogleOAuthProviderBase>
         <AuthRedirectGaurd>
           <Template template="login">
-            <Login />
+            <Suspense fallback={<LoginSkeleton />}>
+              <LazyLogin />
+            </Suspense>
           </Template>
         </AuthRedirectGaurd>
       </GoogleOAuthProviderBase>
@@ -184,7 +231,9 @@ const router = createBrowserRouter([
       <GoogleOAuthProviderBase>
         <AuthRedirectGaurd>
           <Template template="signup">
-            <Signup />
+            <Suspense fallback={<SignupSkeleton />}>
+              <LazySignup />
+            </Suspense>
           </Template>
         </AuthRedirectGaurd>
       </GoogleOAuthProviderBase>
