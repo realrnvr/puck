@@ -12,6 +12,7 @@ Currently, two official plugins are available:
 1. Code split + lazy load required components + General optimization.
 2. to put refresh option on chapter-image error and chapter-list error and chapter-image (mangadex.org one) error?
 3. scroll thingy.
+4. change chapter loader.
 
 # GENERAL OPTIMIZATION:
 
