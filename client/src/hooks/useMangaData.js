@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   fetchStatics,
@@ -7,6 +7,8 @@ import {
 } from "../services/query/query";
 
 export const useMangaData = ({ mangaId, authorId }) => {
+  const queryClient = useQueryClient();
+
   const {
     data: statics,
     isPending: isStatics,
@@ -34,6 +36,14 @@ export const useMangaData = ({ mangaId, authorId }) => {
   } = useQuery({
     queryKey: ["coverImg", { mangaId }],
     queryFn: () => fetchCoverImg({ mangaId }),
+    initialData: () => {
+      const state = queryClient.getQueryData(["manga-cover", { mangaId }]);
+      return state;
+    },
+    initialDataUpdatedAt: () => {
+      return queryClient.getQueryState(["manga-cover", { mangaId }])
+        ?.dataUpdatedAt;
+    },
   });
 
   const manga = statics?.data?.data?.attributes?.description?.en;
