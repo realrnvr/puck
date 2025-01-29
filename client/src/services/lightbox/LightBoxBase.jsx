@@ -21,6 +21,8 @@ const LightBoxBase = ({ mangaId }) => {
     nav,
     isChapterError,
     isChapterImageError,
+    isChapterFetching,
+    isChapterImageFetching,
   } = useChapter(mangaId);
 
   return (
@@ -37,6 +39,8 @@ const LightBoxBase = ({ mangaId }) => {
         isChapter,
         isChapterError,
         isChapterImageError,
+        isChapterFetching,
+        isChapterImageFetching,
       }}
       toolbar={{
         buttons: [<BackBtn key={"controller-back-btn"} />],
