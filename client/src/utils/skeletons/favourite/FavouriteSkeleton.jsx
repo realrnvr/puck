@@ -10,9 +10,12 @@ const FavouriteSkeleton = () => {
       highlightColor="#444"
     >
       <section className="favourite-skeleton | container">
-        <h2 className="favourite-skeleton__title">
+        <div className="favourite-skeleton__back-btn">
           <Skeleton />
-        </h2>
+        </div>
+        <div className="favourite-skeleton__title">
+          <Skeleton />
+        </div>
         <div className="favourite-skeleton__container">
           <Skeleton />
         </div>

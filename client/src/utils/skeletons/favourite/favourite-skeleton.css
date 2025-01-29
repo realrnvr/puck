@@ -1,8 +1,14 @@
 .favourite-skeleton {
-  padding-block: 1rem;
+  padding-block: 2rem;
+}
+
+.favourite-skeleton__back-btn {
+  height: 30px;
+  width: 100px;
 }
 
 .favourite-skeleton__title {
+  margin-top: 1rem;
   max-width: 200px;
   height: 40px;
 }
