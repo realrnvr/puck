@@ -14,7 +14,7 @@ const HeaderUtilities = ({ onClick }) => {
             baseColor="#202020"
             highlightColor="#444"
             height={"30px"}
-            width={"200px"}
+            width={"170px"}
           />
         ) : (
           <>
@@ -35,7 +35,7 @@ const HeaderUtilities = ({ onClick }) => {
           baseColor="#202020"
           highlightColor="#444"
           height={"30px"}
-          width={"200px"}
+          width={"170px"}
         />
       ) : (
         <>
