@@ -14,6 +14,7 @@ Currently, two official plugins are available:
 3. prefetch queries.
 4. email awaits.
 5. template margin and home.
+6. change limit on resize.
 
 # GENERAL OPTIMIZATION:
 
