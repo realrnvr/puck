@@ -6,6 +6,7 @@ import { fetchFavourites } from "../../services/query/query";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardSkeleton from "../../utils/skeletons/mangaCard/MangaCardSkeleton";
 import Skeleton from "react-loading-skeleton";
+import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const LIMIT = 6;
 
@@ -30,7 +31,8 @@ const Favourite = () => {
 
   return (
     <section className="favourite | container">
-      <h2 className="favourite__title">Favourites</h2>
+      <GoBackBtn />
+      <h2 className="favourite__title favourite__title--mt">Favourites</h2>
       <div
         className={`mangas__container ${
           data?.pages?.[0]?.client?.length === 0 || isError

@@ -10,6 +10,9 @@
   padding: 0.3rem 0.5rem;
   border-radius: 7px;
 }
+.favourite__title--mt {
+  margin-top: 1rem;
+}
 
 .favourite__alt {
   font-size: var(--fs-sm);
