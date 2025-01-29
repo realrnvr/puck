@@ -1,7 +1,8 @@
 .loader {
+  --loader--clr: var(--clr-primary);
   width: 30px;
   aspect-ratio: 1;
-  --_c: no-repeat linear-gradient(var(--clr-primary) 0 0) 50%;
+  --_c: no-repeat linear-gradient(var(--loader--clr) 0 0) 50%;
   background: var(--_c) / 100% 50%, var(--_c) / 50% 100%;
   border-radius: 50%;
   animation: l29 2s infinite linear;
