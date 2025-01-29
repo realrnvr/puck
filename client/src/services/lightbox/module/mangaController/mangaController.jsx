@@ -18,6 +18,8 @@ function MangaController({
     // isChapterImageError,
     isChapter,
     isChapterError,
+    isChapterFetching,
+    isChapterImageFetching,
   },
 }) {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
@@ -29,6 +31,11 @@ function MangaController({
   return (
     <>
       {children}
+      {isChapterFetching || isChapterImageFetching ? (
+        <div className="controller__fetch-loader">
+          <Loader />
+        </div>
+      ) : null}
       <Button
         isOpen={isOpen}
         onClick={handleToggleButton}
@@ -124,8 +131,7 @@ function MangaController({
               <Skeleton
                 baseColor="#202020"
                 highlightColor="#444"
-                height={"100%"}
-                width={"9ch"}
+                className="controller__drop-down-skeleton"
               />
             ) : isChapterError ? (
               <ErrorComp

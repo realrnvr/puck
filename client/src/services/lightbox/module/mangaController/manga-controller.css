@@ -3,6 +3,19 @@
   --controller--icon-width: 25px;
   --controller--counter-fs: 14px;
   --controller--control-btn-width: 16px;
+  --controller--loader-width: 100px;
+}
+
+.controller__fetch-loader {
+  position: absolute;
+  top: calc(-1 * (var(--controller--loader-width) / 2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.controller__fetch-loader .loader {
+  width: var(--controller--loader-width);
+  --loader--clr: var(--bg-clr-secondary);
 }
 
 .controller-close {
@@ -221,6 +234,11 @@
   font-weight: var(--fw-400);
 }
 
+.controller__drop-down-skeleton {
+  height: 25px;
+  width: 94px;
+}
+
 .controller__select {
   font-size: var(--fs-3xs);
   font-weight: var(--fw-300);
@@ -315,6 +333,11 @@
 
   .controller__chapter-list::-webkit-scrollbar {
     display: block;
+  }
+
+  .controller__drop-down-skeleton {
+    height: 28px;
+    width: 110px;
   }
 }
 
