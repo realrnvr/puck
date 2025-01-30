@@ -1,22 +1,20 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { fetchMangaCover, fetchRandomManga } from "../services/query/query";
 
-const LIMIT = 5;
-
-export const useSliderManga = () => {
+export const useSliderManga = (LIMIT) => {
   const {
     data,
     isLoading: isMangaLoading,
     isError,
   } = useQuery({
-    queryKey: ["random-manga-slider"],
+    queryKey: ["random-manga-slider", { LIMIT }],
     queryFn: () => fetchRandomManga(LIMIT),
   });
 
   const mangaQueries = useQueries({
     queries:
       data?.data?.manga?.map((val) => ({
-        queryKey: ["manga-cover-slider", { mangaId: val.mangaId }],
+        queryKey: ["manga-cover", { mangaId: val.mangaId }],
         queryFn: () => fetchMangaCover({ mangaId: val.mangaId }),
       })) ?? [],
   });
