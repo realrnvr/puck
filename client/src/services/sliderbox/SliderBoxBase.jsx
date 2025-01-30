@@ -13,8 +13,10 @@ import Lightbox from "yet-another-react-lightbox";
 import { useSliderManga } from "../../hooks/useSliderManga";
 import SliderErrorPlaceholder from "./error/SliderErrorPlaceholder";
 
+const LIMIT = Number(import.meta.env.VITE_RANDOM_MANGA_SLIDER_LIMIT) || 5;
+
 const SliderBoxBase = () => {
-  const { slides, isLoading, isError } = useSliderManga();
+  const { slides, isLoading, isError } = useSliderManga(LIMIT);
 
   if (isLoading) {
     return <SliderBoxSkeleton />;
