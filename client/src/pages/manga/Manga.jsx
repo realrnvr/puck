@@ -1,6 +1,7 @@
 import "./manga.css";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { useMangaData } from "../../hooks/useMangaData";
+import { usePrefetchChapter } from "../../hooks/usePrefetchChapter";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
 import Skeleton from "react-loading-skeleton";
@@ -9,6 +10,8 @@ import MangaFsImg from "../../components/MangaFsImg";
 import Markdown from "../../utils/markdown/Markdown";
 import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 import ErrorComp from "../../utils/errorComp/ErrorComp";
+
+const CHUNK_SIZE = Number(import.meta.env.VITE_CHUNK_SIZE) || 100;
 
 const Manga = () => {
   const { mangaId, authorId } = useLoaderData();
@@ -30,6 +33,8 @@ const Manga = () => {
     author,
     mangaData,
   } = useMangaData({ mangaId, authorId });
+
+  const { prefetch } = usePrefetchChapter({ mangaId, CHUNK_SIZE });
 
   const handleNavigateClick = () => {
     navigate(`/viewer/${mangaId}`);
@@ -187,7 +192,7 @@ const Manga = () => {
               )}
             </p>
           </div>
-          <div className="manga__btn-container">
+          <div className="manga__btn-container" onMouseEnter={prefetch}>
             <FavBtn
               mangaId={mangaId}
               mangaData={mangaData}
