@@ -8,7 +8,7 @@ import MangaCardSkeleton from "../../utils/skeletons/mangaCard/MangaCardSkeleton
 import Skeleton from "react-loading-skeleton";
 import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
-const LIMIT = 6;
+const LIMIT = Number(import.meta.env.VITE_ALL_FAVOURITE_LIMIT) || 6;
 
 const Favourite = () => {
   const { user } = useAuth();
@@ -22,7 +22,7 @@ const Favourite = () => {
     isError,
     error,
   } = useInfiniteQuery({
-    queryKey: ["all-favourites"],
+    queryKey: ["all-favourites", { LIMIT }],
     queryFn: ({ pageParam = "" }) => fetchFavourites({ LIMIT, pageParam }),
     initialPageParam: "",
     getNextPageParam: (lastPage) => lastPage.nextCursor,
