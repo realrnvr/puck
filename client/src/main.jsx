@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { AuthProvider } from "./services/provider/AuthProvider";
-import { QueryClientProviderBase } from "./services/provider/QueryClientProviderBase";
+import { QueryClientProviderBase } from "./services/provider/QueryClient/QueryClientProviderBase";
 import { RouterProviderBase } from "./services/provider/RouterProviderBase";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Notification from "./utils/notification/Notification";
