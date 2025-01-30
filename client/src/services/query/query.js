@@ -1,7 +1,20 @@
 import { axiosInstance } from "../api/axios";
+import { queryClient } from "../provider/QueryClient/config/client";
 
-export const fetchRandomManga = (LIMIT) => {
-  return axiosInstance.get(`/api/v1/manga/random-manga?limit=${LIMIT}`);
+export const fetchRandomManga = async (LIMIT) => {
+  const response = await axiosInstance.get(
+    `/api/v1/manga/random-manga?limit=${LIMIT}`
+  );
+
+  response?.data?.manga.forEach((val) => {
+    queryClient.prefetchQuery({
+      queryKey: ["manga-cover", { mangaId: val.mangaId }],
+      queryFn: () =>
+        fetchMangaCover({ mangaId: val.mangaId, volume: "desc", width: 256 }),
+    });
+  });
+
+  return response;
 };
 
 export const fetchMangaCover = ({ mangaId, volume = "asc", width = 512 }) => {
@@ -14,6 +27,15 @@ export const fetchMangas = async ({ LIMIT, pageParam = "" }) => {
   const { data } = await axiosInstance.get(
     `/api/v1/manga/mangas?limit=${LIMIT}&cursor=${pageParam}`
   );
+
+  data?.manga.forEach((val) => {
+    queryClient.prefetchQuery({
+      queryKey: ["manga-cover", { mangaId: val.mangaId }],
+      queryFn: () =>
+        fetchMangaCover({ mangaId: val.mangaId, volume: "desc", width: 256 }),
+    });
+  });
+
   return data;
 };
 
