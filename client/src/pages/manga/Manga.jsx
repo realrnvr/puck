@@ -1,5 +1,5 @@
 import "./manga.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useMangaData } from "../../hooks/useMangaData";
 import Tag from "../../components/ui/tag/Tag";
 import FavBtn from "../../components/ui/favBtn/FavBtn";
@@ -11,7 +11,7 @@ import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 import ErrorComp from "../../utils/errorComp/ErrorComp";
 
 const Manga = () => {
-  const { mangaId, authorId } = useParams();
+  const { mangaId, authorId } = useLoaderData();
   const navigate = useNavigate();
 
   const {
