@@ -2,9 +2,14 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Skeleton from "react-loading-skeleton";
 import PropTypes from "prop-types";
+import { usePrefetchFavourite } from "../hooks/usePrefetchFavourite";
+
+const LIMIT = Number(import.meta.env.VITE_ALL_FAVOURITE_LIMIT) || 6;
 
 const HeaderUtilities = ({ onClick }) => {
   const { token, logout, mutateTokenPending, mutateLogoutPending } = useAuth();
+
+  const { prefetch } = usePrefetchFavourite(LIMIT);
 
   return (
     <ul className="header__utilities">
@@ -52,7 +57,7 @@ const HeaderUtilities = ({ onClick }) => {
         </>
       )}
       <li>
-        <Link to="/favourite" onClick={onClick}>
+        <Link to="/favourite" onClick={onClick} onMouseEnter={prefetch}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
