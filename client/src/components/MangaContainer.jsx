@@ -6,7 +6,7 @@ import MangaCardSkeleton from "../utils/skeletons/mangaCard/MangaCardSkeleton";
 import MangaCardError from "../utils/errors/MangaCardError";
 import Loader from "./ui/loader/Loader";
 
-const LIMIT = 10;
+const LIMIT = Number(import.meta.env.VITE_MANGAS_LIMIT) || 10;
 
 const MangaContainer = () => {
   const { data, isFetching, isFetchingNextPage, isError, ref } =
