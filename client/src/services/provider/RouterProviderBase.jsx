@@ -58,6 +58,7 @@ import ChangePasswordSkeleton from "../../utils/skeletons/changePassword/ChangeP
 import FavouriteSkeleton from "../../utils/skeletons/favourite/FavouriteSkeleton";
 import MangaSkeleton from "../../utils/skeletons/manga/MangaSkeleton";
 import ViewerSkeleton from "../../utils/skeletons/viewer/ViewerSkeleton";
+import { mangaLoader } from "../../routes/loaders";
 
 const router = createBrowserRouter([
   {
@@ -136,6 +137,7 @@ const router = createBrowserRouter([
             <LazyManga />
           </Suspense>
         ),
+        loader: mangaLoader,
       },
       {
         path: "/mangas",
