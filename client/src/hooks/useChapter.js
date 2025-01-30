@@ -3,7 +3,7 @@ import { startTransition, useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { fetchChapter, fetchChapterImage } from "../services/query/query";
 
-const CHUNK_SIZE = 100;
+const CHUNK_SIZE = Number(import.meta.env.VITE_CHUNK_SIZE) || 100;
 
 export const useChapter = (mangaId) => {
   // state
