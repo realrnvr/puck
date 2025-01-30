@@ -1,7 +1,7 @@
 import "./manga-card.css";
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../../services/api/axios";
 import { useNavigate } from "react-router-dom";
+import { fetchMangaCover } from "../../../services/query/query";
 import FavBtn from "../favBtn/FavBtn";
 import PropTypes from "prop-types";
 import MangaCardImgSkeleton from "../../../utils/skeletons/mangaCardImg/MangaCardImgSkeleton";
@@ -11,7 +11,7 @@ const MangaCard = ({ title, mangaId, authorId }) => {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["manga-cover", { mangaId }],
-    queryFn: () => axiosInstance.get(`/api/v1/manga/cover/${mangaId}`),
+    queryFn: () => fetchMangaCover({ mangaId }),
   });
 
   const coverUrl = data?.data?.coverImgUrl;
