@@ -1,12 +1,7 @@
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import PropTypes from "prop-types";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
@@ -25,13 +20,3 @@ const queryClient = new QueryClient({
     },
   }),
 });
-
-export const QueryClientProviderBase = ({ children }) => {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
-
-QueryClientProviderBase.propTypes = {
-  children: PropTypes.node.isRequired,
-};
