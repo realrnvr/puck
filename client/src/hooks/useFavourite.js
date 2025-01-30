@@ -8,6 +8,8 @@ import {
 import { useCallback, useTransition } from "react";
 import toast from "react-hot-toast";
 
+const LIMIT = Number(import.meta.env.VITE_ALL_FAVOURITE_LIMIT) || 6;
+
 export const useFavourite = ({ mangaId, mangaData }) => {
   const auth = useAuth();
   const queryClient = useQueryClient();
@@ -68,13 +70,18 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       await queryClient.cancelQueries({
         queryKey: ["isFavourite", { mangaId }],
       });
-      await queryClient.cancelQueries({ queryKey: ["all-favourites"] });
+      await queryClient.cancelQueries({
+        queryKey: ["all-favourites", { LIMIT }],
+      });
 
       const previousIsFavourite = queryClient.getQueryData([
         "isFavourite",
         { mangaId },
       ]);
-      const previousAllFavourite = queryClient.getQueryData(["all-favourites"]);
+      const previousAllFavourite = queryClient.getQueryData([
+        "all-favourites",
+        { LIMIT },
+      ]);
 
       // Update isFavourite state
       queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
@@ -86,7 +93,7 @@ export const useFavourite = ({ mangaId, mangaData }) => {
 
       // Update all-favourites while maintaining structure
       if (previousAllFavourite) {
-        queryClient.setQueryData(["all-favourites"], (old) => {
+        queryClient.setQueryData(["all-favourites", { LIMIT }], (old) => {
           return {
             ...old,
             pages: old.pages.map((page) => {
@@ -116,7 +123,7 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       }
       if (context?.previousAllFavourite) {
         queryClient.setQueryData(
-          ["all-favourites"],
+          ["all-favourites", { LIMIT }],
           context.previousAllFavourite
         );
       }
@@ -124,8 +131,10 @@ export const useFavourite = ({ mangaId, mangaData }) => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      if (queryClient.getQueryData(["all-favourites"])) {
-        queryClient.invalidateQueries({ queryKey: ["all-favourites"] });
+      if (queryClient.getQueryData(["all-favourites", { LIMIT }])) {
+        queryClient.invalidateQueries({
+          queryKey: ["all-favourites", { LIMIT }],
+        });
       }
     },
   });
