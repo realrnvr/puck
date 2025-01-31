@@ -1,7 +1,7 @@
 import { queryClient } from "../services/provider/QueryClient/config/client";
 import {
   fetchAuthor,
-  fetchCoverImg,
+  fetchMangaCover,
   fetchRandomManga,
   fetchStatics,
 } from "../services/query/query";
@@ -26,8 +26,8 @@ export const mangaLoader = ({ params }) => {
   });
 
   queryClient.prefetchQuery({
-    queryKey: ["coverImg", { mangaId }],
-    queryFn: () => fetchCoverImg({ mangaId }),
+    queryKey: ["coverImg", { mangaId, volume: "desc", width: 256 }],
+    queryFn: () => fetchMangaCover({ mangaId, volume: "desc", width: 256 }),
   });
 
   return { mangaId, authorId };
