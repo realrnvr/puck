@@ -32,7 +32,7 @@ export const signup = async (req, res) => {
 
   const verificationLink = `http://localhost:5173/verified/${verificationToken}`;
 
-  await mailer({
+  mailer({
     to: user.email,
     subject: "Email Address Verification",
     html: mailTemplate({
