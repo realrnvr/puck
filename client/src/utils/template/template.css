@@ -119,6 +119,14 @@
   justify-content: center;
   gap: 1rem;
 }
+.template__google-btn .loader {
+  width: 23px;
+}
+
+.template__google-btn:disabled {
+  cursor: not-allowed;
+  color: var(--bg-clr-secondary);
+}
 
 .template__icon {
   color: var(--clr-primary);
@@ -128,6 +136,9 @@
 }
 .template__btn--border {
   border: 0;
+}
+.template__btn--disabled {
+  color: var(--bg-clr-secondary);
 }
 
 /* Xs */
