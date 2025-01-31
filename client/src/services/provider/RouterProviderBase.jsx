@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { GoogleOAuthProviderBase } from "./GoogleOAuthProviderBase";
 import { lazy, Suspense } from "react";
+import { mangaLoader } from "../../routes/loaders";
 
 import Home from "../../pages/home/Home";
 const LazyAccount = lazy(() => import("../../pages/account/Account"));
@@ -58,7 +59,6 @@ import ChangePasswordSkeleton from "../../utils/skeletons/changePassword/ChangeP
 import FavouriteSkeleton from "../../utils/skeletons/favourite/FavouriteSkeleton";
 import MangaSkeleton from "../../utils/skeletons/manga/MangaSkeleton";
 import ViewerSkeleton from "../../utils/skeletons/viewer/ViewerSkeleton";
-import { mangaLoader, readLoader } from "../../routes/loaders";
 
 const router = createBrowserRouter([
   {
@@ -84,7 +84,6 @@ const router = createBrowserRouter([
             </Suspense>
           </MainPageTemplate>
         ),
-        loader: readLoader,
       },
       {
         path: "/about",
