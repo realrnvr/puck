@@ -1,5 +1,5 @@
 import "./mangas.css";
-import MangaContainer from "../../components/mangaContainer";
+import MangaContainer from "../../components/MangaContainer";
 import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 
 const Mangas = () => {
