@@ -146,26 +146,27 @@ export const cover = async (req, res) => {
   const cacheKey = `cover:${mangaId}:${volume}:${width}`;
   const expiry = 3600;
 
-  // Check cache for cover image URL
   const cachedCover = await redisClient.get(cacheKey);
   if (cachedCover) {
-    setCacheHeaders({
-      res: res,
-      cacheStatus: "HIT",
-      ttl: expiry,
-      cType: "image/jpeg",
-    });
+    // setCacheHeaders({
+    //   res: res,
+    //   cacheStatus: "HIT",
+    //   ttl: expiry,
+    //   cType: "image/jpeg",
+    // });
+
     return res
       .status(StatusCodes.OK)
       .json({ coverImgUrl: JSON.parse(cachedCover) });
   }
 
-  // Fetch cover image URL from MangaDex API
   const response = await axios.get(`${BASE_URL}/cover`, {
     params: {
       manga: [mangaId],
       limit: 1,
-      order: { volume: volume },
+      order: {
+        volume: volume,
+      },
       includes: ["manga"],
     },
   });
@@ -175,26 +176,17 @@ export const cover = async (req, res) => {
     throw new NotFoundError("Cover not found");
   }
 
-  // Generate the cover image URL
   const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.${width}.jpg`;
 
-  // Cache the cover image URL for future requests
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(coverImgUrl));
-  setCacheHeaders({
-    res: res,
-    cacheStatus: "MISS",
-    ttl: expiry,
-    cType: "image/jpeg",
-  });
+  // setCacheHeaders({
+  //   res: res,
+  //   cacheStatus: "MISS",
+  //   ttl: expiry,
+  //   cType: "image/jpeg",
+  // });
 
-  const imageResponse = await axios.get(coverImgUrl, {
-    responseType: "stream",
-  });
-
-  res.setHeader("Content-Type", "image/jpeg");
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL); // Allow all origins or specify your frontend domain
-
-  imageResponse.data.pipe(res);
+  res.status(StatusCodes.OK).json({ coverImgUrl });
 };
 
 export const chapters = async (req, res) => {
