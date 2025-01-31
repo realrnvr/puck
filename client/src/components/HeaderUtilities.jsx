@@ -57,7 +57,12 @@ const HeaderUtilities = ({ onClick }) => {
         </>
       )}
       <li>
-        <Link to="/favourite" onClick={onClick} onMouseEnter={prefetch}>
+        <Link
+          to="/favourite"
+          onClick={onClick}
+          onMouseEnter={prefetch}
+          onTouchStart={prefetch}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
