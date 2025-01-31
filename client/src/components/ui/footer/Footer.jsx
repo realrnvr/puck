@@ -27,7 +27,7 @@ const Footer = () => {
             <img
               ref={imgRef}
               className="footer__img | loading"
-              src="/1px.webp"
+              src="/t-1px.webp"
               data-src={"/footer-filler.webp"}
               alt="footer-img"
               aria-hidden={true}
