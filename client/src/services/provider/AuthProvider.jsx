@@ -10,8 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [isPending, setIsPending] = useState(true);
   const queryClient = useQueryClient();
 
-  console.log("token state", token);
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ["user"],
     queryFn: () => axiosInstance.get("/api/v1/client/user"),
@@ -26,8 +24,7 @@ export const AuthProvider = ({ children }) => {
       setToken(null);
     },
     onError: (error) => {
-      toast.success("Something went wrong!");
-      console.log(error);
+      toast.error(error?.response?.data?.message);
     },
   });
 
@@ -37,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         const response = await axiosInstance.post("/api/v1/auth/me");
         setToken(response.data.accessToken);
       } catch (error) {
-        console.log(error);
+        toast.error(error?.response?.data?.message);
         setToken(null);
       } finally {
         setIsPending(false);
@@ -84,20 +81,17 @@ export const AuthProvider = ({ children }) => {
               return axiosInstance(originalRequest);
             } catch (error) {
               setToken(null);
-              console.error("Refresh token failed:", error);
               return Promise.reject(error);
             }
           }
 
           setToken(null);
-          console.error("Session expired. Please log in again.");
           return Promise.reject(response);
         }
 
         return response;
       },
       (error) => {
-        console.error("API request failed:", error);
         return Promise.reject(error);
       }
     );
