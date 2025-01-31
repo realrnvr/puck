@@ -33,7 +33,7 @@ const Carousel = ({ data, reversed }) => {
             <img
               ref={(el) => (lzImgsRef.current[index] = el)}
               className="carousel__img | loading lazy"
-              src="/1px.webp"
+              src="/t-1px.webp"
               data-src={val.imgSrc}
               alt={val.imgAlt}
             />
