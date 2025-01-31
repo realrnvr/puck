@@ -2,15 +2,19 @@ import "./header.css";
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDisableScroll } from "../../../hooks/useDisableScroll";
+import { usePrefetchRandomManga } from "../../../hooks/usePrefetchRandomManga";
 import Search from "../../Search";
 import HeaderUtilities from "../../HeaderUtilities";
 import HeaderNavLink from "../../HeaderNavLink";
 import HeaderGoto from "../../HeaderGoto";
 
+const RANDOM_MANGA_LIMIT = Number(import.meta.env.VITE_RANDOM_MANGA_LIMIT) || 8;
+
 const Header = () => {
   const [MobileMenu, setMobileMenu] = useState(false);
 
   useDisableScroll(MobileMenu);
+  const { prefetch } = usePrefetchRandomManga(RANDOM_MANGA_LIMIT);
 
   const toggleMobileMenu = () => {
     setMobileMenu((prevMobileMenu) => {
@@ -96,7 +100,11 @@ const Header = () => {
             </div>
             <div>
               <ul className="header__pri-ul header__pri-ul--flex-d">
-                <HeaderNavLink value={"read"} />
+                <HeaderNavLink
+                  value={"read"}
+                  onMouseEnter={prefetch}
+                  onTouchStart={prefetch}
+                />
                 <HeaderNavLink value={"watch"} />
                 <HeaderNavLink value={"community"} />
                 <HeaderNavLink value={"about"} />
