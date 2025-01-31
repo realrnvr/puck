@@ -46,6 +46,7 @@ const Read = () => {
           to="/mangas"
           className="read__link lg-screen"
           onMouseEnter={prefetch}
+          onTouchStart={prefetch}
         >
           See all manga series
         </Link>

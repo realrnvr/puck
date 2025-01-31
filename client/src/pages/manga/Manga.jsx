@@ -192,7 +192,7 @@ const Manga = () => {
               )}
             </p>
           </div>
-          <div className="manga__btn-container" onMouseEnter={prefetch}>
+          <div className="manga__btn-container">
             <FavBtn
               mangaId={mangaId}
               mangaData={mangaData}
@@ -203,6 +203,8 @@ const Manga = () => {
               className="manga__btn"
               onClick={handleNavigateClick}
               disabled={isBtnDisabled || isStatics || isAuthor}
+              onMouseEnter={prefetch}
+              onTouchStart={prefetch}
             >
               Read
             </button>
