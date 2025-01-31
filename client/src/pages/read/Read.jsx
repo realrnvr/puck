@@ -1,7 +1,7 @@
 import "./read.css";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchRandomManga } from "../../services/query/query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchMangaCover, fetchRandomManga } from "../../services/query/query";
 import { usePrefetchInfiniteManga } from "../../hooks/usePrefetchInfiniteManga";
 import MangaCard from "../../components/ui/mangaCard/MangaCard";
 import MangaCardError from "../../utils/errors/MangaCardError";
@@ -11,9 +11,29 @@ const RANDOM_MANGA_LIMIT = Number(import.meta.env.VITE_RANDOM_MANGA_LIMIT) || 8;
 const MANGAS_LIMIT = Number(import.meta.env.VITE_MANGAS_LIMIT) || 10;
 
 const Read = () => {
+  const queryClient = useQueryClient();
+
   const { data, isPending, isError } = useQuery({
-    queryKey: ["random-manga", { RANDOM_MANGA_LIMIT }],
-    queryFn: () => fetchRandomManga(RANDOM_MANGA_LIMIT),
+    queryKey: ["random-manga", { LIMIT: RANDOM_MANGA_LIMIT }],
+    queryFn: () => {
+      const response = fetchRandomManga(RANDOM_MANGA_LIMIT);
+      response?.data?.manga.forEach((val) => {
+        queryClient.prefetchQuery({
+          queryKey: [
+            "manga-cover",
+            { mangaId: val.mangaId, volume: "desc", width: 256 },
+          ],
+          queryFn: () =>
+            fetchMangaCover({
+              mangaId: val.mangaId,
+              volume: "desc",
+              width: 256,
+            }),
+        });
+      });
+
+      return response;
+    },
   });
 
   const { prefetch } = usePrefetchInfiniteManga(MANGAS_LIMIT);
