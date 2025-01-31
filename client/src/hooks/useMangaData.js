@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   fetchStatics,
   fetchAuthor,
-  fetchCoverImg,
+  fetchMangaCover,
 } from "../services/query/query";
 
 export const useMangaData = ({ mangaId, authorId }) => {
@@ -34,15 +34,20 @@ export const useMangaData = ({ mangaId, authorId }) => {
     isPending: isCover,
     isError: isCoverError,
   } = useQuery({
-    queryKey: ["coverImg", { mangaId }],
-    queryFn: () => fetchCoverImg({ mangaId }),
+    queryKey: ["coverImg", { mangaId, volume: "desc", width: 256 }],
+    queryFn: () => fetchMangaCover({ mangaId, volume: "desc", width: 256 }),
     initialData: () => {
-      const state = queryClient.getQueryData(["manga-cover", { mangaId }]);
+      const state = queryClient.getQueryData([
+        "manga-cover",
+        { mangaId, volume: "desc", width: 256 },
+      ]);
       return state;
     },
     initialDataUpdatedAt: () => {
-      return queryClient.getQueryState(["manga-cover", { mangaId }])
-        ?.dataUpdatedAt;
+      return queryClient.getQueryState([
+        "manga-cover",
+        { mangaId, volume: "desc", width: 256 },
+      ])?.dataUpdatedAt;
     },
   });
 
