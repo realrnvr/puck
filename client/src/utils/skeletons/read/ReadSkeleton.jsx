@@ -1,6 +1,6 @@
 import "../../../pages/read/read.css";
 import "./read-skeleton.css";
-import MangaCardSkeleton from "../temp/MangaCardSkeleton";
+import MangaCardSkeleton from "../mangaCard/MangaCardSkeleton";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const ReadSkeleton = () => {
