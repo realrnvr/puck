@@ -10,8 +10,8 @@ const MangaCard = ({ title, mangaId, authorId }) => {
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["manga-cover", { mangaId }],
-    queryFn: () => fetchMangaCover({ mangaId }),
+    queryKey: ["manga-cover", { mangaId, volume: "desc", width: 256 }],
+    queryFn: () => fetchMangaCover({ mangaId, volume: "desc", width: 256 }),
   });
 
   const coverUrl = data?.data?.coverImgUrl;
