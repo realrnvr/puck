@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { fetchRandomManga } from "../services/query/query";
+import { fetchMangaCover, fetchRandomManga } from "../services/query/query";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const usePrefetchSliderManga = ({ inView, LIMIT }) => {
@@ -11,9 +11,19 @@ export const usePrefetchSliderManga = ({ inView, LIMIT }) => {
     }
 
     const prefetch = async () => {
-      await queryClient.prefetchQuery({
+      const response = await queryClient.fetchQuery({
         queryKey: ["random-manga-slider", { LIMIT }],
         queryFn: () => fetchRandomManga(LIMIT),
+      });
+
+      response?.data?.manga?.forEach((val) => {
+        queryClient.prefetchQuery({
+          queryKey: ["manga-cover-slider", { mangaId: val.mangaId }],
+          queryFn: () =>
+            fetchMangaCover({
+              mangaId: val.mangaId,
+            }),
+        });
       });
     };
 

@@ -14,7 +14,7 @@ export const useSliderManga = (LIMIT) => {
   const mangaQueries = useQueries({
     queries:
       data?.data?.manga?.map((val) => ({
-        queryKey: ["manga-cover", { mangaId: val.mangaId }],
+        queryKey: ["manga-cover-slider", { mangaId: val.mangaId }],
         queryFn: () => fetchMangaCover({ mangaId: val.mangaId }),
       })) ?? [],
   });
