@@ -6,14 +6,6 @@ export const fetchRandomManga = async (LIMIT) => {
     `/api/v1/manga/random-manga?limit=${LIMIT}`
   );
 
-  response?.data?.manga.forEach((val) => {
-    queryClient.prefetchQuery({
-      queryKey: ["manga-cover", { mangaId: val.mangaId }],
-      queryFn: () =>
-        fetchMangaCover({ mangaId: val.mangaId, volume: "desc", width: 256 }),
-    });
-  });
-
   return response;
 };
 
@@ -45,10 +37,6 @@ export const fetchStatics = ({ mangaId }) => {
 
 export const fetchAuthor = ({ authorId }) => {
   return axiosInstance.get(`/api/v1/manga/author/${authorId}`);
-};
-
-export const fetchCoverImg = ({ mangaId }) => {
-  return axiosInstance.get(`/api/v1/manga/cover/${mangaId}`);
 };
 
 export const fetchChapter = ({ mangaId, CHUNK_SIZE, offset }) => {
