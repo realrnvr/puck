@@ -24,7 +24,7 @@ import newsletterRouter from "./router/newsletter.js";
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_APP_URL, "http://localhost:4173"],
+    origin: process.env.CLIENT_APP_URL,
     credentials: true,
   })
 );
