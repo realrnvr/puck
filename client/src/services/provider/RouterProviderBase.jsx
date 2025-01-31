@@ -30,7 +30,6 @@ const LazyViewer = lazy(() => import("../../pages/viewer/Viewer"));
 // import Viewer from "../../pages/viewer/Viewer";
 const LazyFavourite = lazy(() => import("../../pages/favourite/Favourite"));
 // import Favourite from "../../pages/favourite/Favourite";
-import Test from "../../tests/Test";
 const LazyAccountSetting = lazy(() =>
   import("../../pages/accountSetting/AccountSetting")
 );
@@ -192,10 +191,6 @@ const router = createBrowserRouter([
         <LazyViewer />
       </Suspense>
     ),
-  },
-  {
-    path: "/test",
-    element: <Test />,
   },
   {
     path: "/login",
