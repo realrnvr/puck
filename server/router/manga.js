@@ -5,6 +5,7 @@ import {
   chapters,
   cover,
   mangas,
+  proxyCover,
   randomManga,
   search,
   statics,
@@ -20,5 +21,8 @@ router.route("/cover/:mangaId").get(cover);
 router.route("/chapters/:mangaId").get(chapters);
 router.route("/chapter-image/:chapterId").get(chapterImage);
 router.route("/random-manga").get(randomManga);
+
+// ${process.env.API_BASE_URL}/api/proxy/cover/${mangaId}/${fileName}.${width}.jpg
+router.route("/proxy/cover/:mangaId/:fileName").get(proxyCover);
 
 export default router;
