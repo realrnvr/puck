@@ -48,6 +48,54 @@ app.use("/api/v1/manga", mangaRouter);
 app.use("/api/v1/client", auth, clientRouter);
 app.use("/api/v1/newsletter", newsletterRouter);
 
+// test //
+import axios from "axios";
+
+const BASE_URL = "https://api.mangadex.org";
+
+app.get("/api/v1/test/:mangaId", async (req, res) => {
+  const {
+    params: { mangaId },
+    query: { volume = "desc", width = 256 },
+  } = req;
+
+  if (!mangaId) {
+    res.json({ msg: "error" });
+  }
+
+  const response = await axios.get(`${BASE_URL}/cover`, {
+    params: {
+      manga: [mangaId],
+      limit: 1,
+      order: { volume },
+      includes: ["manga"],
+    },
+  });
+
+  const fileName = response.data.data[0]?.attributes?.fileName;
+  if (!fileName) {
+    res.json({ msg: "error" });
+  }
+
+  const coverImgUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
+
+  // Proxy the cover image by downloading and returning it
+  const imageResponse = await axios.get(coverImgUrl, {
+    responseType: "stream",
+  });
+
+  // Set appropriate headers
+  res.setHeader("Content-Type", "image/jpeg");
+  res.setHeader("Access-Control-Allow-Origin", "*"); // To avoid CORS issues
+
+  // Pipe the image data to the response
+  imageResponse.data.pipe(res);
+
+  // Cache the cover image URL for future use
+});
+
+// ... //
+
 // every Saturday at midnight
 
 nodeCron.schedule("0 0 * * 6", async () => {
