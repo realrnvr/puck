@@ -146,16 +146,6 @@ export const cover = async (req, res) => {
   const cacheKey = `cover:${mangaId}:${volume}:${width}`;
   const expiry = 3600;
 
-  // Set CORS headers for the API response
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
   // const cachedCover = await redisClient.get(cacheKey);
   // if (cachedCover) {
   //   // Use your API's domain here
@@ -194,40 +184,19 @@ export const proxyCover = async (req, res) => {
     params: { mangaId, fileName },
   } = req;
 
-  // Set CORS headers for the image response
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  const response = await axios.get(
+    `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`,
+    {
+      responseType: "stream",
+    }
+  );
 
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  // Set appropriate headers
+  res.setHeader("Content-Type", "image/jpeg");
+  res.setHeader("Access-Control-Allow-Origin", "*"); // To avoid CORS issues
 
-  try {
-    const response = await axios.get(
-      `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`,
-      {
-        responseType: "stream",
-        headers: {
-          Referer: process.env.CLIENT_APP_URL,
-          "User-Agent": "Puck-Manga-Reader/1.0",
-        },
-      }
-    );
-
-    console.log({ status: response.status, headers: response.headers });
-
-    // Forward content-type and cache control headers
-    res.setHeader("Content-Type", response.headers["content-type"]);
-    res.setHeader("Cache-Control", "public, max-age=3600");
-
-    // Pipe the image stream to response
-    response.data.pipe(res);
-  } catch (error) {
-    console.error("Error proxying image:", error);
-    res.status(StatusCodes.NOT_FOUND).json({ error: "Image not found" });
-  }
+  // Pipe the image data to the response
+  response.data.pipe(res);
 };
 
 export const chapters = async (req, res) => {
