@@ -26,6 +26,7 @@
 
 .manga__cover-wrapper {
   position: relative;
+  width: fit-content;
 }
 
 .manga__cover-img {
