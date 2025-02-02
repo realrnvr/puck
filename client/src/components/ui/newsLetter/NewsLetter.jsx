@@ -32,10 +32,15 @@ const NewsLetter = () => {
 
   const { mutate: addSubscriberMutate, isPending: asmIsPending } = useMutation({
     mutationFn: (data) => addSubscriber(data),
+    onMutate: () => {
+      toast.loading("subscribing...", { id: "sub-toast" });
+    },
     onSuccess: (data) => {
+      toast.remove("sub-toast");
       toast(data.data.message);
     },
     onError: (error) => {
+      toast.remove("sub-toast");
       const { message } = error.response.data;
       setError("email", { message });
       setFocus("email");
@@ -45,10 +50,15 @@ const NewsLetter = () => {
   const { mutate: removeSubscriberMutate, isPending: rsmisPending } =
     useMutation({
       mutationFn: (data) => removeSubscriber(data.email),
+      onMutate: () => {
+        toast.loading("unsubscribing...", { id: "unsub-toast" });
+      },
       onSuccess: (data) => {
+        toast.remove("unsub-toast");
         toast(data.data.message);
       },
       onError: (error) => {
+        toast.remove("unsub-toast");
         const { message } = error.response.data;
         setError("email", { message });
         setFocus("email");
