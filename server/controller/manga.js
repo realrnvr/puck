@@ -123,7 +123,6 @@ export const author = async (req, res) => {
   }
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(authorData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json({ data: authorData });
 };
@@ -135,20 +134,17 @@ export const cover = async (req, res) => {
   } = req;
 
   if (!mangaId) {
-    throw new BadRequestError("provide manga Id");
+    throw new BadRequestError("Provide manga Id");
   }
 
   const cacheKey = `cover:${mangaId}:${volume}:${width}`;
   const expiry = 3600;
 
-  // const cachedCover = await redisClient.get(cacheKey);
-  // if (cachedCover) {
-  //   // Use your API's domain here
-  //   const proxyUrl = `${
-  //     process.env.API_BASE_URL
-  //   }/api/v1/manga/proxy/cover/${mangaId}/${JSON.parse(cachedCover)}`;
-  //   return res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
-  // }
+  const cachedCover = await redisClient.get(cacheKey);
+  if (cachedCover) {
+    const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${cachedCover}/${width}`;
+    return res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
+  }
 
   const response = await axios.get(`${BASE_URL}/cover`, {
     params: {
@@ -165,6 +161,8 @@ export const cover = async (req, res) => {
   if (!fileName) {
     throw new NotFoundError("Cover not found");
   }
+
+  await redisClient.setEx(cacheKey, expiry, fileName);
 
   const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${fileName}/${width}`;
   res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
