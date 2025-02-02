@@ -4,7 +4,14 @@ export const setCacheHeaders = ({
   ttl,
   cType = "application/json",
 }) => {
-  res?.set("X-Cache", cacheStatus); // Cache hit/miss status
-  res?.set("Cache-Control", `public, max-age=${ttl}`); // Dynamic cache expiry
-  res?.set("Content-Type", cType); // Content type
+  if (!res) return;
+
+  res.set({
+    "X-Cache": cacheStatus,
+    "Cache-Control": `public, max-age=${ttl}, s-maxage=${ttl}`,
+  });
+
+  if (!res.get("Content-Type")) {
+    res.set("Content-Type", cType);
+  }
 };
