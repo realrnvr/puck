@@ -3,10 +3,9 @@ import { redisClient } from "../config/redisClient.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { setCacheHeaders } from "../helper/setCacheHeaders.js";
+import { dexAxios } from "../services/dexAxios.js";
 import Manga from "../models/manga.js";
 import axios from "axios";
-
-const BASE_URL = "https://api.mangadex.org";
 
 export const mangas = async (req, res) => {
   const limit = Number(req.query.limit) || 10;
@@ -61,7 +60,7 @@ export const statics = async (req, res) => {
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
   }
 
-  const response = await axios.get(`${BASE_URL}/manga/${mangaId}`);
+  const response = await dexAxios.get(`/manga/${mangaId}`);
   const staticsData = response.data.data;
 
   if (!staticsData) {
@@ -120,7 +119,7 @@ export const author = async (req, res) => {
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
   }
 
-  const response = await axios.get(`${BASE_URL}/author/${authorId}`);
+  const response = await dexAxios.get(`/author/${authorId}`);
 
   const authorData = response.data.data;
   if (!authorData) {
@@ -153,7 +152,7 @@ export const cover = async (req, res) => {
     return res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
   }
 
-  const response = await axios.get(`${BASE_URL}/cover`, {
+  const response = await dexAxios.get(`/cover`, {
     params: {
       manga: [mangaId],
       limit: 1,
@@ -189,7 +188,17 @@ export const proxyCover = async (req, res) => {
   );
 
   res.setHeader("Content-Type", "image/jpeg");
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, User-Agent"
+  );
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
 
   response.data.pipe(res);
 };
@@ -213,7 +222,7 @@ export const chapters = async (req, res) => {
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
   }
 
-  const response = await axios.get(`${BASE_URL}/chapter`, {
+  const response = await dexAxios.get(`/chapter`, {
     params: {
       manga: mangaId,
       translatedLanguage: ["en"],
@@ -274,7 +283,7 @@ export const chapterImage = async (req, res) => {
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
   }
 
-  const response = await axios.get(`${BASE_URL}/at-home/server/${chapterId}`);
+  const response = await dexAxios.get(`/at-home/server/${chapterId}`);
   if (!response.data.baseUrl) {
     throw new NotFoundError("not found");
   }
@@ -312,7 +321,17 @@ export const proxyChapterImage = async (req, res) => {
     responseType: "stream",
   });
   res.setHeader("Content-Type", "image/jpeg");
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, User-Agent"
+  );
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
 
   response.data.pipe(res);
 };
