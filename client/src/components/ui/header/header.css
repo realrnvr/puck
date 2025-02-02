@@ -206,7 +206,7 @@
 }
 
 .header__mobile-nav-wrapper {
-  position: absolute;
+  position: fixed;
   background-color: var(--bg-clr-tertiary);
   inset: 0;
   width: 100%;
