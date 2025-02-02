@@ -26,7 +26,7 @@ const Favourite = () => {
     queryFn: ({ pageParam = "" }) => fetchFavourites({ LIMIT, pageParam }),
     initialPageParam: "",
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: !!user,
+    enabled: !!user.token,
   });
 
   return (
