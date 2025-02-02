@@ -30,13 +30,21 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       await queryClient.cancelQueries({
         queryKey: ["isFavourite", { mangaId }],
       });
+      await queryClient.cancelQueries({
+        queryKey: ["all-favourites", { LIMIT }],
+      });
 
       const previousIsFavourite = queryClient.getQueryData([
         "isFavourite",
         { mangaId },
       ]);
 
-      // Update isFavourite state
+      const previousAllFavourite = queryClient.getQueryData([
+        "all-favourites",
+        { LIMIT },
+      ]);
+
+      // Optimistically update the `isFavourite` for this manga
       queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
         return {
           ...old,
@@ -44,8 +52,29 @@ export const useFavourite = ({ mangaId, mangaData }) => {
         };
       });
 
+      // Optimistically update `all-favourites` by adding this manga
+      if (previousAllFavourite) {
+        queryClient.setQueryData(["all-favourites", { LIMIT }], (old) => {
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                client: [
+                  ...page.client,
+                  {
+                    ...mangaData, // Add mangaData to the client array
+                  },
+                ],
+              };
+            }),
+          };
+        });
+      }
+
       return {
         previousIsFavourite,
+        previousAllFavourite,
       };
     },
 
@@ -54,6 +83,12 @@ export const useFavourite = ({ mangaId, mangaData }) => {
         queryClient.setQueryData(
           ["isFavourite", { mangaId }],
           context.previousIsFavourite
+        );
+      }
+      if (context?.previousAllFavourite) {
+        queryClient.setQueryData(
+          ["all-favourites", { LIMIT }],
+          context.previousAllFavourite
         );
       }
     },
