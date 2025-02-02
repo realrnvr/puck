@@ -32,7 +32,7 @@ export const fetchMangaUpdates = async () => {
       chapter: latestChapter.chapter,
       publishAt: latestChapter.publishAt,
       pages: latestChapter.pages,
-      link: `http://localhost:5173/viewer/${randomMangaId.mangaId}`,
+      link: `${CLIENT_APP_URL}/viewer/${randomMangaId.mangaId}`,
     };
 
     return mangaUpdate;

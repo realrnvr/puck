@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
 
   const verificationToken = user.verificationToken;
 
-  const verificationLink = `http://localhost:5173/verified/${verificationToken}`;
+  const verificationLink = `${CLIENT_APP_URL}/verified/${verificationToken}`;
 
   mailer({
     to: user.email,
@@ -98,7 +98,7 @@ export const resendVerification = async (req, res) => {
   user.verificationToken = verificationToken;
   await user.save();
 
-  const verificationLink = `http://localhost:5173/verified/${verificationToken}`;
+  const verificationLink = `${CLIENT_APP_URL}/verified/${verificationToken}`;
 
   await mailer({
     to: user.email,
@@ -313,7 +313,7 @@ export const forgotPassword = async (req, res) => {
   user.resetToken = resetToken;
   await user.save();
 
-  const verificationLink = `http://localhost:5173/reset-password/${resetToken}`;
+  const verificationLink = `${CLIENT_APP_URL}/reset-password/${resetToken}`;
 
   await mailer({
     to: user.email,
@@ -369,7 +369,7 @@ export const resendPasswordVerification = async (req, res) => {
   user.resetToken = resetToken;
   await user.save();
 
-  const verificationLink = `http://localhost:5173/reset-password/${resetToken}`;
+  const verificationLink = `${CLIENT_APP_URL}/reset-password/${resetToken}`;
 
   await mailer({
     to: user.email,
