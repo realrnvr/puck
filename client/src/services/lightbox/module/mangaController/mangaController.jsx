@@ -22,7 +22,7 @@ function MangaController({
     isChapterImageFetching,
   },
 }) {
-  const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
+  const [isOpen, setIsOpen] = useLocalStorage("isOpen", true);
 
   const handleToggleButton = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
