@@ -22,6 +22,7 @@ export const mangas = async (req, res) => {
   const cachedManga = await redisClient.get(cacheKey);
 
   if (cachedManga) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
   }
 
@@ -39,6 +40,7 @@ export const mangas = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
 };
@@ -55,6 +57,7 @@ export const statics = async (req, res) => {
 
   const cachedStatics = await redisClient.get(cacheKey);
   if (cachedStatics) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
   }
 
@@ -96,6 +99,7 @@ export const statics = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(safeData));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json({ data: safeData });
 };
@@ -112,6 +116,7 @@ export const author = async (req, res) => {
 
   const cachedAuthor = await redisClient.get(cacheKey);
   if (cachedAuthor) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
   }
 
@@ -123,6 +128,7 @@ export const author = async (req, res) => {
   }
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(authorData));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json({ data: authorData });
 };
@@ -142,6 +148,7 @@ export const cover = async (req, res) => {
 
   const cachedCover = await redisClient.get(cacheKey);
   if (cachedCover) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${cachedCover}/${width}`;
     return res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
   }
@@ -163,6 +170,7 @@ export const cover = async (req, res) => {
   }
 
   await redisClient.setEx(cacheKey, expiry, fileName);
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${fileName}/${width}`;
   res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
@@ -201,6 +209,7 @@ export const chapters = async (req, res) => {
 
   const cachedChapters = await redisClient.get(cacheKey);
   if (cachedChapters) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
   }
 
@@ -241,6 +250,7 @@ export const chapters = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseObj));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseObj);
 };
@@ -260,6 +270,7 @@ export const chapterImage = async (req, res) => {
 
   const cachedChapterImage = await redisClient.get(cacheKey);
   if (cachedChapterImage) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
   }
 
@@ -287,6 +298,7 @@ export const chapterImage = async (req, res) => {
   const responseObj = { data: mangaImgs, length: mangaImgs.length };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseObj));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseObj);
 };
@@ -313,6 +325,7 @@ export const search = async (req, res) => {
 
   const cachedSearch = await redisClient.get(cacheKey);
   if (cachedSearch) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedSearch));
   }
 
@@ -350,6 +363,7 @@ export const search = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(200).json(responseData);
 };
@@ -362,6 +376,7 @@ export const randomManga = async (req, res) => {
 
   const cachedRandomManga = await redisClient.get(cacheKey);
   if (cachedRandomManga) {
+    setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
   }
 
@@ -383,6 +398,7 @@ export const randomManga = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
+  setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
 };
