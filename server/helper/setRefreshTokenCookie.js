@@ -2,7 +2,7 @@ export const setRefreshTokenCookie = (res, refreshToken) => {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    SameSite: "Lax",
     maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
   };
 
