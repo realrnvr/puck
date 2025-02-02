@@ -2,6 +2,9 @@ import { StatusCodes } from "http-status-codes";
 
 export const errorHandlerMiddleware = (err, req, res, next) => {
   // base error
+
+  console.log(err);
+
   let errObj = {
     type: null,
     message: err.message || "Something Went Wrong, Please try Again later",
