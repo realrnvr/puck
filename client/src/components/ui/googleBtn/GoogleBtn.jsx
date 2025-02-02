@@ -9,7 +9,7 @@ const GoogleBtn = () => {
   const login = useGoogleLogin({
     flow: "auth-code",
     ux_mode: "redirect",
-    redirect_uri: "http://localhost:5173/redirect",
+    redirect_uri: `${import.meta.env.VITE_CLIENT_BASE_URL}/redirect`,
     onSuccess: () => setIsPending(false),
     onError: () => setIsPending(false),
   });
