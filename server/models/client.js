@@ -9,7 +9,6 @@ const ClientSchema = new mongoose.Schema(
     mangaId: {
       type: String,
       required: [true, "please provide manga id"],
-      unique: true,
     },
     authorId: {
       type: String,
