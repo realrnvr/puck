@@ -1,13 +1,13 @@
-import axios from "axios";
+import { dexAxios } from "../services/dexAxios.js";
 import { caseManga } from "../caseManga.js";
 
 export const fetchMangaUpdates = async () => {
   try {
     const randomMangaId =
-      caseManga[Math.floor(Math.random() * mangaIds.length)];
+      caseManga[Math.floor(Math.random() * caseManga.length)];
 
-    const response = await axios.get(
-      `https://api.mangadex.org/manga/${randomMangaId.mangaId}/feed`,
+    const response = await dexAxios.get(
+      `/manga/${randomMangaId.mangaId}/feed`,
       {
         params: {
           translatedLanguage: ["en"],
@@ -32,7 +32,7 @@ export const fetchMangaUpdates = async () => {
       chapter: latestChapter.chapter,
       publishAt: latestChapter.publishAt,
       pages: latestChapter.pages,
-      link: `${CLIENT_APP_URL}/viewer/${randomMangaId.mangaId}`,
+      link: `${process.env.CLIENT_APP_URL}/viewer/${randomMangaId.mangaId}`,
     };
 
     return mangaUpdate;
