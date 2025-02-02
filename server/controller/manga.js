@@ -166,17 +166,17 @@ export const cover = async (req, res) => {
     throw new NotFoundError("Cover not found");
   }
 
-  const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${fileName}`;
+  const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${fileName}/${width}`;
   res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
 };
 
 export const proxyCover = async (req, res) => {
   const {
-    params: { mangaId, fileName },
+    params: { mangaId, fileName, width },
   } = req;
 
   const response = await axios.get(
-    `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`,
+    `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.${width}.jpg`,
     {
       responseType: "stream",
     }

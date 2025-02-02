@@ -24,7 +24,7 @@ router.route("/chapter-image/:chapterId").get(chapterImage);
 router.route("/random-manga").get(randomManga);
 
 // ${process.env.API_BASE_URL}/api/proxy/cover/${mangaId}/${fileName}.${width}.jpg
-router.route("/proxy/cover/:mangaId/:fileName").get(proxyCover);
+router.route("/proxy/cover/:mangaId/:fileName/:width").get(proxyCover);
 // ${process.env.API_BASE_URL}/api/v1/manga/proxy/chapter-image/${encodeURIComponent(baseUrl)}/${quality}/${hash}/${val}
 router
   .route("/proxy/chapter-image/:baseUrl/:quality/:hash/:val")
