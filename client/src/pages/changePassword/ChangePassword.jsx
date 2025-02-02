@@ -8,6 +8,7 @@ import { ChangePasswordSchema } from "../../assets/schema/ChangePasswordSchema";
 import { changePassword } from "../../assets/data/changePasswordData";
 import Input from "../../components/ui/input/Input";
 import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
+import toast from "react-hot-toast";
 
 const ChangePassword = () => {
   const {
@@ -33,8 +34,8 @@ const ChangePassword = () => {
 
   const { mutate, isPending: mutateIsPending } = useMutation({
     mutationFn: updatePassword,
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      toast.success("password changed!");
     },
     onError: (error) => {
       const { type, message } = error.response.data;

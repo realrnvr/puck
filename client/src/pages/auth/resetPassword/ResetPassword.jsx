@@ -22,8 +22,6 @@ const ResetPassword = () => {
     setShowErrorUI(expired);
   }, [verificationId]);
 
-  console.log(showErrorUI);
-
   const {
     handleSubmit,
     register,

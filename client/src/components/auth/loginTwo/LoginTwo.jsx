@@ -32,7 +32,6 @@ const LoginTwo = () => {
   const { mutate: loginAuthTwoMutate, isPending } = useMutation({
     mutationFn: loginAuthTwo,
     onSuccess: (data) => {
-      console.log(data);
       auth.setToken(data?.data?.accessToken);
       toast.success("logged in.");
       navigate("/account");

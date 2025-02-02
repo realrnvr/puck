@@ -33,19 +33,17 @@ const LoginGoogleAuth = () => {
   const { mutate: loginGoogleAuthTwoMutate } = useMutation({
     mutationFn: loginGoogleAuthTwo,
     onSuccess: (data) => {
-      console.log(data);
       auth.setToken(data?.data?.accessToken);
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast("Password created");
       navigate("/account");
     },
     onError: (error) => {
-      console.log(error);
+      toast.error(error?.response?.data?.message);
     },
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     loginGoogleAuthTwoMutate({
       email: localStorage.getItem("log-mail"),
       ...data,

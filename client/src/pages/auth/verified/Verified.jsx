@@ -22,8 +22,7 @@ const Verified = () => {
       localStorage.removeItem("sign-mail");
     },
     onError: (error) => {
-      toast.success("Something went wrong");
-      console.log(error);
+      toast.success(error?.response?.data?.message || "Something went wrong!");
     },
   });
 
