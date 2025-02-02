@@ -22,7 +22,6 @@ export const mangas = async (req, res) => {
   const cachedManga = await redisClient.get(cacheKey);
 
   if (cachedManga) {
-    setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
   }
 
@@ -40,7 +39,6 @@ export const mangas = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
 };
@@ -57,7 +55,6 @@ export const statics = async (req, res) => {
 
   const cachedStatics = await redisClient.get(cacheKey);
   if (cachedStatics) {
-    setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
   }
 
@@ -99,7 +96,6 @@ export const statics = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(safeData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json({ data: safeData });
 };
@@ -116,7 +112,6 @@ export const author = async (req, res) => {
 
   const cachedAuthor = await redisClient.get(cacheKey);
   if (cachedAuthor) {
-    setCacheHeaders(res, "HIT", expiry);
     return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
   }
 
@@ -171,14 +166,10 @@ export const cover = async (req, res) => {
     throw new NotFoundError("Cover not found");
   }
 
-  // await redisClient.setEx(cacheKey, expiry, JSON.stringify(fileName));
-
-  // Use your API's domain here
   const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${fileName}`;
   res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
 };
 
-// Proxy controller with updated CORS handling
 export const proxyCover = async (req, res) => {
   const {
     params: { mangaId, fileName },
@@ -191,11 +182,9 @@ export const proxyCover = async (req, res) => {
     }
   );
 
-  // Set appropriate headers
   res.setHeader("Content-Type", "image/jpeg");
-  res.setHeader("Access-Control-Allow-Origin", "*"); // To avoid CORS issues
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
-  // Pipe the image data to the response
   response.data.pipe(res);
 };
 
@@ -214,7 +203,6 @@ export const chapters = async (req, res) => {
 
   const cachedChapters = await redisClient.get(cacheKey);
   if (cachedChapters) {
-    setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
   }
 
@@ -255,7 +243,6 @@ export const chapters = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseObj));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseObj);
 };
@@ -275,13 +262,6 @@ export const chapterImage = async (req, res) => {
 
   const cachedChapterImage = await redisClient.get(cacheKey);
   if (cachedChapterImage) {
-    setCacheHeaders({
-      res: res,
-      cacheStatus: "HIT",
-      ttl: expiry,
-      cType: "image/jpeg",
-    });
-
     return res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
   }
 
@@ -297,20 +277,34 @@ export const chapterImage = async (req, res) => {
 
   const data = quality === "data-saver" ? dataSaver : original;
   const mangaImgs = data.map((val) => {
-    return { src: `${baseUrl}/${quality}/${hash}/${val}` };
+    return {
+      src: `${
+        process.env.API_BASE_URL
+      }/api/v1/manga/proxy/chapter-image/${encodeURIComponent(
+        baseUrl
+      )}/${quality}/${hash}/${val}`,
+    };
   });
 
   const responseObj = { data: mangaImgs, length: mangaImgs.length };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseObj));
-  setCacheHeaders({
-    res: res,
-    cacheStatus: "MISS",
-    ttl: expiry,
-    cType: "image/jpeg",
-  });
 
   res.status(StatusCodes.OK).json(responseObj);
+};
+
+export const proxyChapterImage = async (req, res) => {
+  let { baseUrl, quality, hash, val } = req.params;
+
+  baseUrl = decodeURIComponent(baseUrl);
+
+  const response = await axios.get(`${baseUrl}/${quality}/${hash}/${val}`, {
+    responseType: "stream",
+  });
+  res.setHeader("Content-Type", "image/jpeg");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  response.data.pipe(res);
 };
 
 export const search = async (req, res) => {
@@ -321,7 +315,6 @@ export const search = async (req, res) => {
 
   const cachedSearch = await redisClient.get(cacheKey);
   if (cachedSearch) {
-    setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedSearch));
   }
 
@@ -359,7 +352,6 @@ export const search = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(200).json(responseData);
 };
@@ -372,7 +364,6 @@ export const randomManga = async (req, res) => {
 
   const cachedRandomManga = await redisClient.get(cacheKey);
   if (cachedRandomManga) {
-    setCacheHeaders({ res: res, cacheStatus: "HIT", ttl: expiry });
     return res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
   }
 
@@ -394,7 +385,6 @@ export const randomManga = async (req, res) => {
   };
 
   await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
-  setCacheHeaders({ res: res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
 };
