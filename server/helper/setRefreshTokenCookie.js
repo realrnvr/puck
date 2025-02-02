@@ -1,14 +1,8 @@
 export const setRefreshTokenCookie = (res, refreshToken) => {
-  const cookieOptions = {
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    SameSite: "Lax",
+    sameSite: "Strict",
     maxAge: Number(process.env.JWT_REFRESH_TIMESPAN) * 1000,
-  };
-
-  if (process.env.NODE_ENV === "production") {
-    cookieOptions.domain = process.env.COOKIE_DOMAIN;
-  }
-
-  res.cookie("refreshToken", refreshToken, cookieOptions);
+  });
 };
