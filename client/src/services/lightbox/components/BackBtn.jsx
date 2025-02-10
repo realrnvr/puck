@@ -4,7 +4,11 @@ const BackBtn = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(-1);
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
