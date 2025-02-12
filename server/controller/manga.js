@@ -4,6 +4,7 @@ import { BadRequestError } from "../errors/badRequestError.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { setCacheHeaders } from "../helper/setCacheHeaders.js";
 import { dexAxios } from "../services/dexAxios.js";
+import { coverAxios } from "../services/coverAxios.js";
 import Manga from "../models/manga.js";
 import axios from "axios";
 
@@ -180,13 +181,13 @@ export const proxyCover = async (req, res) => {
     params: { mangaId, fileName, width },
   } = req;
 
-  const response = await axios.get(
-    `https://uploads.mangadex.org/covers/${mangaId}/${fileName}.${width}.jpg`,
-    {
-      responseType: "stream",
-    }
+  const response = await coverAxios.get(
+    `/covers/${mangaId}/${fileName}.${width}.jpg`,
+    { responseType: "stream" }
   );
 
+  // Set cache headers for browsers to cache images
+  res.setHeader("Cache-Control", "public, max-age=86400, immutable");
   res.setHeader("Content-Type", "image/jpeg");
   res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -196,11 +197,14 @@ export const proxyCover = async (req, res) => {
   );
 
   if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
+    return res.status(204).end();
   }
 
   response.data.pipe(res);
+
+  response.data.on("end", () => {
+    res.end();
+  });
 };
 
 export const chapters = async (req, res) => {
@@ -334,6 +338,10 @@ export const proxyChapterImage = async (req, res) => {
   }
 
   response.data.pipe(res);
+
+  response.data.on("end", () => {
+    res.end();
+  });
 };
 
 export const search = async (req, res) => {
