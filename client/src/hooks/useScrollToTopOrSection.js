@@ -8,6 +8,8 @@ const useScrollToTopOrSection = () => {
   const elRef = useRef(null);
 
   useEffect(() => {
+    window.history.scrollRestoration = "manual";
+
     const scrollBehavior = instantScrollPaths.includes(pathname)
       ? "instant"
       : "smooth";
