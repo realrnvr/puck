@@ -41,7 +41,6 @@ export const addSubscriber = async (req, res) => {
 
 export const removeSubscriber = async (req, res) => {
   const { email } = req.params;
-  console.log(email);
 
   if (!email) {
     throw new BadRequestError("please provide email");

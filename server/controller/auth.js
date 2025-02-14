@@ -393,8 +393,6 @@ export const google = async (req, res) => {
     throw new UnauthorziedError("Please provide Google auth code!");
   }
 
-  console.log("Received code:", code);
-
   const { tokens } = await oauthClient.getToken(code);
   if (!tokens) {
     throw new UnauthorziedError("Google code is invalid");
