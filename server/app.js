@@ -22,6 +22,7 @@ import mangaRouter from "./router/manga.js";
 import clientRouter from "./router/client.js";
 import newsletterRouter from "./router/newsletter.js";
 
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: process.env.CLIENT_APP_URL,
