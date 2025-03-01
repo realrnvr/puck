@@ -149,7 +149,7 @@ export const loginGoogleAuthTwo = async (req, res) => {
     throw new BadRequestError("please provide credentials");
   }
 
-  if (password != confirmPassword) {
+  if (password !== confirmPassword) {
     throw new BadRequestError("passwords should match");
   }
 
