@@ -51,7 +51,7 @@ app.use("/api/v1/newsletter", newsletterRouter);
 
 // every Saturday at midnight
 
-nodeCron.schedule("0 0 * * 6", async () => {
+nodeCron.schedule("0 0 * * 6", () => {
   console.log("Sending weekly newsletter...");
   sendNewsLetter();
 });
