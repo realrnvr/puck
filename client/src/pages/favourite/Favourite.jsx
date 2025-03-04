@@ -11,7 +11,8 @@ import GoBackBtn from "../../components/ui/goBackBtn/GoBackBtn";
 const LIMIT = Number(import.meta.env.VITE_ALL_FAVOURITE_LIMIT) || 6;
 
 const Favourite = () => {
-  const { user } = useAuth();
+  const { token } = useAuth();
+
   const {
     data,
     fetchNextPage,
@@ -26,7 +27,7 @@ const Favourite = () => {
     queryFn: ({ pageParam = "" }) => fetchFavourites({ LIMIT, pageParam }),
     initialPageParam: "",
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: !!user.token,
+    enabled: !!token,
   });
 
   return (
