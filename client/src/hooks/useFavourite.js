@@ -44,38 +44,45 @@ export const useFavourite = ({ mangaId, mangaData }) => {
         { LIMIT },
       ]);
 
-      // Optimistically update the `isFavourite` for this manga
-      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
-        return {
-          ...old,
-          data: { isFavourite: true },
-        };
-      });
+      queryClient.setQueryData(["isFavourite", { mangaId }], (old) => ({
+        ...old,
+        data: { isFavourite: true },
+      }));
 
-      // Optimistically update `all-favourites` by adding this manga
       if (previousAllFavourite) {
         queryClient.setQueryData(["all-favourites", { LIMIT }], (old) => {
-          return {
-            ...old,
-            pages: old.pages.map((page) => {
-              return {
-                ...page,
-                client: [
-                  ...page.client,
-                  {
-                    ...mangaData, // Add mangaData to the client array
-                  },
-                ],
-              };
-            }),
-          };
+          let newPages = [...old.pages];
+
+          newPages = newPages.map((page) => ({
+            ...page,
+            client: page.client.filter((manga) => manga.mangaId !== mangaId),
+          }));
+
+          let carryOver = mangaData;
+
+          for (let i = 0; i < newPages.length; i++) {
+            if (!carryOver) break;
+
+            let newClient = [carryOver, ...newPages[i].client];
+
+            if (newClient.length > LIMIT) {
+              carryOver = newClient.pop();
+            } else {
+              carryOver = null;
+            }
+
+            newPages[i] = { ...newPages[i], client: newClient };
+          }
+
+          if (carryOver) {
+            newPages.push({ client: [carryOver] });
+          }
+
+          return { ...old, pages: newPages };
         });
       }
 
-      return {
-        previousIsFavourite,
-        previousAllFavourite,
-      };
+      return { previousIsFavourite, previousAllFavourite };
     },
 
     onError: (err, newFavourite, context) => {
@@ -108,20 +115,12 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       await queryClient.cancelQueries({
         queryKey: ["isFavourite", { mangaId }],
       });
-      await queryClient.cancelQueries({
-        queryKey: ["all-favourites", { LIMIT }],
-      });
 
       const previousIsFavourite = queryClient.getQueryData([
         "isFavourite",
         { mangaId },
       ]);
-      const previousAllFavourite = queryClient.getQueryData([
-        "all-favourites",
-        { LIMIT },
-      ]);
 
-      // Update isFavourite state
       queryClient.setQueryData(["isFavourite", { mangaId }], (old) => {
         return {
           ...old,
@@ -129,26 +128,8 @@ export const useFavourite = ({ mangaId, mangaData }) => {
         };
       });
 
-      // Update all-favourites while maintaining structure
-      if (previousAllFavourite) {
-        queryClient.setQueryData(["all-favourites", { LIMIT }], (old) => {
-          return {
-            ...old,
-            pages: old.pages.map((page) => {
-              return {
-                ...page,
-                client: page.client.filter((val) => {
-                  return val.mangaId !== mangaId;
-                }),
-              };
-            }),
-          };
-        });
-      }
-
       return {
         previousIsFavourite,
-        previousAllFavourite,
       };
     },
 
@@ -159,19 +140,10 @@ export const useFavourite = ({ mangaId, mangaData }) => {
           context.previousIsFavourite
         );
       }
-      if (context?.previousAllFavourite) {
-        queryClient.setQueryData(
-          ["all-favourites", { LIMIT }],
-          context.previousAllFavourite
-        );
-      }
     },
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      queryClient.invalidateQueries({
-        queryKey: ["all-favourites", { LIMIT }],
-      });
     },
   });
 
@@ -184,10 +156,10 @@ export const useFavourite = ({ mangaId, mangaData }) => {
   }, [isFavourite, add, auth.token, remove]);
 
   const handleUserCheck = useCallback(() => {
-    if (auth.user) return;
+    if (auth.token) return;
 
     toast("Please login!", { duration: 3000 });
-  }, [auth.user]);
+  }, [auth.token]);
 
   return {
     isFavourite,

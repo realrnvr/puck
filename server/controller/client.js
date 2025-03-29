@@ -21,14 +21,14 @@ export const Allfavourites = async (req, res) => {
 
   let query = { createdBy: userId };
   if (cursor) {
-    query._id = { $gt: cursor };
+    query._id = { $lt: cursor };
   }
 
-  const client = await Client.find(query).sort({ _id: 1 }).limit(limit);
+  const client = await Client.find(query).sort({ _id: -1 }).limit(limit);
 
   const hasMore = await Client.exists({
     createdBy: userId,
-    _id: { $gt: client[client.length - 1]?._id },
+    _id: { $lt: client[client.length - 1]?._id },
   });
 
   const nextCursor = hasMore ? client[client.length - 1]?._id : null;

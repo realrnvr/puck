@@ -62,7 +62,7 @@ const Favourite = () => {
         {isFetching && !isFetchingNextPage && !data?.pages?.[0] ? (
           <MangaCardSkeleton count={LIMIT} />
         ) : null}
-        {!(data?.pageParams?.[0] === "") && !isFetching ? (
+        {!(data?.pageParams?.[0] === "") && !isFetching && !isError ? (
           <MangaCardSkeleton count={LIMIT} />
         ) : null}
       </div>
@@ -81,7 +81,7 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
-      {!(data?.pageParams?.[0] === "") ? (
+      {!(data?.pageParams?.[0] === "") && !isError ? (
         <div className="favourite__bottom-container">
           <button className="favourite__load-more-btn favourite__load-more-btn--cs-bg">
             <Skeleton
