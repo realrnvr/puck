@@ -1,4 +1,5 @@
 import "./favourite.css";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/useAuth";
 import { Fragment } from "react";
@@ -41,24 +42,30 @@ const Favourite = () => {
             : null
         }`}
       >
-        {!isLoading && !isError
-          ? data?.pages?.map((page, idx) => {
-              return (
-                <Fragment key={idx}>
-                  {page?.client?.map((val, idx) => {
-                    return (
-                      <MangaCard
-                        key={idx}
-                        title={val?.mangaTitle}
-                        mangaId={val?.mangaId}
-                        authorId={val?.authorId}
-                      />
-                    );
-                  })}
-                </Fragment>
-              );
-            })
-          : null}
+        {!isLoading && !isError ? (
+          <AnimatePresence>
+            {data?.pages?.map((page, idx) => (
+              <Fragment key={idx}>
+                {page?.client?.map((val) => (
+                  <motion.div
+                    key={val.mangaId}
+                    layout
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8, x: -50 }}
+                    transition={{ type: "tween", stiffness: 100 }}
+                  >
+                    <MangaCard
+                      title={val?.mangaTitle}
+                      mangaId={val?.mangaId}
+                      authorId={val?.authorId}
+                    />
+                  </motion.div>
+                ))}
+              </Fragment>
+            ))}
+          </AnimatePresence>
+        ) : null}
+
         {isFetching && !isFetchingNextPage && !data?.pages?.[0] ? (
           <MangaCardSkeleton count={LIMIT} />
         ) : null}
@@ -66,6 +73,7 @@ const Favourite = () => {
           <MangaCardSkeleton count={LIMIT} />
         ) : null}
       </div>
+
       {data?.pages?.[0].client.length && !isError ? (
         <div className="favourite__bottom-container">
           <button
@@ -81,6 +89,7 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
+
       {!(data?.pageParams?.[0] === "") && !isError ? (
         <div className="favourite__bottom-container">
           <button className="favourite__load-more-btn favourite__load-more-btn--cs-bg">
@@ -93,6 +102,7 @@ const Favourite = () => {
           </button>
         </div>
       ) : null}
+
       {data?.pages?.[0]?.client?.length === 0 ? (
         <div className="favourite__null">
           <h4 className="favourite__null-title">NOTHING!</h4>
@@ -102,6 +112,7 @@ const Favourite = () => {
           <img className="favourite__null-img" src="/no-fav.webp" alt="" />
         </div>
       ) : null}
+
       {isError ? (
         <div className="favourite__null">
           <h4 className="favourite__null-title">ERROR &#58;&#40;</h4>
