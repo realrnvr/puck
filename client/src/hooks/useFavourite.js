@@ -91,6 +91,7 @@ export const useFavourite = ({ mangaId, mangaData }) => {
           ["isFavourite", { mangaId }],
           context.previousIsFavourite
         );
+        toast.error(err?.response?.data?.message);
       }
       if (context?.previousAllFavourite) {
         queryClient.setQueryData(
@@ -102,9 +103,6 @@ export const useFavourite = ({ mangaId, mangaData }) => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["isFavourite", { mangaId }] });
-      queryClient.invalidateQueries({
-        queryKey: ["all-favourites", { LIMIT }],
-      });
     },
   });
 
@@ -139,6 +137,7 @@ export const useFavourite = ({ mangaId, mangaData }) => {
           ["isFavourite", { mangaId }],
           context.previousIsFavourite
         );
+        toast.error(err?.response?.data?.message);
       }
     },
 
