@@ -1,19 +1,26 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import toast from "react-hot-toast";
 import { fetchChapter, fetchChapterImage } from "../services/query/query";
+import toast from "react-hot-toast";
 
 export const usePrefetchChapter = ({ mangaId, CHUNK_SIZE }) => {
   const queryClient = useQueryClient();
 
   const stateKey = `mangaState:${mangaId}`;
-  const storedState = JSON.parse(localStorage.getItem(stateKey)) || {
+  const storedState = JSON.parse(localStorage.getItem(stateKey)) ?? {
     chapterCount: 0,
     quality: "data",
     offset: 0,
   };
 
   const prefetch = useCallback(async () => {
+    const chapterCache = queryClient.getQueryData([
+      "chapter",
+      { mangaId, CHUNK_SIZE, offset: storedState.offset },
+    ]);
+
+    if (chapterCache) return;
+
     try {
       const chapterData = await queryClient.fetchQuery({
         queryKey: [

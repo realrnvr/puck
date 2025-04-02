@@ -7,6 +7,13 @@ export const usePrefetchRandomManga = (LIMIT) => {
   const queryClient = useQueryClient();
 
   const prefetch = useCallback(async () => {
+    const randomMangaCache = queryClient.getQueryData([
+      "random-manga",
+      { LIMIT },
+    ]);
+
+    if (randomMangaCache) return;
+
     try {
       const response = await queryClient.fetchQuery({
         queryKey: ["random-manga", { LIMIT }],

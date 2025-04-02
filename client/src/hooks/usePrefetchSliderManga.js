@@ -4,9 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export const usePrefetchSliderManga = ({ inView, LIMIT }) => {
   const queryClient = useQueryClient();
+  const sliderMangaCache = queryClient.getQueryData([
+    "random-manga-slider",
+    { LIMIT },
+  ]);
 
   useEffect(() => {
-    if (!inView) {
+    if (!inView || sliderMangaCache) {
       return;
     }
 
@@ -28,5 +32,5 @@ export const usePrefetchSliderManga = ({ inView, LIMIT }) => {
     };
 
     prefetch();
-  }, [inView, LIMIT, queryClient]);
+  }, [inView, LIMIT, queryClient, sliderMangaCache]);
 };
