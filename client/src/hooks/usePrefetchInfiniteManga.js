@@ -7,6 +7,10 @@ export const usePrefetchInfiniteManga = (LIMIT) => {
   const queryClient = useQueryClient();
 
   const prefetch = useCallback(async () => {
+    const infiniteMangaCache = queryClient.getQueryData(["mangas", { LIMIT }]);
+
+    if (infiniteMangaCache) return;
+
     try {
       const response = await queryClient.fetchInfiniteQuery({
         queryKey: ["mangas", { LIMIT }],
