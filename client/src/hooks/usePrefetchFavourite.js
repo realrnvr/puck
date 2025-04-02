@@ -13,12 +13,12 @@ export const usePrefetchFavourite = (LIMIT) => {
       return;
     }
 
-    const cachedFavourites = queryClient.getQueryData([
+    const favouriteCache = queryClient.getQueryData([
       "all-favourites",
       { LIMIT },
     ]);
 
-    if (cachedFavourites) return;
+    if (favouriteCache) return;
 
     try {
       const response = await queryClient.fetchInfiniteQuery({
