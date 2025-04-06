@@ -1,5 +1,4 @@
 import "./login-google-auth.css";
-import Input from "../../ui/input/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginGoogleAuthData } from "../../../assets/data/loginGoogleAuthData";
@@ -9,6 +8,7 @@ import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { hasErrors } from "../../../helper/hasErrors";
+import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 
 const LoginGoogleAuth = () => {
