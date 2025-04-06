@@ -1,6 +1,6 @@
 import "./google-btn.css";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../loader/Loader";
 
 const GoogleBtn = () => {
@@ -18,6 +18,10 @@ const GoogleBtn = () => {
     login();
     setIsPending(true);
   };
+
+  useEffect(() => {
+    setIsPending(false);
+  }, []);
 
   return (
     <button
