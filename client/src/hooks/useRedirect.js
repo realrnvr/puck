@@ -16,12 +16,12 @@ export const useRedirect = () => {
     onSuccess: (data) => {
       auth.setToken(data.data?.accessToken);
       toast.success("hello :)");
-      navigate("/account");
+      navigate("/account", { replace: true });
       isMutating.current = false;
     },
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
-      navigate("/login");
+      navigate("/login", { replace: true });
       isMutating.current = false;
     },
   });
