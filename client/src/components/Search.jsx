@@ -17,7 +17,11 @@ const Search = ({ onClick }) => {
   return (
     <>
       <div className="header__form-wrapper">
-        <form className="header__form" aria-label="Search Manga">
+        <form
+          className="header__form"
+          aria-label="Search Manga"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <input
             type="text"
             name="search"
