@@ -109,7 +109,7 @@ UserSchema.methods.createResetToken = function () {
   const resetToken = jwt.sign(
     { email: this.email },
     process.env.JWT_RESET_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: process.env.JWT_RESET_TIMESPAN }
   );
   return resetToken;
 };
