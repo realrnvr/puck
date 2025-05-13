@@ -1,7 +1,6 @@
 import "./manga-controller.css";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { useEffect, useRef } from "react";
-
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
 import ChapterList from "../../components/ChapterList";
