@@ -1,6 +1,5 @@
 import "./manga-controller.css";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
-import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Loader from "../../../../components/ui/loader/Loader";
 import ChapterList from "../../components/ChapterList";
@@ -24,20 +23,10 @@ function MangaController({
   },
 }) {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", true);
-  const controllerRef = useRef();
 
   const handleToggleButton = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      controllerRef.current.removeAttribute("inert");
-    } else {
-      // (node) => node && node.setAttribute("inert", "")
-      controllerRef.current.setAttribute("inert", "");
-    }
-  }, [isOpen]);
 
   return (
     <>
@@ -54,7 +43,12 @@ function MangaController({
       />
       <div
         className={`controller ${isOpen ? "controller-close" : null}`}
-        ref={controllerRef}
+        ref={(node) =>
+          node &&
+          (isOpen
+            ? node.removeAttribute("inert")
+            : node.setAttribute("inert", ""))
+        }
       >
         <div className="controller__container-right">
           <div className="controller__top-container">
