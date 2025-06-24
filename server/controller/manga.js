@@ -243,7 +243,11 @@ export const chapters = async (req, res) => {
   });
 
   if (!response.data.data) {
-    throw new NotFoundError("not found");
+    throw new NotFoundError("Not Found");
+  }
+
+  if (response.data.data.length == 0) {
+    throw new NotFoundError("Not Found");
   }
 
   const { data, offset: dexOffset, limit: dexLimit, total } = response.data;
