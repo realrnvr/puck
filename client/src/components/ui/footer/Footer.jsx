@@ -35,17 +35,14 @@ const Footer = () => {
           </div>
           <div className="footer__contact-text">
             <h3 className="footer__text">Contact us:</h3>
-            <p className="footer__para">
-              Email:{" "}
-              <a className="footer__link" href="#">
-                info@puck.com
-              </a>
-            </p>
+            <a className="footer__link" href="mailto:realrnvr@gmail.com">
+              realrnvr@gmail.com
+            </a>
           </div>
         </div>
         <hr className="footer__hr" />
         <div className="footer__bottom">
-          <p className="footer__para">@2024 PUCK.</p>
+          <p className="footer__para">@2024 PUCK</p>
         </div>
       </div>
     </footer>
