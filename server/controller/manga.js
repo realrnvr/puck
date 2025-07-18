@@ -351,7 +351,13 @@ export const proxyChapterImage = async (req, res) => {
 export const search = async (req, res) => {
   const { query } = req.query;
 
-  const cacheKey = `search:${query}`;
+  const trimmedQuery = query.trim();
+
+  if (!trimmedQuery) {
+    return new BadRequestError("Query cannot be empty.");
+  }
+
+  const cacheKey = `search:${trimmedQuery}`;
   const expiry = 300;
 
   const cachedSearch = await redisClient.get(cacheKey);
@@ -365,7 +371,7 @@ export const search = async (req, res) => {
       $search: {
         index: "default",
         autocomplete: {
-          query: query,
+          query: trimmedQuery,
           path: "title",
           tokenOrder: "sequential",
           fuzzy: {
