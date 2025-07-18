@@ -12,12 +12,17 @@ export const useSearch = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["search", { debouncedQuery }],
     queryFn: () => fetchSearch({ query: debouncedQuery }),
-    enabled: !!debouncedQuery,
+    enabled: !!debouncedQuery.trim(),
   });
 
-  const handleQueryChange = useCallback((e) => {
-    setQuery(e.target.value);
-  }, []);
+  const handleQueryChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      if (query === "" && value.startsWith(" ")) return;
+      setQuery(value);
+    },
+    [query]
+  );
 
   const handleNavigate = useCallback(
     ({ mangaId, authorId }) => {
