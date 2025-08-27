@@ -1,9 +1,9 @@
 import "./text-carousel.css";
 import { memo } from "react";
+import { textData } from "../../../../assets/data/textCarouselData";
 import PropTypes from "prop-types";
 
 const TextCarousel = ({ reversed, rotate }) => {
-  const textData = ["WATCH ANIME", "READ MANGA", "WATCH ANIME", "READ MANGA"];
   return (
     <div className="text-carousel">
       {textData.map((val, index) => {

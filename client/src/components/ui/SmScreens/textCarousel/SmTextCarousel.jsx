@@ -1,8 +1,8 @@
 import "./sm-text-carousel.css";
+import { textData } from "../../../../assets/data/textCarouselData";
 import PropTypes from "prop-types";
 
 const SmTextCarousel = ({ reversed }) => {
-  const textData = ["WATCH ANIME", "READ MANGA", "WATCH ANIME", "READ ANIME"];
   return (
     <div className="sm-text-carousel">
       {textData.map((val, index) => {
