@@ -183,6 +183,7 @@
 .controller__chapter-list {
   flex: 1;
   overflow-y: scroll;
+  scroll-behavior: smooth;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 0.3rem;

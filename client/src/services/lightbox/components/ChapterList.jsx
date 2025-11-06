@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import ErrorComp from "../../../utils/errorComp/ErrorComp";
 import PropTypes from "prop-types";
@@ -10,6 +10,17 @@ const ChapterList = ({
   isChapter,
   isChapterError,
 }) => {
+  const activeRef = useRef(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [chapters, chapterCount]);
+
   return (
     <ul className="controller__chapter-list">
       {isChapter
@@ -25,16 +36,18 @@ const ChapterList = ({
             );
           })
         : chapters?.map((val, idx) => {
+            const isActive = chapterCount === idx;
             return (
               <li
                 key={idx}
                 className="controller__chapter-li"
                 onClick={() => setChapter(idx)}
+                ref={isActive ? activeRef : null}
               >
                 <button
                   className="controller__chapter-btn"
                   style={{
-                    backgroundColor: chapterCount === idx ? "orange" : null,
+                    backgroundColor: isActive ? "orange" : null,
                   }}
                 >
                   <p className="controller__chapter-details">
@@ -58,6 +71,7 @@ ChapterList.propTypes = {
   chapterCount: PropTypes.number,
   isChapter: PropTypes.bool,
   isChapterError: PropTypes.bool,
+  isOpen: PropTypes.bool,
 };
 
 export default memo(ChapterList);
