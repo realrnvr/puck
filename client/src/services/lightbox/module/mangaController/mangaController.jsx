@@ -128,6 +128,7 @@ function MangaController({
             chapterCount={chapter.state.chapterCount}
             isChapter={isChapter}
             isChapterError={isChapterError}
+            isOpen={isOpen}
           />
         </div>
         <div className="controller__container-left">
