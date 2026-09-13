@@ -1,24 +1,22 @@
 import { createClient } from "redis";
 
 export const redisClient = createClient({
-  username: process.env.REDIS_USER,
-  password: process.env.REDIS_PASS,
+  url: process.env.REDIS_URL,
+
   socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    reconnectStrategy: function (retries) {
+    reconnectStrategy: (retries) => {
       if (retries > 20) {
         console.log(
-          "Too many attempts to reconnect. Redis connection was terminated!"
+          "Too many attempts to reconnect. Redis connection was terminated!",
         );
         return new Error("Too many retries.");
-      } else {
-        return retries * 500;
       }
+
+      return retries * 500;
     },
   },
 });
 
 redisClient.on("error", (error) => {
-  console.log("Redis Client error:", error);
+  console.error("Redis Client error:", error);
 });
