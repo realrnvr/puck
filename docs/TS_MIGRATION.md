@@ -192,7 +192,7 @@ export interface UserMethods {
 export type UserDocument = HydratedDocument<User, UserMethods>;
 export type UserModel = Model<User, {}, UserMethods>;
 
-const userSchema = new Schema<User, UserModel, UserMethods>({ /* ... */ });
+const userSchema = new Schema<User, UserModel, UserMethods>({/* ... */});
 export const User = model<User, UserModel>("User", userSchema);
 ```
 
@@ -220,7 +220,10 @@ const SignupBody = z.object({
 
 type SignupBody = z.infer<typeof SignupBody>;
 
-export const signup: RequestHandler<{}, unknown, SignupBody> = async (req, res) => {
+export const signup: RequestHandler<{}, unknown, SignupBody> = async (
+  req,
+  res,
+) => {
   const body = SignupBody.parse(req.body);
   // ...
 };

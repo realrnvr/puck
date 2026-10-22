@@ -33,18 +33,18 @@ npx skills list
 
 ## When to use each skill
 
-| Skill | Use |
-| --- | --- |
-| `vercel-react-best-practices` | React rendering, data fetching, bundle and performance review |
-| `web-design-guidelines` | UI, UX, and accessibility review |
-| `security-best-practices` | Auth, input handling, secrets, and OWASP-style review |
-| `nodejs-backend-patterns` | Express middleware, errors, API design, Mongoose usage |
-| `improve-codebase-architecture` | Splitting oversized modules and improving boundaries |
-| `tdd` | Red-green-refactor loop for bug fixes |
-| `vitest` | Test harness, mocking, coverage, and test organization |
-| `typescript-advanced-types` | Generics, discriminated unions, and type-safe APIs |
-| `typescript-react-reviewer` | React + TypeScript anti-pattern review |
-| `webapp-testing` | Optional Playwright smoke checks against a local app |
+| Skill                           | Use                                                           |
+| ------------------------------- | ------------------------------------------------------------- |
+| `vercel-react-best-practices`   | React rendering, data fetching, bundle and performance review |
+| `web-design-guidelines`         | UI, UX, and accessibility review                              |
+| `security-best-practices`       | Auth, input handling, secrets, and OWASP-style review         |
+| `nodejs-backend-patterns`       | Express middleware, errors, API design, Mongoose usage        |
+| `improve-codebase-architecture` | Splitting oversized modules and improving boundaries          |
+| `tdd`                           | Red-green-refactor loop for bug fixes                         |
+| `vitest`                        | Test harness, mocking, coverage, and test organization        |
+| `typescript-advanced-types`     | Generics, discriminated unions, and type-safe APIs            |
+| `typescript-react-reviewer`     | React + TypeScript anti-pattern review                        |
+| `webapp-testing`                | Optional Playwright smoke checks against a local app          |
 
 ## Rules
 

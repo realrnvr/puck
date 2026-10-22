@@ -69,11 +69,11 @@ export const statics = async (req, res) => {
   }
 
   const altTitles = staticsData.attributes.altTitles.map(
-    (altTitle) => Object.values(altTitle)[0]
+    (altTitle) => Object.values(altTitle)[0],
   );
 
   const jaTitleObj = staticsData.attributes.altTitles.find((altTitle) =>
-    altTitle.hasOwnProperty("ja")
+    altTitle.hasOwnProperty("ja"),
   );
   const jaTitle = jaTitleObj ? jaTitleObj.ja : "No Japanese title available";
 
@@ -183,7 +183,7 @@ export const proxyCover = async (req, res) => {
 
   const response = await coverAxios.get(
     `/covers/${mangaId}/${fileName}.${width}.jpg`,
-    { responseType: "stream" }
+    { responseType: "stream" },
   );
 
   // Set cache headers for browsers to cache images
@@ -193,7 +193,7 @@ export const proxyCover = async (req, res) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, User-Agent"
+    "Content-Type, Authorization, User-Agent",
   );
 
   if (req.method === "OPTIONS") {
@@ -307,7 +307,7 @@ export const chapterImage = async (req, res) => {
       src: `${
         process.env.API_BASE_URL
       }/api/v1/manga/proxy/chapter-image/${encodeURIComponent(
-        baseUrl
+        baseUrl,
       )}/${quality}/${hash}/${val}`,
     };
   });
@@ -333,7 +333,7 @@ export const proxyChapterImage = async (req, res) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, User-Agent"
+    "Content-Type, Authorization, User-Agent",
   );
 
   if (req.method === "OPTIONS") {

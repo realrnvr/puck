@@ -24,7 +24,7 @@ export const useLocalStorage = (key, initialValue) => {
         console.log("Error adding into localStorage", error);
       }
     },
-    [key, value]
+    [key, value],
   );
 
   return [value, setValueWrapper];

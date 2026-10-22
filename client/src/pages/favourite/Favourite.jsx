@@ -84,8 +84,8 @@ const Favourite = () => {
             {isFetchingNextPage
               ? "Loading more..."
               : hasNextPage
-              ? "Load More"
-              : "Nothing more to load"}
+                ? "Load More"
+                : "Nothing more to load"}
           </button>
         </div>
       ) : null}

@@ -53,7 +53,7 @@ export const verification = async (req, res) => {
 
   const payload = jwt.verify(
     verificationId,
-    process.env.JWT_VERIFICATION_SECRET
+    process.env.JWT_VERIFICATION_SECRET,
   );
 
   const user = await User.findOne({ email: payload.email });

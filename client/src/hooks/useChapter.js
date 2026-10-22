@@ -63,7 +63,7 @@ export const useChapter = (mangaId) => {
   const hasPrevChunk = useMemo(() => state.offset > 0, [state.offset]);
   const hasNextChunk = useMemo(
     () => state.offset + CHUNK_SIZE < totalChapters,
-    [state.offset, totalChapters]
+    [state.offset, totalChapters],
   );
 
   // handle chunk
@@ -104,7 +104,7 @@ export const useChapter = (mangaId) => {
         });
       });
     },
-    [setState]
+    [setState],
   );
 
   const prevChapter = useCallback(
@@ -117,7 +117,7 @@ export const useChapter = (mangaId) => {
           };
         });
       }),
-    [setState]
+    [setState],
   );
 
   const nextChapter = useCallback(
@@ -130,7 +130,7 @@ export const useChapter = (mangaId) => {
           };
         });
       }),
-    [setState]
+    [setState],
   );
 
   const setChapter = useCallback(
@@ -143,7 +143,7 @@ export const useChapter = (mangaId) => {
           };
         });
       }),
-    [setState]
+    [setState],
   );
 
   return {
