@@ -320,8 +320,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 9   | `chore/a11y`                     | Done        |
 | 10  | `chore/ts-foundation`            | Done        |
 | 11a | `refactor/server-ts-leaves`      | Done        |
-| 11b | `refactor/server-ts-config`      | In progress |
-| 11c | `refactor/server-ts-services`    | Planned     |
+| 11b | `refactor/server-ts-config`      | Done        |
+| 11c | `refactor/server-ts-services`    | In progress |
 | 11d | `refactor/server-ts-controllers` | Planned     |
 | 11e | `refactor/server-ts-app`         | Planned     |
 | 12  | `refactor/client-ts`             | Planned     |
