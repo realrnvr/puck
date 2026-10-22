@@ -56,7 +56,7 @@ Tests live next to the subject for client hooks/components; server integration t
 
 The server entrypoint now exports a `createApp()` factory and guards the bootstrap so tests can import the app without connecting to production services:
 
-- `server/app.js` exports `createApp()` (middleware + routes + error handlers) and the default app.
+- `server/app.ts` exports `createApp()` (middleware + routes + error handlers) and the default app.
 - The DB/Redis connection, cron schedule, and `listen` call run only when `NODE_ENV !== "test"`.
 - A later refactor can move that bootstrap into a dedicated `server.js` if deployment needs it.
 

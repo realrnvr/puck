@@ -17,7 +17,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
+import express, { type Express, type Request, type Response } from "express";
 import helmet from "helmet";
 import "express-async-errors";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
@@ -31,13 +31,14 @@ import { StatusCodes } from "http-status-codes";
 import cors from "cors";
 import nodeCron from "node-cron";
 import cookieParser from "cookie-parser";
+import type { Server } from "node:http";
 // routers
 import authRouter from "./router/auth.routes.js";
 import mangaRouter from "./router/manga.routes.js";
 import clientRouter from "./router/client.routes.js";
 import newsletterRouter from "./router/newsletter.routes.js";
 
-export const createApp = () => {
+export const createApp = (): Express => {
   const app = express();
 
   app.disable("x-powered-by");
@@ -58,11 +59,11 @@ export const createApp = () => {
 
   // health check
 
-  app.get("/", (req, res) => {
+  app.get("/", (_req: Request, res: Response) => {
     res.send("API spining!");
   });
 
-  app.get("/api/v1/ping", (req, res) => {
+  app.get("/api/v1/ping", (_req: Request, res: Response) => {
     res.status(StatusCodes.OK).send("PONG!");
   });
 
@@ -85,10 +86,10 @@ const app = createApp();
 
 const PORT = process.env.PORT || 3000;
 
-export const startServer = async () => {
+export const startServer = async (): Promise<Server | undefined> => {
   try {
     validateEnv();
-    await connectDB(process.env.MONGO_URI);
+    await connectDB(process.env.MONGO_URI as string);
     await redisClient.connect();
     return app.listen(PORT, () => {
       console.log(`Server listening to PORT ${PORT} ...`);
