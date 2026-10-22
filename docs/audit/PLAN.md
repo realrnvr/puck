@@ -287,8 +287,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 4   | `test/harness`              | Done        |
 | 5a  | `fix/auth-p0`               | Done        |
 | 5b  | `fix/proxy-ssrf`            | Done        |
-| 6   | `fix/server-p1`             | In progress |
-| 7   | `fix/client-p1`             | Planned     |
+| 6   | `fix/server-p1`             | Done        |
+| 7   | `fix/client-p1`             | In progress |
 | 8   | `refactor/structure-naming` | Planned     |
 | 9   | `chore/a11y`                | Planned     |
 | 10  | `chore/ts-foundation`       | Planned     |
