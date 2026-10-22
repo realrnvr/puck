@@ -1,4 +1,6 @@
-export const caseManga = [
+import type { MangaRecord } from "./models/manga.js";
+
+export const caseManga: MangaRecord[] = [
   {
     title: "Berserk",
     mangaId: "801513ba-a712-498c-8f57-cae55b38cc92",

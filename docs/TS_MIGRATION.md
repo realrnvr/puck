@@ -104,14 +104,13 @@ Add scripts:
 
 ```json
 {
-  "dev": "tsx watch server.ts",
+  "dev": "tsx watch app.ts",
   "typecheck": "tsc --noEmit",
-  "build": "tsc",
-  "start": "node dist/server.js"
+  "start": "tsx app.ts"
 }
 ```
 
-Keep `app.js` as the entrypoint until the server split lands, then rename to `app.ts`/`server.ts`.
+The server entrypoint is now `app.ts`. `tsx` runs it in development and for the interim production start script until a compiled `tsc` build is introduced.
 
 ### CI
 
