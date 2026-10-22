@@ -1,8 +1,20 @@
+import { StatusCodes } from "http-status-codes";
+import type { Request, Response } from "express";
 import { BadRequestError } from "../errors/badRequestError.js";
 import Newsletter from "../models/newsletter.js";
-import StatusCodes from "http-status-codes";
 
-export const addSubscriber = async (req, res) => {
+interface AddSubscriberBody {
+  email?: string;
+}
+
+interface RemoveSubscriberParams {
+  email: string;
+}
+
+export const addSubscriber = async (
+  req: Request<{}, unknown, AddSubscriberBody>,
+  res: Response,
+): Promise<void> => {
   const { email } = req.body;
 
   if (!email) {
@@ -12,18 +24,20 @@ export const addSubscriber = async (req, res) => {
   const existingSubscriber = await Newsletter.findOne({ email });
   if (existingSubscriber) {
     if (existingSubscriber.isSubscribed) {
-      return res.status(StatusCodes.OK).json({
+      res.status(StatusCodes.OK).json({
         message: "You are already subscribed to the newsletter",
       });
+      return;
     }
     existingSubscriber.isSubscribed = true;
-    existingSubscriber.subscriptionDate = Date.now();
+    existingSubscriber.subscriptionDate = new Date();
     await existingSubscriber.save();
 
-    return res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
       message: "You have successfully resubscribed to the newsletter!",
       subscriber: existingSubscriber,
     });
+    return;
   }
 
   const newSubscriber = new Newsletter({
@@ -33,13 +47,16 @@ export const addSubscriber = async (req, res) => {
 
   await newSubscriber.save();
 
-  return res.status(StatusCodes.CREATED).json({
+  res.status(StatusCodes.CREATED).json({
     message: "You are now subscribed to our newsletter!",
     subscriber: newSubscriber,
   });
 };
 
-export const removeSubscriber = async (req, res) => {
+export const removeSubscriber = async (
+  req: Request<RemoveSubscriberParams>,
+  res: Response,
+): Promise<void> => {
   const { email } = req.params;
 
   if (!email) {
@@ -48,17 +65,18 @@ export const removeSubscriber = async (req, res) => {
 
   const subscriber = await Newsletter.findOne({ email });
   if (!subscriber || !subscriber.isSubscribed) {
-    return res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
       message:
         "You are not subscribed to the newsletter, so cannot unsubscribe.",
     });
+    return;
   }
 
   subscriber.isSubscribed = false;
   await subscriber.save();
 
-  return res.status(StatusCodes.OK).json({
+  res.status(StatusCodes.OK).json({
     message: "Your subscription has been successfully removed.",
-    subscriber: subscriber,
+    subscriber,
   });
 };

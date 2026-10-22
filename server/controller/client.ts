@@ -1,23 +1,53 @@
 import mongoose from "mongoose";
 import { StatusCodes } from "http-status-codes";
+import type { Request, Response } from "express";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
-import Client from "../models/client.js";
+import Client, { type ClientRecord } from "../models/client.js";
 import User from "../models/auth.js";
 import { clearRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
+import { requireAuthUser, type AuthRequest } from "../types/auth.js";
 
-export const favourite = async (req, res) => {
-  const {
-    user: { userId },
-    params: { mangaId },
-  } = req;
+interface FavouriteParams {
+  mangaId: string;
+}
 
-  const isFavourite = await Client.exists({ createdBy: userId, mangaId });
+interface AddFavouriteBody {
+  mangaTitle: string;
+  mangaId: string;
+  authorId: string;
+  createdBy?: string;
+}
+
+interface UpdateUsernameBody {
+  newUsername?: string;
+}
+
+interface UpdatePasswordBody {
+  oldPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
+}
+
+export const favourite = async (
+  req: AuthRequest<FavouriteParams>,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
+  const { mangaId } = req.params;
+
+  const isFavourite = await Client.exists({
+    createdBy: new mongoose.Types.ObjectId(userId),
+    mangaId,
+  });
   res.status(StatusCodes.OK).json({ isFavourite: Boolean(isFavourite) });
 };
 
-export const allFavourites = async (req, res) => {
-  const { userId } = req.user;
+export const allFavourites = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
   const rawLimit = req.query.limit;
   const cursor = req.query.cursor;
 
@@ -44,9 +74,11 @@ export const allFavourites = async (req, res) => {
     throw new BadRequestError("Invalid cursor.", "cursor");
   }
 
-  const query = { createdBy: userId };
+  const query: mongoose.FilterQuery<ClientRecord> = {
+    createdBy: new mongoose.Types.ObjectId(userId),
+  };
   if (cursor) {
-    query._id = { $lt: cursor };
+    query._id = { $lt: new mongoose.Types.ObjectId(cursor) };
   }
 
   const favourites = await Client.find(query)
@@ -64,33 +96,42 @@ export const allFavourites = async (req, res) => {
   });
 };
 
-export const addFavourite = async (req, res) => {
-  req.body.createdBy = req.user.userId;
-  const client = await Client.create({ ...req.body });
+export const addFavourite = async (
+  req: AuthRequest<Request["params"], unknown, AddFavouriteBody>,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
+  const client = await Client.create({
+    ...req.body,
+    createdBy: new mongoose.Types.ObjectId(userId),
+  });
   res.status(StatusCodes.OK).json({ client, message: "Added!" });
 };
 
-export const removeFavourite = async (req, res) => {
-  const {
-    user: { userId },
-    params: { mangaId },
-  } = req;
+export const removeFavourite = async (
+  req: AuthRequest<FavouriteParams>,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
+  const { mangaId } = req.params;
 
   const client = await Client.findOneAndDelete({
     mangaId,
-    createdBy: userId,
+    createdBy: new mongoose.Types.ObjectId(userId),
   });
 
   res.status(StatusCodes.OK).json({ client, message: "Removed" });
 };
 
-export const user = async (req, res) => {
-  const { userId } = req.user;
+export const user = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { userId } = requireAuthUser(req);
   if (!userId) {
     throw new BadRequestError("Please provide user id");
   }
 
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({
+    _id: new mongoose.Types.ObjectId(userId),
+  });
   if (!user) {
     throw new NotFoundError("User not found");
   }
@@ -100,18 +141,22 @@ export const user = async (req, res) => {
     .json({ username: user.username, email: user.email, type: user.type });
 };
 
-export const updateUsername = async (req, res) => {
-  const {
-    user: { userId },
-    body: { newUsername },
-  } = req;
+export const updateUsername = async (
+  req: AuthRequest<Request["params"], unknown, UpdateUsernameBody>,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
+  const { newUsername } = req.body;
 
   if (!newUsername) {
     throw new BadRequestError("Please provide new username.");
   }
 
   const user = await User.findOneAndUpdate(
-    { _id: userId, username: { $ne: newUsername } },
+    {
+      _id: new mongoose.Types.ObjectId(userId),
+      username: { $ne: newUsername },
+    },
     { username: newUsername },
     { new: true, runValidators: true },
   );
@@ -123,11 +168,12 @@ export const updateUsername = async (req, res) => {
   res.status(StatusCodes.OK).json({ username: user.username });
 };
 
-export const updatePassword = async (req, res) => {
-  const {
-    user: { userId },
-    body: { oldPassword, newPassword, confirmNewPassword },
-  } = req;
+export const updatePassword = async (
+  req: AuthRequest<Request["params"], unknown, UpdatePasswordBody>,
+  res: Response,
+): Promise<void> => {
+  const { userId } = requireAuthUser(req);
+  const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
   if (!oldPassword || !newPassword || !confirmNewPassword) {
     throw new BadRequestError("Please provide required fields");
@@ -139,7 +185,9 @@ export const updatePassword = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ _id: userId }).select("+password");
+  const user = await User.findOne({
+    _id: new mongoose.Types.ObjectId(userId),
+  }).select("+password");
   if (!user) {
     throw new NotFoundError("user does not exists");
   }
@@ -150,9 +198,10 @@ export const updatePassword = async (req, res) => {
 
   const isCorrect = await user.verifyPassword(oldPassword);
   if (!isCorrect) {
-    return res
+    res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: "Old password is incorrect", type: "oldPassword" });
+    return;
   }
 
   user.password = newPassword;
