@@ -1,12 +1,15 @@
+import type { Readable } from "node:stream";
 import { StatusCodes } from "http-status-codes";
+import mongoose, { type FilterQuery } from "mongoose";
+import axios from "axios";
+import type { Request, Response } from "express";
 import { redisClient } from "../config/redisClient.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { setCacheHeaders } from "../helper/setCacheHeaders.js";
 import { dexAxios } from "../services/dexAxios.js";
 import { coverAxios } from "../services/coverAxios.js";
-import Manga from "../models/manga.js";
-import axios from "axios";
+import Manga, { type MangaRecord } from "../models/manga.js";
 import {
   assertAllowedProxyUrl,
   MAX_PROXY_BYTES,
@@ -23,13 +26,108 @@ const ALLOWED_PROXY_IMAGE_TYPES = new Set([
   "image/webp",
 ]);
 
-export const mangas = async (req, res) => {
+interface LocalizedString {
+  [locale: string]: string | undefined;
+}
+
+interface MangaStaticsAttributes {
+  title: LocalizedString;
+  altTitles: LocalizedString[];
+  description?: LocalizedString;
+  publicationDemographic?: string | null;
+  contentRating?: string | null;
+  tags?: unknown[];
+  year?: number | null;
+  status?: string | null;
+  links?: Record<string, string>;
+  [key: string]: unknown;
+}
+
+interface MangaStatics {
+  id: string;
+  type: string;
+  attributes: MangaStaticsAttributes;
+}
+
+interface AuthorData {
+  id: string;
+  type: string;
+  attributes: {
+    name: string;
+    [key: string]: unknown;
+  };
+}
+
+interface CoverResponse {
+  data: Array<{
+    attributes?: {
+      fileName?: string;
+    };
+  }>;
+}
+
+interface ChapterData {
+  id: string;
+  type: string;
+  attributes: {
+    chapter?: string | null;
+    [key: string]: unknown;
+  };
+}
+
+interface ChapterResponse {
+  data: ChapterData[];
+  offset: number;
+  limit: number;
+  total: number;
+}
+
+interface AtHomeResponse {
+  baseUrl?: string;
+  chapter: {
+    hash: string;
+    data: string[];
+    dataSaver: string[];
+  };
+}
+
+interface MangasQuery {
+  limit?: string;
+  cursor?: string;
+}
+
+interface CoverQuery {
+  volume?: string;
+  width?: string | number;
+}
+
+interface ChaptersQuery {
+  limit?: string | number;
+  offset?: string | number;
+}
+
+interface ChapterImageQuery {
+  quality?: string;
+}
+
+interface SearchQuery {
+  query?: string;
+}
+
+interface RandomMangaQuery {
+  limit?: string;
+}
+
+export const mangas = async (
+  req: Request<{}, unknown, unknown, MangasQuery>,
+  res: Response,
+): Promise<void> => {
   const limit = Number(req.query.limit) || 10;
   const cursor = req.query.cursor;
 
-  let query = {};
+  const query: FilterQuery<MangaRecord> = {};
   if (cursor) {
-    query._id = { $gt: cursor };
+    query._id = { $gt: cursor as unknown as mongoose.Types.ObjectId };
   }
 
   const cacheKey = `mangas:${cursor || "start"}:${limit}`;
@@ -38,16 +136,19 @@ export const mangas = async (req, res) => {
 
   if (cachedManga) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
+    res.status(StatusCodes.OK).json(JSON.parse(cachedManga));
+    return;
   }
 
   const mangaData = await Manga.find(query).sort({ _id: 1 }).limit(limit);
+  const lastManga = mangaData[mangaData.length - 1];
+  const lastId = lastManga?._id as mongoose.Types.ObjectId | undefined;
 
   const hasMore = await Manga.exists({
-    _id: { $gt: mangaData[mangaData.length - 1]?._id },
+    _id: { $gt: lastId },
   });
 
-  const nextCursor = hasMore ? mangaData[mangaData.length - 1]?._id : null;
+  const nextCursor = hasMore ? lastManga?._id : null;
 
   const responseData = {
     manga: mangaData,
@@ -60,7 +161,10 @@ export const mangas = async (req, res) => {
   res.status(StatusCodes.OK).json(responseData);
 };
 
-export const statics = async (req, res) => {
+export const statics = async (
+  req: Request<{ mangaId: string }>,
+  res: Response,
+): Promise<void> => {
   const { mangaId } = req.params;
 
   if (!mangaId) {
@@ -73,10 +177,13 @@ export const statics = async (req, res) => {
   const cachedStatics = await redisClient.get(cacheKey);
   if (cachedStatics) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
+    res.status(StatusCodes.OK).json({ data: JSON.parse(cachedStatics) });
+    return;
   }
 
-  const response = await dexAxios.get(`/manga/${mangaId}`);
+  const response = await dexAxios.get<{ data: MangaStatics | null }>(
+    `/manga/${mangaId}`,
+  );
   const staticsData = response.data.data;
 
   if (!staticsData) {
@@ -88,7 +195,7 @@ export const statics = async (req, res) => {
   );
 
   const jaTitleObj = staticsData.attributes.altTitles.find((altTitle) =>
-    altTitle.hasOwnProperty("ja"),
+    Object.hasOwn(altTitle, "ja"),
   );
   const jaTitle = jaTitleObj ? jaTitleObj.ja : "No Japanese title available";
 
@@ -119,7 +226,10 @@ export const statics = async (req, res) => {
   res.status(StatusCodes.OK).json({ data: safeData });
 };
 
-export const author = async (req, res) => {
+export const author = async (
+  req: Request<{ authorId: string }>,
+  res: Response,
+): Promise<void> => {
   const { authorId } = req.params;
 
   if (!authorId) {
@@ -132,10 +242,13 @@ export const author = async (req, res) => {
   const cachedAuthor = await redisClient.get(cacheKey);
   if (cachedAuthor) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
+    res.status(StatusCodes.OK).json({ data: JSON.parse(cachedAuthor) });
+    return;
   }
 
-  const response = await dexAxios.get(`/author/${authorId}`);
+  const response = await dexAxios.get<{ data: AuthorData | null }>(
+    `/author/${authorId}`,
+  );
 
   const authorData = response.data.data;
   if (!authorData) {
@@ -148,7 +261,10 @@ export const author = async (req, res) => {
   res.status(StatusCodes.OK).json({ data: authorData });
 };
 
-export const cover = async (req, res) => {
+export const cover = async (
+  req: Request<{ mangaId: string }, unknown, unknown, CoverQuery>,
+  res: Response,
+): Promise<void> => {
   const {
     params: { mangaId },
     query: { volume = "desc", width = 256 },
@@ -165,10 +281,11 @@ export const cover = async (req, res) => {
   if (cachedCover) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
     const proxyUrl = `${process.env.API_BASE_URL}/api/v1/manga/proxy/cover/${mangaId}/${cachedCover}/${width}`;
-    return res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
+    res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
+    return;
   }
 
-  const response = await dexAxios.get(`/cover`, {
+  const response = await dexAxios.get<CoverResponse>(`/cover`, {
     params: {
       manga: [mangaId],
       limit: 1,
@@ -191,12 +308,15 @@ export const cover = async (req, res) => {
   res.status(StatusCodes.OK).json({ coverImgUrl: proxyUrl });
 };
 
-export const proxyCover = async (req, res) => {
+export const proxyCover = async (
+  req: Request<{ mangaId: string; fileName: string; width: string }>,
+  res: Response,
+): Promise<void> => {
   const {
     params: { mangaId, fileName, width },
   } = req;
 
-  const response = await coverAxios.get(
+  const response = await coverAxios.get<Readable>(
     `/covers/${mangaId}/${fileName}.${width}.jpg`,
     { responseType: "stream" },
   );
@@ -204,7 +324,10 @@ export const proxyCover = async (req, res) => {
   // Set cache headers for browsers to cache images
   res.setHeader("Cache-Control", "public, max-age=86400, immutable");
   res.setHeader("Content-Type", "image/jpeg");
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.CLIENT_APP_URL as string,
+  );
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -212,7 +335,8 @@ export const proxyCover = async (req, res) => {
   );
 
   if (req.method === "OPTIONS") {
-    return res.status(204).end();
+    res.status(204).end();
+    return;
   }
 
   response.data.pipe(res);
@@ -222,7 +346,10 @@ export const proxyCover = async (req, res) => {
   });
 };
 
-export const chapters = async (req, res) => {
+export const chapters = async (
+  req: Request<{ mangaId: string }, unknown, unknown, ChaptersQuery>,
+  res: Response,
+): Promise<void> => {
   const {
     params: { mangaId },
     query: { limit = 10, offset = 0 },
@@ -238,10 +365,11 @@ export const chapters = async (req, res) => {
   const cachedChapters = await redisClient.get(cacheKey);
   if (cachedChapters) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
+    res.status(StatusCodes.OK).json(JSON.parse(cachedChapters));
+    return;
   }
 
-  const response = await dexAxios.get(`/chapter`, {
+  const response = await dexAxios.get<ChapterResponse>(`/chapter`, {
     params: {
       manga: mangaId,
       translatedLanguage: ["en"],
@@ -287,7 +415,10 @@ export const chapters = async (req, res) => {
   res.status(StatusCodes.OK).json(responseObj);
 };
 
-export const chapterImage = async (req, res) => {
+export const chapterImage = async (
+  req: Request<{ chapterId: string }, unknown, unknown, ChapterImageQuery>,
+  res: Response,
+): Promise<void> => {
   const {
     params: { chapterId },
     query: { quality = "data" },
@@ -303,29 +434,32 @@ export const chapterImage = async (req, res) => {
   const cachedChapterImage = await redisClient.get(cacheKey);
   if (cachedChapterImage) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
+    res.status(StatusCodes.OK).json(JSON.parse(cachedChapterImage));
+    return;
   }
 
-  const response = await dexAxios.get(`/at-home/server/${chapterId}`);
-  if (!response.data.baseUrl) {
+  const response = await dexAxios.get<AtHomeResponse>(
+    `/at-home/server/${chapterId}`,
+  );
+
+  const { baseUrl } = response.data;
+
+  if (!baseUrl) {
     throw new NotFoundError("not found");
   }
 
   const {
-    baseUrl,
     chapter: { hash, data: original, dataSaver },
   } = response.data;
 
   const data = quality === "data-saver" ? dataSaver : original;
-  const mangaImgs = data.map((val) => {
-    return {
-      src: `${
-        process.env.API_BASE_URL
-      }/api/v1/manga/proxy/chapter-image/${encodeURIComponent(
-        baseUrl,
-      )}/${quality}/${hash}/${val}`,
-    };
-  });
+  const mangaImgs = data.map((val) => ({
+    src: `${
+      process.env.API_BASE_URL
+    }/api/v1/manga/proxy/chapter-image/${encodeURIComponent(
+      baseUrl,
+    )}/${quality}/${hash}/${val}`,
+  }));
 
   const responseObj = { data: mangaImgs, length: mangaImgs.length };
 
@@ -335,7 +469,15 @@ export const chapterImage = async (req, res) => {
   res.status(StatusCodes.OK).json(responseObj);
 };
 
-export const proxyChapterImage = async (req, res) => {
+export const proxyChapterImage = async (
+  req: Request<{
+    baseUrl: string;
+    quality: string;
+    hash: string;
+    val: string;
+  }>,
+  res: Response,
+): Promise<void> => {
   const { baseUrl, quality, hash, val } = req.params;
 
   let decodedBaseUrl;
@@ -367,7 +509,7 @@ export const proxyChapterImage = async (req, res) => {
     `${base.origin}${base.pathname.replace(/\/+$/, "")}/${quality}/${hash}/${val}`,
   );
 
-  const response = await axios.get(targetUrl.toString(), {
+  const response = await axios.get<Readable>(targetUrl.toString(), {
     responseType: "stream",
     timeout: PROXY_TIMEOUT_MS,
     maxRedirects: MAX_PROXY_REDIRECTS,
@@ -386,23 +528,28 @@ export const proxyChapterImage = async (req, res) => {
 
   if (!ALLOWED_PROXY_IMAGE_TYPES.has(mimeType)) {
     response.data.destroy();
-    return res.status(StatusCodes.BAD_GATEWAY).json({
+    res.status(StatusCodes.BAD_GATEWAY).json({
       message: "Upstream did not return a supported image.",
     });
+    return;
   }
 
   const contentLength = Number(response.headers?.["content-length"]);
 
   if (Number.isFinite(contentLength) && contentLength > MAX_PROXY_BYTES) {
     response.data.destroy();
-    return res.status(StatusCodes.BAD_GATEWAY).json({
+    res.status(StatusCodes.BAD_GATEWAY).json({
       message: "Image is too large.",
     });
+    return;
   }
 
   res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", "public, max-age=86400, immutable");
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.CLIENT_APP_URL as string,
+  );
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -415,7 +562,7 @@ export const proxyChapterImage = async (req, res) => {
 
   let receivedBytes = 0;
 
-  response.data.on("data", (chunk) => {
+  response.data.on("data", (chunk: Buffer) => {
     receivedBytes += chunk.length;
 
     if (receivedBytes > MAX_PROXY_BYTES) {
@@ -443,7 +590,10 @@ export const proxyChapterImage = async (req, res) => {
   response.data.pipe(res);
 };
 
-export const search = async (req, res) => {
+export const search = async (
+  req: Request<{}, unknown, unknown, SearchQuery>,
+  res: Response,
+): Promise<void> => {
   const { query } = req.query;
 
   if (typeof query !== "string") {
@@ -466,7 +616,8 @@ export const search = async (req, res) => {
   const cachedSearch = await redisClient.get(cacheKey);
   if (cachedSearch) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedSearch));
+    res.status(StatusCodes.OK).json(JSON.parse(cachedSearch));
+    return;
   }
 
   const manga = await Manga.aggregate([
@@ -508,8 +659,11 @@ export const search = async (req, res) => {
   res.status(200).json(responseData);
 };
 
-export const randomManga = async (req, res) => {
-  const limit = parseInt(req.query.limit) || 6;
+export const randomManga = async (
+  req: Request<{}, unknown, unknown, RandomMangaQuery>,
+  res: Response,
+): Promise<void> => {
+  const limit = Number.parseInt(req.query.limit ?? "", 10) || 6;
 
   const cacheKey = `randomManga:${limit}`;
   const expiry = 300;
@@ -517,11 +671,12 @@ export const randomManga = async (req, res) => {
   const cachedRandomManga = await redisClient.get(cacheKey);
   if (cachedRandomManga) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
+    res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
+    return;
   }
 
   const manga = await Manga.aggregate([
-    { $sample: { size: parseInt(limit) } },
+    { $sample: { size: limit } },
     {
       $project: {
         title: 1,
