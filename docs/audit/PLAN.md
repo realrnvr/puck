@@ -200,6 +200,7 @@
   - 11e: `manga` controller.
   - 11f: `auth` controller.
   - 11g: `router` and `app.ts`.
+  - 11h: enable TypeScript ESLint for the server.
 - Conversion order (leaf-first): `errors` -> `helper` -> `utils` -> `config` -> `models` -> `middleware` -> `services` -> `controller` -> `router` -> `app.ts`.
 - Scope:
   - Express request/response generics, `AuthRequest` with `req.user`.
@@ -306,28 +307,29 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 
 ## Tracking
 
-| PR  | Branch                                 | Status  |
-| --- | -------------------------------------- | ------- |
-| 1   | `audit/phase-0-baseline`               | Done    |
-| 2   | `chore/quality-tooling`                | Done    |
-| 3   | `style/format-baseline`                | Done    |
-| 4   | `test/harness`                         | Done    |
-| 5a  | `fix/auth-p0`                          | Done    |
-| 5b  | `fix/proxy-ssrf`                       | Done    |
-| 6   | `fix/server-p1`                        | Done    |
-| 7   | `fix/client-p1`                        | Done    |
-| 8a  | `refactor/naming`                      | Done    |
-| 8b  | `refactor/routes`                      | Done    |
-| 8c  | `refactor/manga-page`                  | Done    |
-| 9   | `chore/a11y`                           | Done    |
-| 10  | `chore/ts-foundation`                  | Done    |
-| 11a | `refactor/server-ts-leaves`            | Done    |
-| 11b | `refactor/server-ts-config`            | Done    |
-| 11c | `refactor/server-ts-services`          | Done    |
-| 11d | `refactor/server-ts-client-controller` | Done    |
-| 11e | `refactor/server-ts-manga-controller`  | Done    |
-| 11f | `refactor/server-ts-auth-controller`   | Done    |
-| 11g | `refactor/server-ts-app`               | Done    |
-| 12  | `refactor/client-ts`                   | Planned |
-| 13  | `chore/ts-strict`                      | Planned |
-| 14  | `chore/final-audit`                    | Planned |
+| PR  | Branch                                 | Status      |
+| --- | -------------------------------------- | ----------- |
+| 1   | `audit/phase-0-baseline`               | Done        |
+| 2   | `chore/quality-tooling`                | Done        |
+| 3   | `style/format-baseline`                | Done        |
+| 4   | `test/harness`                         | Done        |
+| 5a  | `fix/auth-p0`                          | Done        |
+| 5b  | `fix/proxy-ssrf`                       | Done        |
+| 6   | `fix/server-p1`                        | Done        |
+| 7   | `fix/client-p1`                        | Done        |
+| 8a  | `refactor/naming`                      | Done        |
+| 8b  | `refactor/routes`                      | Done        |
+| 8c  | `refactor/manga-page`                  | Done        |
+| 9   | `chore/a11y`                           | Done        |
+| 10  | `chore/ts-foundation`                  | Done        |
+| 11a | `refactor/server-ts-leaves`            | Done        |
+| 11b | `refactor/server-ts-config`            | Done        |
+| 11c | `refactor/server-ts-services`          | Done        |
+| 11d | `refactor/server-ts-client-controller` | Done        |
+| 11e | `refactor/server-ts-manga-controller`  | Done        |
+| 11f | `refactor/server-ts-auth-controller`   | Done        |
+| 11g | `refactor/server-ts-app`               | Done        |
+| 11h | `chore/server-ts-lint`                 | In progress |
+| 12  | `refactor/client-ts`                   | Planned     |
+| 13  | `chore/ts-strict`                      | Planned     |
+| 14  | `chore/final-audit`                    | Planned     |
