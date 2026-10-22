@@ -20,7 +20,7 @@ const Newsletter = new mongoose.Schema(
     },
     subscriptionDate: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     lastSent: {
       type: Date,

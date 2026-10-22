@@ -24,17 +24,31 @@ export const sendNewsLetter = async () => {
     const newsletterContent = createNewsletterContent(mangaUpdate);
     const subscribers = await Newsletter.find({ isSubscribed: true });
 
+    let sent = 0;
+    let failed = 0;
+
     for (const subscriber of subscribers) {
-      mailer({
-        to: subscriber.email,
-        subject: "Your Weekly Manga Update",
-        html: newsletterContent,
-      });
-      console.log(`newsletter sent to: ${subscriber.email}`);
+      try {
+        await mailer({
+          to: subscriber.email,
+          subject: "Your Weekly Manga Update",
+          html: newsletterContent,
+        });
+        sent += 1;
+        console.log(`newsletter sent to: ${subscriber.email}`);
+      } catch (error) {
+        failed += 1;
+        console.error("newsletter delivery failed", error);
+      }
     }
 
-    console.log("All newsletters sent successfully.");
+    if (failed === 0) {
+      console.log("All newsletters sent successfully.");
+    }
+
+    return { sent, failed };
   } catch (error) {
-    console.log("error sending newsletter", error);
+    console.error("error sending newsletter", error);
+    return { sent: 0, failed: 0 };
   }
 };

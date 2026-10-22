@@ -19,5 +19,9 @@ describe("test harness", () => {
     const response = await request(createApp()).get("/api/v1/not-a-route");
 
     expect(response.status).toBe(404);
+    expect(response.body).toEqual({
+      message: "Route does not exist.",
+      type: "not-found",
+    });
   });
 });
