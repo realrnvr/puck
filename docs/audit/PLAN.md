@@ -138,17 +138,36 @@
 - Acceptance: tests pass; no console errors; build passes.
 - Rollback: revert by component/commit.
 
-### PR 8 — Structure and naming
+### PR 8a — Naming consistency
 
-- Branch: `refactor/structure-naming`
+- Branch: `refactor/naming`
 - Scope:
-  - Rename `UnauthorziedError` -> `UnauthorizedError`, `Allfavourites` -> `allFavourites`, and inconsistent route/controller names.
-  - Split `RouterProviderBase.jsx` into route groups; normalize lazy loading.
-  - Extract data-shaping helpers out of `Manga.jsx`; split oversized sections.
-  - Adopt one file-naming convention (see `docs/CODING_STANDARDS.md`).
-- Tests: existing suite must stay green; add characterization tests for extracted helpers before moving code.
-- Acceptance: no behavior changes; route snapshots/tests confirm URLs stay stable.
-- Rollback: rename commits are isolated; revert if imports break.
+  - Rename `UnauthorziedError` -> `UnauthorizedError` and `Allfavourites` -> `allFavourites`.
+  - Rename the `ProcessGaurd`/`AuthRedirectGaurd` components and files.
+  - Rename server route modules to the `*.routes.js` convention.
+- Tests: existing suites must stay green.
+- Acceptance: no behavior changes; no remaining misspelled identifiers or stale route imports.
+- Rollback: revert by commit; the renames are isolated.
+
+### PR 8b — Route structure
+
+- Branch: `refactor/routes`
+- Scope:
+  - Split `RouterProviderBase.jsx` into route groups.
+  - Normalize lazy loading and Suspense fallbacks through shared helpers.
+- Tests: route definition tests confirm paths, guards, and loaders stay stable.
+- Acceptance: no behavior changes; every existing URL still resolves.
+- Rollback: revert route-group extraction; restore the single router definition.
+
+### PR 8c — Manga page structure
+
+- Branch: `refactor/manga-page`
+- Scope:
+  - Extract data-shaping helpers out of `Manga.jsx`.
+  - Split oversized sections into focused components.
+- Tests: characterization tests for extracted helpers before moving code; existing page behavior stays green.
+- Acceptance: no behavior changes; smaller, testable units.
+- Rollback: revert by component/helper commit.
 
 ### PR 9 — Accessibility and UI quality
 
@@ -279,20 +298,22 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 
 ## Tracking
 
-| PR  | Branch                      | Status      |
-| --- | --------------------------- | ----------- |
-| 1   | `audit/phase-0-baseline`    | Done        |
-| 2   | `chore/quality-tooling`     | Done        |
-| 3   | `style/format-baseline`     | Done        |
-| 4   | `test/harness`              | Done        |
-| 5a  | `fix/auth-p0`               | Done        |
-| 5b  | `fix/proxy-ssrf`            | Done        |
-| 6   | `fix/server-p1`             | Done        |
-| 7   | `fix/client-p1`             | In progress |
-| 8   | `refactor/structure-naming` | Planned     |
-| 9   | `chore/a11y`                | Planned     |
-| 10  | `chore/ts-foundation`       | Planned     |
-| 11  | `refactor/server-ts`        | Planned     |
-| 12  | `refactor/client-ts`        | Planned     |
-| 13  | `chore/ts-strict`           | Planned     |
-| 14  | `chore/final-audit`         | Planned     |
+| PR  | Branch                   | Status      |
+| --- | ------------------------ | ----------- |
+| 1   | `audit/phase-0-baseline` | Done        |
+| 2   | `chore/quality-tooling`  | Done        |
+| 3   | `style/format-baseline`  | Done        |
+| 4   | `test/harness`           | Done        |
+| 5a  | `fix/auth-p0`            | Done        |
+| 5b  | `fix/proxy-ssrf`         | Done        |
+| 6   | `fix/server-p1`          | Done        |
+| 7   | `fix/client-p1`          | Done        |
+| 8a  | `refactor/naming`        | In progress |
+| 8b  | `refactor/routes`        | Planned     |
+| 8c  | `refactor/manga-page`    | Planned     |
+| 9   | `chore/a11y`             | Planned     |
+| 10  | `chore/ts-foundation`    | Planned     |
+| 11  | `refactor/server-ts`     | Planned     |
+| 12  | `refactor/client-ts`     | Planned     |
+| 13  | `chore/ts-strict`        | Planned     |
+| 14  | `chore/final-audit`      | Planned     |

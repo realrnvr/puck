@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   addFavourite,
-  Allfavourites,
+  allFavourites,
   favourite,
   removeFavourite,
   updatePassword,
@@ -12,7 +12,7 @@ import {
 const router = Router();
 
 router.route("/favourite/:mangaId").get(favourite);
-router.route("/all-favourites").get(Allfavourites);
+router.route("/all-favourites").get(allFavourites);
 router.route("/add-favourite").post(addFavourite);
 router.route("/remove-favourite/:mangaId").delete(removeFavourite);
 router.route("/user").get(user);
