@@ -1,5 +1,5 @@
 import "./favourite.css";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/useAuth";
 import { fetchFavourites } from "../../services/query/query";
@@ -11,6 +11,7 @@ const LIMIT = Number(import.meta.env.VITE_ALL_FAVOURITE_LIMIT) || 6;
 
 const Favourite = () => {
   const { token } = useAuth();
+  const reduceMotion = useReducedMotion();
 
   const {
     data,
@@ -49,7 +50,11 @@ const Favourite = () => {
                 layout
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8, x: -50 }}
-                transition={{ type: "tween", stiffness: 100 }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : { type: "tween", stiffness: 100 }
+                }
               >
                 <MangaCard
                   title={val?.mangaTitle}
@@ -67,6 +72,7 @@ const Favourite = () => {
       {hasFavourites && !isError ? (
         <div className="favourite__bottom-container">
           <button
+            type="button"
             onClick={fetchNextPage}
             disabled={!hasNextPage || isFetchingNextPage}
             className="favourite__load-more-btn"
@@ -81,7 +87,7 @@ const Favourite = () => {
       ) : null}
 
       {isEmpty ? (
-        <div className="favourite__null">
+        <div className="favourite__null" role="status">
           <h4 className="favourite__null-title">NOTHING!</h4>
           <p className="favourite__null-description">
             Your favourite list is empty!
@@ -91,7 +97,7 @@ const Favourite = () => {
       ) : null}
 
       {isError ? (
-        <div className="favourite__null">
+        <div className="favourite__null" role="alert">
           <h4 className="favourite__null-title">ERROR &#58;&#40;</h4>
           <p className="favourite__null-description">
             {error?.response?.data?.message ?? error?.message}

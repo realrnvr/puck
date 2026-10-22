@@ -10,8 +10,11 @@ const Layout = () => {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Outlet />
         <NewsLetter />
       </main>

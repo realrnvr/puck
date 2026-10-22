@@ -80,7 +80,7 @@
   --bg-clr-secondary: #2e2d2d;
   --bg-clr-tertiary: #1d1d1d;
   --clr-primary: #ffffe3;
-  --clr-secondary: #606055;
+  --clr-secondary: #a09f92;
 
   /* font size */
   --fs-3xs: 0.75rem;
@@ -155,4 +155,38 @@ a {
   color: inherit;
   text-decoration: none;
   cursor: pointer;
+}
+
+body :focus-visible {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-clr-secondary);
+  color: var(--clr-primary);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

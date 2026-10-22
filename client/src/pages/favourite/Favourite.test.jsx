@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { delay, http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Favourite from "./Favourite";
+import { expectNoSeriousA11yViolations } from "../../test/a11y";
 import { server } from "../../test/msw/server";
 
 vi.mock("../../hooks/useAuth", () => ({
@@ -55,6 +56,23 @@ const renderFavourite = () => {
 describe("Favourite", () => {
   beforeEach(() => {
     server.use(coverHandler, favouriteHandler);
+  });
+
+  it("has no serious accessibility violations", async () => {
+    server.use(
+      favouritesHandler({
+        "": {
+          client: [manga(1), manga(2)],
+          nextCursor: null,
+          length: 2,
+        },
+      }),
+    );
+
+    const { container } = renderFavourite();
+
+    expect(await screen.findByText("Manga 1")).toBeInTheDocument();
+    await expectNoSeriousA11yViolations(container);
   });
 
   it("shows skeletons while the first page is loading", async () => {

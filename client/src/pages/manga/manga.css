@@ -286,6 +286,9 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  border: 0;
+  padding: 0;
+  cursor: zoom-out;
   background-color: rgba(25, 24, 21, 0.8);
 }
 

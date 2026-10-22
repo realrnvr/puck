@@ -17,9 +17,13 @@ const ChapterList = ({
     if (activeRef.current && isOpen) {
       const container = activeRef.current.parentElement;
 
+      const reduceMotion = window.matchMedia?.(
+        "(prefers-reduced-motion: reduce)",
+      )?.matches;
+
       container.scrollTo({
         top: activeRef.current.offsetTop - container.clientHeight / 2,
-        behavior: "smooth",
+        behavior: reduceMotion ? "auto" : "smooth",
       });
     }
   }, [chapters, chapterCount, isOpen]);
@@ -44,11 +48,13 @@ const ChapterList = ({
               <li
                 key={idx}
                 className="controller__chapter-li"
-                onClick={() => setChapter(idx)}
                 ref={isActive ? activeRef : null}
               >
                 <button
+                  type="button"
                   className="controller__chapter-btn"
+                  aria-current={isActive ? "true" : undefined}
+                  onClick={() => setChapter(idx)}
                   style={{
                     backgroundColor: isActive ? "orange" : null,
                   }}

@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import Read from "./Read";
 import { AuthContext } from "../../hooks/useAuth";
 import { fetchMangaCover, fetchRandomManga } from "../../services/query/query";
+import { expectNoSeriousA11yViolations } from "../../test/a11y";
 
 vi.mock("../../services/query/query", () => ({
   fetchRandomManga: vi.fn(),
@@ -51,7 +52,7 @@ describe("Read", () => {
         }),
     );
 
-    renderRead();
+    const { container } = renderRead();
 
     expect(screen.queryByText("Berserk")).not.toBeInTheDocument();
 
@@ -61,6 +62,7 @@ describe("Read", () => {
 
     expect(await screen.findByText("Berserk")).toBeInTheDocument();
     expect(screen.getByText("Vagabond")).toBeInTheDocument();
+    await expectNoSeriousA11yViolations(container);
 
     await waitFor(() => {
       expect(fetchMangaCover).toHaveBeenCalledWith({

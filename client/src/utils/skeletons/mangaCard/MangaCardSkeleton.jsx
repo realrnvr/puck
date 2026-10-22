@@ -21,6 +21,9 @@ const MangaCardSkeleton = ({ count = 1 }) => {
                 className="manga-card__img"
                 style={{ visibility: "hidden" }}
                 src="/1px.webp"
+                alt=""
+                width={250}
+                height={275}
               />
               <div className="manga-card__caption">
                 <h2 className="manga-card__title">
