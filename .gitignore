@@ -33,3 +33,5 @@ server/dist/
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*
