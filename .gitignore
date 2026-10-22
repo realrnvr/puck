@@ -23,6 +23,9 @@ server/.env.*.local
 client/dist/
 server/dist/
 
+# Agent skills are restored from skills-lock.json
+.agents/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
