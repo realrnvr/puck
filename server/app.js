@@ -32,10 +32,10 @@ import cors from "cors";
 import nodeCron from "node-cron";
 import cookieParser from "cookie-parser";
 // routers
-import authRouter from "./router/auth.js";
-import mangaRouter from "./router/manga.js";
-import clientRouter from "./router/client.js";
-import newsletterRouter from "./router/newsletter.js";
+import authRouter from "./router/auth.routes.js";
+import mangaRouter from "./router/manga.routes.js";
+import clientRouter from "./router/client.routes.js";
+import newsletterRouter from "./router/newsletter.routes.js";
 
 export const createApp = () => {
   const app = express();

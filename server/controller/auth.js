@@ -2,7 +2,7 @@ import User from "../models/auth.js";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { z } from "zod";
-import { UnauthorziedError } from "../errors/unauthorizedError.js";
+import { UnauthorizedError } from "../errors/unauthorizedError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
 import { mailer } from "../services/mailer.js";
@@ -134,7 +134,7 @@ export const signup = async (req, res) => {
 export const verification = async (req, res) => {
   const { verificationId } = req.params;
   if (!verificationId) {
-    throw new UnauthorziedError("Unauthorized.");
+    throw new UnauthorizedError("Unauthorized.");
   }
 
   const payload = jwt.verify(
@@ -143,7 +143,7 @@ export const verification = async (req, res) => {
   );
 
   if (!payload?.email) {
-    throw new UnauthorziedError("Invalid verification token.");
+    throw new UnauthorizedError("Invalid verification token.");
   }
 
   const user = await User.findOne({ email: payload.email }).select(
@@ -157,7 +157,7 @@ export const verification = async (req, res) => {
   }
 
   if (verificationId !== user.verificationToken) {
-    throw new UnauthorziedError("Use latest sent verification link.");
+    throw new UnauthorizedError("Use latest sent verification link.");
   }
 
   user.isVerified = true;
@@ -281,7 +281,7 @@ export const loginAuthTwo = async (req, res) => {
     throw new NotFoundError("no account found with this email.");
   }
   if (!user.isVerified) {
-    throw new UnauthorziedError("please verify your email.");
+    throw new UnauthorizedError("please verify your email.");
   }
   if (!user.password) {
     throw new BadRequestError(
@@ -292,7 +292,7 @@ export const loginAuthTwo = async (req, res) => {
 
   const isCorrect = await user.verifyPassword(password);
   if (!isCorrect) {
-    throw new UnauthorziedError("password is incorrect.");
+    throw new UnauthorizedError("password is incorrect.");
   }
 
   const accessToken = createSession(res, user);
@@ -461,7 +461,7 @@ export const resetPassword = async (req, res) => {
   const payload = jwt.verify(verificationId, process.env.JWT_RESET_SECRET);
 
   if (!payload?.email) {
-    throw new UnauthorziedError("Invalid reset token.");
+    throw new UnauthorizedError("Invalid reset token.");
   }
 
   const user = await User.findOne({ email: payload.email }).select(
@@ -472,7 +472,7 @@ export const resetPassword = async (req, res) => {
   }
 
   if (verificationId !== user.resetToken) {
-    throw new UnauthorziedError("Use the latest link shared");
+    throw new UnauthorizedError("Use the latest link shared");
   }
 
   user.password = parsed.data.newPassword;
@@ -498,7 +498,7 @@ export const resendPasswordVerification = async (req, res) => {
     throw new NotFoundError("user does not exists.");
   }
   if (!user.isVerified) {
-    throw new UnauthorziedError("user is not verified.");
+    throw new UnauthorizedError("user is not verified.");
   }
 
   const resetToken = user.createResetToken();
@@ -526,12 +526,12 @@ export const google = async (req, res) => {
   const { code } = req.body;
 
   if (!code) {
-    throw new UnauthorziedError("Please provide Google auth code!");
+    throw new UnauthorizedError("Please provide Google auth code!");
   }
 
   const { tokens } = await oauthClient.getToken(code);
   if (!tokens) {
-    throw new UnauthorziedError("Google code is invalid");
+    throw new UnauthorizedError("Google code is invalid");
   }
 
   const { refresh_token, id_token } = tokens;

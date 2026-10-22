@@ -39,8 +39,8 @@ const LazyChangePassword = lazy(
 );
 // import ChangePassword from "../../pages/changePassword/ChangePassword";
 import RestrictAccountSection from "../auth/RestrictAccountSection";
-import ProcessGaurd from "../auth/ProcessGaurd";
-import AuthRedirectGaurd from "../auth/AuthRedirectGaurd";
+import ProcessGuard from "../auth/ProcessGuard";
+import AuthRedirectGuard from "../auth/AuthRedirectGuard";
 import RestrictFavourite from "../auth/RestrictFavourite";
 const LazyAbout = lazy(() => import("../../pages/about/About"));
 // import About from "../../pages/about/About";
@@ -196,92 +196,92 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <GoogleOAuthProviderBase>
-        <AuthRedirectGaurd>
+        <AuthRedirectGuard>
           <Template template="login">
             <Suspense fallback={<LoginSkeleton />}>
               <LazyLogin />
             </Suspense>
           </Template>
-        </AuthRedirectGaurd>
+        </AuthRedirectGuard>
       </GoogleOAuthProviderBase>
     ),
   },
   {
     path: "/login/loginTwo",
     element: (
-      <ProcessGaurd value={"log-mail"} to={"/login"}>
+      <ProcessGuard value={"log-mail"} to={"/login"}>
         <LoginTwo />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/login/loginGoogleAuth",
     element: (
-      <ProcessGaurd value={"log-mail"} to={"/login"}>
+      <ProcessGuard value={"log-mail"} to={"/login"}>
         <LoginGoogleAuth />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/signup",
     element: (
       <GoogleOAuthProviderBase>
-        <AuthRedirectGaurd>
+        <AuthRedirectGuard>
           <Template template="signup">
             <Suspense fallback={<SignupSkeleton />}>
               <LazySignup />
             </Suspense>
           </Template>
-        </AuthRedirectGaurd>
+        </AuthRedirectGuard>
       </GoogleOAuthProviderBase>
     ),
   },
   {
     path: "/verification",
     element: (
-      <ProcessGaurd value={"sign-mail"} to={"/login"}>
+      <ProcessGuard value={"sign-mail"} to={"/login"}>
         <Verification />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/verified/:verificationId",
     element: (
-      <ProcessGaurd value={"sign-mail"} to={"/login"}>
+      <ProcessGuard value={"sign-mail"} to={"/login"}>
         <Verified />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/forgot-password",
     element: (
-      <ProcessGaurd value={"log-mail"} to={"/login"}>
+      <ProcessGuard value={"log-mail"} to={"/login"}>
         <ForgotPassword />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/reset-password/:verificationId",
     element: (
-      <ProcessGaurd value={"pass-mail"} to={"/forgot-password"}>
+      <ProcessGuard value={"pass-mail"} to={"/forgot-password"}>
         <ResetPassword />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/password-verification",
     element: (
-      <ProcessGaurd value={"pass-mail"} to={"/forgot-password"}>
+      <ProcessGuard value={"pass-mail"} to={"/forgot-password"}>
         <PasswordVerification />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   {
     path: "/password-verified",
     element: (
-      <ProcessGaurd value={"pass-mail"} to={"/login/loginTwo"}>
+      <ProcessGuard value={"pass-mail"} to={"/login/loginTwo"}>
         <PasswordVerified />
-      </ProcessGaurd>
+      </ProcessGuard>
     ),
   },
   { path: "/redirect", element: <Redirect /> },

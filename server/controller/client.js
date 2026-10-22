@@ -16,7 +16,7 @@ export const favourite = async (req, res) => {
   res.status(StatusCodes.OK).json({ isFavourite: Boolean(isFavourite) });
 };
 
-export const Allfavourites = async (req, res) => {
+export const allFavourites = async (req, res) => {
   const { userId } = req.user;
   const rawLimit = req.query.limit;
   const cursor = req.query.cursor;
