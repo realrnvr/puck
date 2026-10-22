@@ -1,6 +1,17 @@
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
+import type { NextFunction, Response } from "express";
+import type { AuthRequest } from "../types/auth.js";
 
-export const auth = (req, res, next) => {
+interface AccessTokenPayload extends JwtPayload {
+  userId?: string;
+  email?: string;
+}
+
+export const auth = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Response | void => {
   const authHeader = req.headers.authorization;
   const [scheme, accessToken] = authHeader?.split(" ") ?? [];
 
@@ -12,7 +23,10 @@ export const auth = (req, res, next) => {
   }
 
   try {
-    const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+    const payload = jwt.verify(
+      accessToken,
+      process.env.JWT_ACCESS_SECRET as string,
+    ) as AccessTokenPayload;
 
     if (!payload?.userId) {
       throw new Error("Invalid access token payload");

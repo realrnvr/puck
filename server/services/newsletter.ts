@@ -1,8 +1,11 @@
 import Newsletter from "../models/newsletter.js";
-import { fetchMangaUpdates } from "../utils/fetchMangaUpdates.js";
+import {
+  fetchMangaUpdates,
+  type MangaUpdate,
+} from "../utils/fetchMangaUpdates.js";
 import { mailer } from "./mailer.js";
 
-const createNewsletterContent = (mangaUpdate) => {
+const createNewsletterContent = (mangaUpdate: MangaUpdate | null): string => {
   if (!mangaUpdate) {
     return "<h1>No updates available</h1>";
   }
@@ -18,7 +21,10 @@ const createNewsletterContent = (mangaUpdate) => {
   return content;
 };
 
-export const sendNewsLetter = async () => {
+export const sendNewsLetter = async (): Promise<{
+  sent: number;
+  failed: number;
+}> => {
   try {
     const mangaUpdate = await fetchMangaUpdates();
     const newsletterContent = createNewsletterContent(mangaUpdate);
@@ -36,7 +42,7 @@ export const sendNewsLetter = async () => {
         });
         sent += 1;
         console.log(`newsletter sent to: ${subscriber.email}`);
-      } catch (error) {
+      } catch (error: unknown) {
         failed += 1;
         console.error("newsletter delivery failed", error);
       }
@@ -47,7 +53,7 @@ export const sendNewsLetter = async () => {
     }
 
     return { sent, failed };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("error sending newsletter", error);
     return { sent: 0, failed: 0 };
   }
