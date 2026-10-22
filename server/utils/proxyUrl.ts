@@ -6,13 +6,13 @@ export const MAX_PROXY_BYTES = 5 * 1024 * 1024;
 export const MAX_PROXY_REDIRECTS = 3;
 export const PROXY_TIMEOUT_MS = 10000;
 
-export const isAllowedProxyHost = (hostname) =>
+export const isAllowedProxyHost = (hostname: string): boolean =>
   ALLOWED_PROXY_DOMAINS.some(
     (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
   );
 
-export const assertAllowedProxyUrl = (rawUrl) => {
-  let url;
+export const assertAllowedProxyUrl = (rawUrl: string): URL => {
+  let url: URL;
 
   try {
     url = new URL(rawUrl);

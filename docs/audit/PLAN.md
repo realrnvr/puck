@@ -192,6 +192,12 @@
 ### PR 11 — Server TypeScript conversion
 
 - Branch: `refactor/server-ts`
+- Split into leaf-first sub-PRs so each conversion can be reviewed and reverted independently:
+  - 11a: `errors`, `helper`, and `utils`.
+  - 11b: `config`, `models`, and `connectDB`.
+  - 11c: `middleware` and `services`.
+  - 11d: `controller`.
+  - 11e: `router` and `app.ts`.
 - Conversion order (leaf-first): `errors` -> `helper` -> `utils` -> `config` -> `models` -> `middleware` -> `services` -> `controller` -> `router` -> `app.ts`.
 - Scope:
   - Express request/response generics, `AuthRequest` with `req.user`.
@@ -298,22 +304,26 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 
 ## Tracking
 
-| PR  | Branch                   | Status      |
-| --- | ------------------------ | ----------- |
-| 1   | `audit/phase-0-baseline` | Done        |
-| 2   | `chore/quality-tooling`  | Done        |
-| 3   | `style/format-baseline`  | Done        |
-| 4   | `test/harness`           | Done        |
-| 5a  | `fix/auth-p0`            | Done        |
-| 5b  | `fix/proxy-ssrf`         | Done        |
-| 6   | `fix/server-p1`          | Done        |
-| 7   | `fix/client-p1`          | Done        |
-| 8a  | `refactor/naming`        | Done        |
-| 8b  | `refactor/routes`        | Done        |
-| 8c  | `refactor/manga-page`    | Done        |
-| 9   | `chore/a11y`             | Done        |
-| 10  | `chore/ts-foundation`    | In progress |
-| 11  | `refactor/server-ts`     | Planned     |
-| 12  | `refactor/client-ts`     | Planned     |
-| 13  | `chore/ts-strict`        | Planned     |
-| 14  | `chore/final-audit`      | Planned     |
+| PR  | Branch                           | Status      |
+| --- | -------------------------------- | ----------- |
+| 1   | `audit/phase-0-baseline`         | Done        |
+| 2   | `chore/quality-tooling`          | Done        |
+| 3   | `style/format-baseline`          | Done        |
+| 4   | `test/harness`                   | Done        |
+| 5a  | `fix/auth-p0`                    | Done        |
+| 5b  | `fix/proxy-ssrf`                 | Done        |
+| 6   | `fix/server-p1`                  | Done        |
+| 7   | `fix/client-p1`                  | Done        |
+| 8a  | `refactor/naming`                | Done        |
+| 8b  | `refactor/routes`                | Done        |
+| 8c  | `refactor/manga-page`            | Done        |
+| 9   | `chore/a11y`                     | Done        |
+| 10  | `chore/ts-foundation`            | Done        |
+| 11a | `refactor/server-ts-leaves`      | In progress |
+| 11b | `refactor/server-ts-config`      | Planned     |
+| 11c | `refactor/server-ts-services`    | Planned     |
+| 11d | `refactor/server-ts-controllers` | Planned     |
+| 11e | `refactor/server-ts-app`         | Planned     |
+| 12  | `refactor/client-ts`             | Planned     |
+| 13  | `chore/ts-strict`                | Planned     |
+| 14  | `chore/final-audit`              | Planned     |

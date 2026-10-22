@@ -5,7 +5,17 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const mailTemplate = ({ username, redirect, template }) => {
+interface MailTemplateOptions {
+  username: string;
+  redirect: string;
+  template: string;
+}
+
+export const mailTemplate = ({
+  username,
+  redirect,
+  template,
+}: MailTemplateOptions): string => {
   const templatePath = path.join(
     __dirname,
     "..",
