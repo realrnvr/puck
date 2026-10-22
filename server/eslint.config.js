@@ -23,7 +23,7 @@ export default [
     },
   },
   {
-    files: ["eslint.config.js"],
+    files: ["eslint.config.js", "vitest.config.js", "test/**/*.js"],
     rules: { "n/no-unpublished-import": "off" },
   },
   {

@@ -31,7 +31,7 @@ jobs:
         run: npm run format:check
 
   client:
-    name: Client lint and build
+    name: Client lint, test, and build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -53,11 +53,14 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test -- --run
+
       - name: Build
         run: npm run build
 
   server:
-    name: Server lint
+    name: Server lint and test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -73,8 +76,17 @@ jobs:
           cache: npm
           cache-dependency-path: server/package-lock.json
 
+      - name: Cache MongoDB binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}
+
       - name: Install dependencies
         run: npm ci
 
       - name: Lint
         run: npm run lint
+
+      - name: Test
+        run: npm test -- --run

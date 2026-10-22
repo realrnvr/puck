@@ -54,19 +54,19 @@ Tests live next to the subject for client hooks/components; server integration t
 
 ## Server harness
 
-The current `server/app.js` both creates the app and starts listening. Split it before writing route tests:
+The server entrypoint now exports a `createApp()` factory and guards the bootstrap so tests can import the app without connecting to production services:
 
-- `server/app.js` exports `createApp()` (middleware + routes + error handlers).
-- `server/server.js` owns `connectDB`, Redis connection, cron, and `listen`.
-- `server/app.js` remains the production entrypoint only if it re-exports the bootstrap; keep one obvious start command.
+- `server/app.js` exports `createApp()` (middleware + routes + error handlers) and the default app.
+- The DB/Redis connection, cron schedule, and `listen` call run only when `NODE_ENV !== "test"`.
+- A later refactor can move that bootstrap into a dedicated `server.js` if deployment needs it.
 
 Harness rules:
 
 - Set test environment variables in `server/test/setup.js` (JWT secrets, client URL, etc.). Never read real `.env` files in tests.
-- Start one in-memory MongoDB instance; clear collections between tests.
+- Start an in-memory MongoDB instance for the test run and clear collections between tests. The current harness starts one per test file; consolidate with Vitest `globalSetup` if the suite grows.
 - Replace Redis with a small in-memory double implementing `get`, `setEx`, `connect`, and `quit`.
 - Replace the mailer with a double that records calls and can simulate failure.
-- Mock `oauthClient` and any other outbound Google call.
+- Mock `oauthClient` and any other outbound Google call when tests reach it.
 - Do not open a real port; pass the Express app to Supertest.
 - Close the DB, Redis double, and any open handles in `afterAll`.
 
