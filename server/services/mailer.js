@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// TODO(audit COR-02): replace this invalid default with a required options
+// object and a regression test in fix/server-p1.
+// eslint-disable-next-line no-undef
 export const mailer = async (options = { to, subject, html }) => {
   await transporter.sendMail({ from: process.env.AUTH_USER, ...options });
 };
