@@ -2,8 +2,9 @@ import { fetchMangaCover, fetchRandomManga } from "../services/query/query";
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../helper/getErrorMessage";
 
-export const usePrefetchRandomManga = (LIMIT) => {
+export const usePrefetchRandomManga = (LIMIT: number) => {
   const queryClient = useQueryClient();
 
   const prefetch = useCallback(async () => {
@@ -35,7 +36,11 @@ export const usePrefetchRandomManga = (LIMIT) => {
         });
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      const message = getErrorMessage(error);
+
+      if (message) {
+        toast.error(message);
+      }
     }
   }, [queryClient, LIMIT]);
 

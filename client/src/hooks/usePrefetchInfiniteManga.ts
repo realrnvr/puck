@@ -1,36 +1,28 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { fetchMangaCover, fetchMangas } from "../services/query/query";
 import { useCallback } from "react";
-import { fetchFavourites, fetchMangaCover } from "../services/query/query";
-import { useAuth } from "./useAuth";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../helper/getErrorMessage";
 
-export const usePrefetchFavourite = (LIMIT) => {
-  const { token } = useAuth();
+export const usePrefetchInfiniteManga = (LIMIT: number) => {
   const queryClient = useQueryClient();
 
   const prefetch = useCallback(async () => {
-    if (!token) {
-      return;
-    }
+    const infiniteMangaCache = queryClient.getQueryData(["mangas", { LIMIT }]);
 
-    const favouriteCache = queryClient.getQueryData([
-      "all-favourites",
-      { LIMIT },
-    ]);
-
-    if (favouriteCache) return;
+    if (infiniteMangaCache) return;
 
     try {
       const response = await queryClient.fetchInfiniteQuery({
-        queryKey: ["all-favourites", { LIMIT }],
-        queryFn: ({ pageParam = "" }) => fetchFavourites({ LIMIT, pageParam }),
+        queryKey: ["mangas", { LIMIT }],
+        queryFn: ({ pageParam = "" }) => fetchMangas({ LIMIT, pageParam }),
         initialPageParam: "",
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         pages: 1,
       });
 
-      response?.pages?.forEach((page) => {
-        page?.client.forEach((val) => {
+      response.pages.forEach((page) => {
+        page.manga.forEach((val) => {
           queryClient.prefetchQuery({
             queryKey: [
               "manga-cover",
@@ -46,9 +38,13 @@ export const usePrefetchFavourite = (LIMIT) => {
         });
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      const message = getErrorMessage(error);
+
+      if (message) {
+        toast.error(message);
+      }
     }
-  }, [queryClient, LIMIT, token]);
+  }, [queryClient, LIMIT]);
 
   return { prefetch };
 };

@@ -1,7 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { fetchMangaCover, fetchRandomManga } from "../services/query/query";
 
-export const useSliderManga = (LIMIT) => {
+export const useSliderManga = (LIMIT: number) => {
   const {
     data,
     isLoading: isMangaLoading,
@@ -22,8 +22,9 @@ export const useSliderManga = (LIMIT) => {
   const isCoversLoading = mangaQueries.some((query) => query.isLoading);
   const isLoading = isMangaLoading || isCoversLoading;
 
-  const slides = data?.data?.manga?.map((val, idx) => ({
-    src: mangaQueries[idx]?.data?.data.coverImgUrl || "/slider-error-img.webp",
+  const slides = data?.data?.manga?.map((val, index) => ({
+    src:
+      mangaQueries[index]?.data?.data.coverImgUrl || "/slider-error-img.webp",
     ...val,
   }));
 

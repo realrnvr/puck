@@ -1,7 +1,10 @@
 import { useEffect } from "react";
-import { useController } from "yet-another-react-lightbox";
+import {
+  useController,
+  type SupportedEventType,
+} from "yet-another-react-lightbox";
 
-export const useDisableEvent = (isOpen) => {
+export const useDisableEvent = (isOpen: boolean): void => {
   const { subscribeSensors } = useController();
 
   useEffect(() => {
@@ -25,7 +28,7 @@ export const useDisableEvent = (isOpen) => {
     });
 
     const unsubscribeGestureStart = subscribeSensors(
-      "onGestureStart",
+      "onGestureStart" as SupportedEventType,
       (event) => {
         event.stopPropagation();
         event.preventDefault();

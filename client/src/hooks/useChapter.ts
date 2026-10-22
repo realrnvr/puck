@@ -1,19 +1,21 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { startTransition, useCallback, useMemo } from "react";
+import { startTransition, useCallback, useMemo, type ChangeEvent } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { fetchChapter, fetchChapterImage } from "../services/query/query";
+import type { MangaState } from "../types/manga";
 
 const CHUNK_SIZE = Number(import.meta.env.VITE_CHUNK_SIZE) || 100;
 
-export const useChapter = (mangaId) => {
-  // state
-  const [state, setState] = useLocalStorage(`mangaState:${mangaId}`, {
-    chapterCount: 0,
-    quality: "data",
-    offset: 0,
-  });
+export const useChapter = (mangaId: string) => {
+  const [state, setState] = useLocalStorage<MangaState>(
+    `mangaState:${mangaId}`,
+    {
+      chapterCount: 0,
+      quality: "data",
+      offset: 0,
+    },
+  );
 
-  // chapter data
   const {
     data: chapter,
     isPending: isChapter,
@@ -25,7 +27,6 @@ export const useChapter = (mangaId) => {
     placeholderData: keepPreviousData,
   });
 
-  // data extraction
   const chapters = chapter?.data?.data;
   const totalChapters = chapter?.data?.total;
   const chapterBound = {
@@ -39,11 +40,9 @@ export const useChapter = (mangaId) => {
   const currVolume =
     chapters && chapters[state.chapterCount]?.attributes?.volume;
 
-  // chapter limit
   const hasChapterPrev = state.chapterCount === 0;
-  const hasChapterNext = state.chapterCount === chapters?.length - 1;
+  const hasChapterNext = state.chapterCount === (chapters?.length ?? 0) - 1;
 
-  // chapter images
   const {
     data,
     isLoading: isChapterImage,
@@ -51,22 +50,23 @@ export const useChapter = (mangaId) => {
     isFetching: isChapterImageFetching,
   } = useQuery({
     queryKey: ["chapter-image", { chapterId, quality: state.quality }],
-    queryFn: () => fetchChapterImage({ chapterId, quality: state.quality }),
+    queryFn: () =>
+      fetchChapterImage({
+        chapterId: chapterId as string,
+        quality: state.quality,
+      }),
     placeholderData: keepPreviousData,
     enabled: !!chapterId,
   });
 
-  // image array
   const slides = data?.data?.data || [];
 
-  // memo chunk val
   const hasPrevChunk = useMemo(() => state.offset > 0, [state.offset]);
   const hasNextChunk = useMemo(
-    () => state.offset + CHUNK_SIZE < totalChapters,
+    () => state.offset + CHUNK_SIZE < (totalChapters ?? 0),
     [state.offset, totalChapters],
   );
 
-  // handle chunk
   const handlePrevChunk = useCallback(() => {
     if (state.offset > 0) {
       startTransition(() => {
@@ -80,7 +80,7 @@ export const useChapter = (mangaId) => {
   }, [state.offset, setState]);
 
   const handleNextChunk = useCallback(() => {
-    if (state.offset + CHUNK_SIZE < totalChapters) {
+    if (state.offset + CHUNK_SIZE < (totalChapters ?? 0)) {
       startTransition(() => {
         setState((prev) => ({
           ...prev,
@@ -91,10 +91,9 @@ export const useChapter = (mangaId) => {
     }
   }, [state.offset, totalChapters, setState]);
 
-  // handle quality
   const handleQualityChange = useCallback(
-    (e) => {
-      const { value } = e.target;
+    (event: ChangeEvent<HTMLSelectElement>) => {
+      const { value } = event.target;
       startTransition(() => {
         setState((prevState) => {
           return {
@@ -134,12 +133,12 @@ export const useChapter = (mangaId) => {
   );
 
   const setChapter = useCallback(
-    (idx) =>
+    (index: number) =>
       startTransition(() => {
         setState((prevState) => {
           return {
             ...prevState,
-            chapterCount: idx,
+            chapterCount: index,
           };
         });
       }),

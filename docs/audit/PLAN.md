@@ -339,8 +339,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 11g | `refactor/server-ts-app`               | Done        |
 | 11h | `chore/server-ts-lint`                 | Done        |
 | 12a | `refactor/client-ts-leaves`            | Done        |
-| 12b | `chore/client-ts-lint`                 | In progress |
-| 12c | `refactor/client-ts-hooks`             | Planned     |
+| 12b | `chore/client-ts-lint`                 | Done        |
+| 12c | `refactor/client-ts-hooks`             | In progress |
 | 12d | `refactor/client-ts-auth`              | Planned     |
 | 12e | `refactor/client-ts-manga`             | Planned     |
 | 12f | `refactor/client-ts-app`               | Planned     |

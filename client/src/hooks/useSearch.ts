@@ -1,8 +1,13 @@
 import { useDebounce } from "@uidotdev/usehooks";
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearch } from "../services/query/query";
+
+interface SearchTarget {
+  mangaId: string;
+  authorId: string;
+}
 
 export const useSearch = () => {
   const [query, setQuery] = useState("");
@@ -16,8 +21,8 @@ export const useSearch = () => {
   });
 
   const handleQueryChange = useCallback(
-    (e) => {
-      const value = e.target.value;
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
       if (query === "" && value.startsWith(" ")) return;
       setQuery(value);
     },
@@ -25,7 +30,7 @@ export const useSearch = () => {
   );
 
   const handleNavigate = useCallback(
-    ({ mangaId, authorId }) => {
+    ({ mangaId, authorId }: SearchTarget) => {
       navigate(`/manga/${mangaId}/${authorId}`);
     },
     [navigate],
