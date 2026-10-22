@@ -17,9 +17,11 @@ export const REQUIRED_ENV = [
   "GOOGLE_CLIENT_SECRET",
   "GOOGLE_REDIRECT_URI",
   "REDIS_URL",
-];
+] as const;
 
-export const validateEnv = (env = process.env) => {
+type Env = Record<string, string | undefined>;
+
+export const validateEnv = (env: Env = process.env): void => {
   const missing = REQUIRED_ENV.filter((key) => !env[key]);
 
   if (missing.length > 0) {
