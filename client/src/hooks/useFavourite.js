@@ -149,7 +149,11 @@ export const useFavourite = ({ mangaId, mangaData }) => {
   const handleFavourite = useCallback(() => {
     startTransition(() => {
       if (auth.token) {
-        isFavourite ? remove() : add();
+        if (isFavourite) {
+          remove();
+        } else {
+          add();
+        }
       }
     });
   }, [isFavourite, add, auth.token, remove]);

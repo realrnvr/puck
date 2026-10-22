@@ -21,11 +21,13 @@ export function useLazyLoadEffect({ carouselRef, lzImgsRef }) {
       },
     );
 
-    Array.isArray(lzImgsRef.current)
-      ? lzImgsRef.current.forEach((img) => {
-          observer.observe(img);
-        })
-      : observer.observe(lzImgsRef.current);
+    if (Array.isArray(lzImgsRef.current)) {
+      lzImgsRef.current.forEach((img) => {
+        observer.observe(img);
+      });
+    } else {
+      observer.observe(lzImgsRef.current);
+    }
 
     return () => {
       observer.disconnect();
