@@ -1,7 +1,6 @@
 class ContextErrorAPI extends Error {
-  constructor(message) {
-    super(message);
-  }
+  statusCode?: number;
+  type?: string | null;
 }
 
 export default ContextErrorAPI;

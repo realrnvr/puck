@@ -1,12 +1,33 @@
 import { dexAxios } from "../services/dexAxios.js";
 import { caseManga } from "../caseManga.js";
 
-export const fetchMangaUpdates = async () => {
+interface MangaFeedChapter {
+  title: string | null;
+  chapter: string | null;
+  publishAt: string;
+  pages: number;
+}
+
+interface MangaFeedResponse {
+  data: Array<{
+    attributes: MangaFeedChapter;
+  }>;
+}
+
+export interface MangaUpdate {
+  title: string | null;
+  chapter: string | null;
+  publishAt: string;
+  pages: number;
+  link: string;
+}
+
+export const fetchMangaUpdates = async (): Promise<MangaUpdate | null> => {
   try {
     const randomMangaId =
       caseManga[Math.floor(Math.random() * caseManga.length)];
 
-    const response = await dexAxios.get(
+    const response = await dexAxios.get<MangaFeedResponse>(
       `/manga/${randomMangaId.mangaId}/feed`,
       {
         params: {
@@ -25,9 +46,13 @@ export const fetchMangaUpdates = async () => {
     );
     const mangaData = response.data.data[0];
 
+    if (!mangaData) {
+      return null;
+    }
+
     const latestChapter = mangaData.attributes;
 
-    const mangaUpdate = {
+    const mangaUpdate: MangaUpdate = {
       title: latestChapter.title,
       chapter: latestChapter.chapter,
       publishAt: latestChapter.publishAt,

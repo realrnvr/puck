@@ -1,9 +1,18 @@
+import type { Response } from "express";
+
+interface SetCacheHeadersOptions {
+  res: Response;
+  cacheStatus: string;
+  ttl: number;
+  cType?: string;
+}
+
 export const setCacheHeaders = ({
   res,
   cacheStatus,
   ttl,
   cType = "application/json",
-}) => {
+}: SetCacheHeadersOptions): void => {
   if (!res) return;
 
   res.set({

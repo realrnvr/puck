@@ -13,6 +13,17 @@ export default [
       sourceType: "module",
       globals: { ...globals.node },
     },
+    settings: {
+      n: {
+        resolverConfig: {
+          extensionAlias: {
+            ".js": [".ts", ".js"],
+            ".mjs": [".mts", ".mjs"],
+            ".cjs": [".cts", ".cjs"],
+          },
+        },
+      },
+    },
     rules: {
       "no-unused-vars": [
         "warn",
