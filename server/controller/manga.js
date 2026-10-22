@@ -446,10 +446,18 @@ export const proxyChapterImage = async (req, res) => {
 export const search = async (req, res) => {
   const { query } = req.query;
 
+  if (typeof query !== "string") {
+    throw new BadRequestError("Query must be a string.", "query");
+  }
+
   const trimmedQuery = query.trim();
 
   if (!trimmedQuery) {
-    return new BadRequestError("Query cannot be empty.");
+    throw new BadRequestError("Query cannot be empty.", "query");
+  }
+
+  if (trimmedQuery.length > 100) {
+    throw new BadRequestError("Query cannot exceed 100 characters.", "query");
   }
 
   const cacheKey = `search:${trimmedQuery}`;

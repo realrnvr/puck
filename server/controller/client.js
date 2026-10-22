@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
@@ -16,23 +17,45 @@ export const favourite = async (req, res) => {
 };
 
 export const Allfavourites = async (req, res) => {
-  const limit = Number(req.query.limit) || 8;
-  const cursor = req.query.cursor;
   const { userId } = req.user;
+  const rawLimit = req.query.limit;
+  const cursor = req.query.cursor;
 
-  let query = { createdBy: userId };
+  if (rawLimit !== undefined && typeof rawLimit !== "string") {
+    throw new BadRequestError(
+      "Limit must be an integer between 1 and 50.",
+      "limit",
+    );
+  }
+
+  const limit = rawLimit === undefined ? 8 : Number(rawLimit);
+
+  if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
+    throw new BadRequestError(
+      "Limit must be an integer between 1 and 50.",
+      "limit",
+    );
+  }
+
+  if (
+    cursor !== undefined &&
+    (typeof cursor !== "string" || !mongoose.isValidObjectId(cursor))
+  ) {
+    throw new BadRequestError("Invalid cursor.", "cursor");
+  }
+
+  const query = { createdBy: userId };
   if (cursor) {
     query._id = { $lt: cursor };
   }
 
-  const client = await Client.find(query).sort({ _id: -1 }).limit(limit);
+  const favourites = await Client.find(query)
+    .sort({ _id: -1 })
+    .limit(limit + 1);
 
-  const hasMore = await Client.exists({
-    createdBy: userId,
-    _id: { $lt: client[client.length - 1]?._id },
-  });
-
-  const nextCursor = hasMore ? client[client.length - 1]?._id : null;
+  const hasMore = favourites.length > limit;
+  const client = hasMore ? favourites.slice(0, limit) : favourites;
+  const nextCursor = hasMore ? client[client.length - 1]._id : null;
 
   res.status(StatusCodes.OK).json({
     client,

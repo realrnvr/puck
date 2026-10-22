@@ -101,9 +101,9 @@ export const startServer = async () => {
 
 if (process.env.NODE_ENV !== "test") {
   // every Saturday at midnight
-  nodeCron.schedule("0 0 * * 6", () => {
+  nodeCron.schedule("0 0 * * 6", async () => {
     console.log("Sending weekly newsletter...");
-    sendNewsLetter();
+    await sendNewsLetter();
   });
 
   startServer();

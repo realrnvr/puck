@@ -285,9 +285,9 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 2   | `chore/quality-tooling`     | Done        |
 | 3   | `style/format-baseline`     | Done        |
 | 4   | `test/harness`              | Done        |
-| 5a  | `fix/auth-p0`               | In progress |
-| 5b  | `fix/proxy-ssrf`            | In progress |
-| 6   | `fix/server-p1`             | Planned     |
+| 5a  | `fix/auth-p0`               | Done        |
+| 5b  | `fix/proxy-ssrf`            | Done        |
+| 6   | `fix/server-p1`             | In progress |
 | 7   | `fix/client-p1`             | Planned     |
 | 8   | `refactor/structure-naming` | Planned     |
 | 9   | `chore/a11y`                | Planned     |
