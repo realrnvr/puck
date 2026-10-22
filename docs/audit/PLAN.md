@@ -216,12 +216,13 @@
 - Split into leaf-first sub-PRs so each conversion can be reviewed and reverted independently:
   - 12a: types, helpers, data constants, Zod schemas, API/query client, and route loaders.
   - 12b: TypeScript ESLint coverage for the client.
-  - 12c: hooks and mutation services.
-  - 12d: auth components and pages.
-  - 12e: manga and reader components/pages.
-  - 12f: routing, layout, and providers.
-  - 12g: lightbox and sliderbox services.
-  - 12h: remaining JS/JSX cleanup and tests.
+  - 12c: hooks.
+  - 12d: mutation services.
+  - 12e: auth components and pages.
+  - 12f: manga and reader components/pages.
+  - 12g: routing, layout, and providers.
+  - 12h: lightbox and sliderbox services.
+  - 12i: remaining JS/JSX cleanup and tests.
 - Conversion order: `types` -> `helper` -> `assets/data` -> `assets/schema` -> `services/api` -> `services/query` -> `routes/loaders` -> `hooks` -> `services/mutation` -> `components` -> `pages` -> `main.tsx`.
 - Scope:
   - API response types derived from Zod schemas.
@@ -239,7 +240,6 @@
   - Enable `checkJs`, then convert or exclude remaining JS.
   - Enable `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`.
   - Remove unused TypeScript type packages and `prop-types`.
-  - Add `eslint` TypeScript rules and `@typescript-eslint`.
 - Tests: full suite + typecheck + build.
 - Acceptance: no `allowJs`/`checkJs` escape hatches for source; strict checks green.
 - Rollback: strictness flags can be reverted one at a time.
@@ -340,11 +340,12 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 11h | `chore/server-ts-lint`                 | Done        |
 | 12a | `refactor/client-ts-leaves`            | Done        |
 | 12b | `chore/client-ts-lint`                 | Done        |
-| 12c | `refactor/client-ts-hooks`             | In progress |
-| 12d | `refactor/client-ts-auth`              | Planned     |
-| 12e | `refactor/client-ts-manga`             | Planned     |
-| 12f | `refactor/client-ts-app`               | Planned     |
-| 12g | `refactor/client-ts-lightbox`          | Planned     |
-| 12h | `chore/client-ts-cleanup`              | Planned     |
+| 12c | `refactor/client-ts-hooks`             | Done        |
+| 12d | `refactor/client-ts-mutations`         | In progress |
+| 12e | `refactor/client-ts-auth`              | Planned     |
+| 12f | `refactor/client-ts-manga`             | Planned     |
+| 12g | `refactor/client-ts-app`               | Planned     |
+| 12h | `refactor/client-ts-lightbox`          | Planned     |
+| 12i | `chore/client-ts-cleanup`              | Planned     |
 | 13  | `chore/ts-strict`                      | Planned     |
 | 14  | `chore/final-audit`                    | Planned     |

@@ -1,9 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
 
 export interface AuthUser {
-  username: string;
-  email: string;
-  type: string;
+  id?: string;
+  username?: string | null;
+  email?: string | null;
+  type?: string | null;
+  isVerified?: boolean;
 }
 
 export interface AuthContextValue {
@@ -15,4 +17,38 @@ export interface AuthContextValue {
   isPending?: boolean;
   mutateTokenPending?: boolean;
   mutateLogoutPending?: boolean;
+}
+
+export interface EmailInput {
+  email: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface SignupInput {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface PasswordConfirmationInput {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ResetPasswordInput {
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface AuthResponse {
+  user?: AuthUser | null;
+  accessToken?: string;
+  navigate?: string;
+  message?: string;
+  type?: string;
+  email?: string;
 }
