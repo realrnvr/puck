@@ -308,8 +308,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 5b  | `fix/proxy-ssrf`         | Done        |
 | 6   | `fix/server-p1`          | Done        |
 | 7   | `fix/client-p1`          | Done        |
-| 8a  | `refactor/naming`        | In progress |
-| 8b  | `refactor/routes`        | Planned     |
+| 8a  | `refactor/naming`        | Done        |
+| 8b  | `refactor/routes`        | In progress |
 | 8c  | `refactor/manga-page`    | Planned     |
 | 9   | `chore/a11y`             | Planned     |
 | 10  | `chore/ts-foundation`    | Planned     |
