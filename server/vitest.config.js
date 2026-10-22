@@ -3,7 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["test/**/*.test.js"],
+    include: ["test/**/*.test.{js,ts}"],
     setupFiles: ["./test/setup.js"],
     fileParallelism: false,
     testTimeout: 30000,
@@ -11,7 +11,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
-      include: ["**/*.js"],
+      include: ["**/*.{js,ts}"],
       exclude: [
         "node_modules/**",
         "test/**",

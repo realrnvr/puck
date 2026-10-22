@@ -311,8 +311,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 8a  | `refactor/naming`        | Done        |
 | 8b  | `refactor/routes`        | Done        |
 | 8c  | `refactor/manga-page`    | Done        |
-| 9   | `chore/a11y`             | In progress |
-| 10  | `chore/ts-foundation`    | Planned     |
+| 9   | `chore/a11y`             | Done        |
+| 10  | `chore/ts-foundation`    | In progress |
 | 11  | `refactor/server-ts`     | Planned     |
 | 12  | `refactor/client-ts`     | Planned     |
 | 13  | `chore/ts-strict`        | Planned     |
