@@ -33,10 +33,18 @@ const Login = () => {
     mutationFn: loginAuthOne,
     onSuccess: (data) => {
       localStorage.setItem("log-mail", data?.data?.user?.email);
-      navigate(data?.data?.navigate);
+      if (data?.data?.navigate) {
+        navigate(data.data.navigate);
+      }
     },
     onError: (error) => {
-      const { type, message, email } = error.response.data;
+      const { type, message, email } = error?.response?.data ?? {};
+
+      if (!message) {
+        toast.error("Something went wrong");
+        return;
+      }
+
       setError("email", { message });
       setFocus("email");
       if (type === "email") {

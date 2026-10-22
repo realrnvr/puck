@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema({
     required: function () {
       return !this.googleId;
     },
+    select: false,
     validate: {
       validator: function (value) {
         return !value || value.length >= 8;
@@ -42,12 +43,19 @@ const UserSchema = new mongoose.Schema({
   },
   verificationToken: {
     type: String,
+    select: false,
   },
   resetToken: {
     type: String,
+    select: false,
   },
   refreshToken: {
     type: String,
+    select: false,
+  },
+  tokenVersion: {
+    type: Number,
+    default: 0,
   },
   isVerified: {
     type: Boolean,
@@ -74,13 +82,21 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.verifyPassword = async function (stringPassword) {
+  if (!this.password) {
+    return false;
+  }
+
   const isMatch = await bcryptjs.compare(stringPassword, this.password);
   return isMatch;
 };
 
 UserSchema.methods.createAccessToken = function () {
   const accessToken = jwt.sign(
-    { userId: this._id, email: this.email },
+    {
+      userId: this._id,
+      email: this.email,
+      tokenVersion: this.tokenVersion ?? 0,
+    },
     process.env.JWT_ACCESS_SECRET,
     { expiresIn: process.env.JWT_ACCESS_TIMESPAN },
   );
@@ -89,7 +105,11 @@ UserSchema.methods.createAccessToken = function () {
 
 UserSchema.methods.createRefreshToken = function () {
   const refreshToken = jwt.sign(
-    { userId: this._id, email: this.email },
+    {
+      userId: this._id,
+      email: this.email,
+      tokenVersion: this.tokenVersion ?? 0,
+    },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) },
   );

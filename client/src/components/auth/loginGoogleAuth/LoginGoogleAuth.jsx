@@ -44,10 +44,7 @@ const LoginGoogleAuth = () => {
   });
 
   const onSubmit = (data) => {
-    loginGoogleAuthTwoMutate({
-      email: localStorage.getItem("log-mail"),
-      ...data,
-    });
+    loginGoogleAuthTwoMutate(data);
   };
 
   return (
@@ -56,7 +53,7 @@ const LoginGoogleAuth = () => {
         <h2 className="forgot__title">PUCK</h2>
         <p className="forgot__description">Google Login</p>
         <p className="forgot__description forgot__description--fs">
-          Enter your password to proceed.
+          Create a password for your Google account.
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>
           {loginGoogleAuthData.map((val, idx) => {
@@ -74,7 +71,7 @@ const LoginGoogleAuth = () => {
             className="forgot__btn"
             disabled={!isValid || hasErrors(errors)}
           >
-            Log in
+            Create password
           </button>
         </form>
       </div>

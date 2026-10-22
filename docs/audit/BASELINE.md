@@ -57,6 +57,7 @@ Severity: **P0** = security or data-loss risk, **P1** = correctness or reliabili
 | SEC-06 | P0       | `server/controller/auth.js:283-299`            | Logout only clears the cookie; it does not revoke or rotate the stored refresh token or Google token. Password reset/change does not revoke existing sessions.               |
 | SEC-07 | P1       | `server/models/auth.js:23-51`                  | Sensitive fields are not `select: false` and are easy to leak by accident.                                                                                                   |
 | SEC-08 | P1       | `server/app.js:31-36`                          | Cookie/CORS/security headers are minimal; no Helmet, no explicit cookie policy, no production secret validation.                                                             |
+| SEC-09 | P0       | `server/controller/auth.js:146-176`            | `loginGoogleAuthTwo` is public and sets a password for any verified email without proving ownership of the Google account. This is an account-takeover path.                 |
 
 ### Correctness and reliability
 
