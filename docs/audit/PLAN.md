@@ -213,8 +213,16 @@
 
 ### PR 12 — Client TypeScript conversion
 
-- Branch: `refactor/client-ts`
-- Conversion order: `services/api` -> `helper` -> `types` -> `hooks` -> `services/query` -> `components/ui` -> `pages` -> `services/provider` -> `main.tsx`.
+- Split into leaf-first sub-PRs so each conversion can be reviewed and reverted independently:
+  - 12a: types, helpers, data constants, Zod schemas, API/query client, and route loaders.
+  - 12b: TypeScript ESLint coverage for the client.
+  - 12c: hooks and mutation services.
+  - 12d: auth components and pages.
+  - 12e: manga and reader components/pages.
+  - 12f: routing, layout, and providers.
+  - 12g: lightbox and sliderbox services.
+  - 12h: remaining JS/JSX cleanup and tests.
+- Conversion order: `types` -> `helper` -> `assets/data` -> `assets/schema` -> `services/api` -> `services/query` -> `routes/loaders` -> `hooks` -> `services/mutation` -> `components` -> `pages` -> `main.tsx`.
 - Scope:
   - API response types derived from Zod schemas.
   - TanStack Query generics and typed query keys.
@@ -329,7 +337,14 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 11e | `refactor/server-ts-manga-controller`  | Done        |
 | 11f | `refactor/server-ts-auth-controller`   | Done        |
 | 11g | `refactor/server-ts-app`               | Done        |
-| 11h | `chore/server-ts-lint`                 | In progress |
-| 12  | `refactor/client-ts`                   | Planned     |
+| 11h | `chore/server-ts-lint`                 | Done        |
+| 12a | `refactor/client-ts-leaves`            | In progress |
+| 12b | `chore/client-ts-lint`                 | Planned     |
+| 12c | `refactor/client-ts-hooks`             | Planned     |
+| 12d | `refactor/client-ts-auth`              | Planned     |
+| 12e | `refactor/client-ts-manga`             | Planned     |
+| 12f | `refactor/client-ts-app`               | Planned     |
+| 12g | `refactor/client-ts-lightbox`          | Planned     |
+| 12h | `chore/client-ts-cleanup`              | Planned     |
 | 13  | `chore/ts-strict`                      | Planned     |
 | 14  | `chore/final-audit`                    | Planned     |

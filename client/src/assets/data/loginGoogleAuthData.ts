@@ -1,7 +1,9 @@
-export const resetPasswordData = [
+import type { FormField } from "../../types/forms";
+
+export const loginGoogleAuthData: FormField[] = [
   {
-    label: "New Password",
-    name: "newPassword",
+    label: "Password",
+    name: "password",
     type: "password",
     serverErr: "user not found.",
     defaultMsg: "At least 8 characters",

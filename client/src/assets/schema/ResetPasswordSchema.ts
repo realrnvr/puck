@@ -16,3 +16,5 @@ export const ResetPasswordSchema = z
     message: "Passwords must match",
     path: ["confirmPassword"],
   });
+
+export type ResetPasswordFormValues = z.infer<typeof ResetPasswordSchema>;

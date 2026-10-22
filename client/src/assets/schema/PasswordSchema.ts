@@ -10,3 +10,5 @@ export const PasswordSchema = z.object({
     .regex(/\d/, "At least one Digit")
     .regex(/[\W_]/, "At least one Special character"),
 });
+
+export type PasswordFormValues = z.infer<typeof PasswordSchema>;

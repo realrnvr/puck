@@ -1,4 +1,6 @@
-export const loginTwoData = [
+import type { FormField } from "../../types/forms";
+
+export const loginTwoData: FormField[] = [
   {
     label: "Password",
     name: "password",
