@@ -1,13 +1,15 @@
-import User from "../models/auth.js";
-import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import axios from "axios";
 import { z } from "zod";
+import { StatusCodes } from "http-status-codes";
+import type { Request, Response } from "express";
+import User, { type UserDocument } from "../models/auth.js";
 import { UnauthorizedError } from "../errors/unauthorizedError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
-import { StatusCodes } from "http-status-codes";
+import { NotFoundError } from "../errors/notFoundError.js";
 import { mailer } from "../services/mailer.js";
 import { revokeGoogleAccess } from "../utils/revokeGoogleAccess.js";
-import { NotFoundError } from "../errors/notFoundError.js";
 import {
   clearRefreshTokenCookie,
   setRefreshTokenCookie,
@@ -15,6 +17,7 @@ import {
 import { mailTemplate } from "../utils/mailTemplate.js";
 import { oauthClient } from "../config/oauthClient.js";
 import { toPublicUser } from "../utils/publicUser.js";
+import { requireAuthUser, type AuthRequest } from "../types/auth.js";
 
 const passwordSchema = z
   .string()
@@ -65,15 +68,45 @@ const ResetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-const firstValidationError = (result, fallback) => {
+interface EmailBody {
+  email?: string;
+}
+
+interface LoginBody {
+  email?: string;
+  password?: string;
+}
+
+interface GoogleBody {
+  code?: string;
+}
+
+interface VerificationParams {
+  verificationId: string;
+}
+
+interface EmailTokenPayload extends JwtPayload {
+  email?: string;
+}
+
+interface RefreshTokenPayload extends EmailTokenPayload {
+  tokenVersion?: number;
+}
+
+const firstValidationError = (
+  result: z.SafeParseError<unknown>,
+  fallback: string,
+): BadRequestError => {
   const issue = result.error.issues[0];
+  const field = issue?.path?.[0];
+
   return new BadRequestError(
     issue?.message ?? fallback,
-    issue?.path?.[0] ?? null,
+    field === undefined ? null : String(field),
   );
 };
 
-const rejectRefreshToken = (res) => {
+const rejectRefreshToken = (res: Response): Response => {
   clearRefreshTokenCookie(res);
 
   return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -82,11 +115,11 @@ const rejectRefreshToken = (res) => {
   });
 };
 
-const bumpTokenVersion = (user) => {
+const bumpTokenVersion = (user: UserDocument): void => {
   user.tokenVersion = (user.tokenVersion ?? 0) + 1;
 };
 
-const createSession = (res, user) => {
+const createSession = (res: Response, user: UserDocument): string => {
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
   setRefreshTokenCookie(res, refreshToken);
@@ -94,7 +127,10 @@ const createSession = (res, user) => {
   return accessToken;
 };
 
-export const signup = async (req, res) => {
+export const signup = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
   const parsed = SignupSchema.safeParse(req.body);
   if (!parsed.success) {
     throw firstValidationError(parsed, "Invalid signup details.");
@@ -131,7 +167,10 @@ export const signup = async (req, res) => {
     .json({ user: toPublicUser(user), message: "Verification email sent." });
 };
 
-export const verification = async (req, res) => {
+export const verification = async (
+  req: Request<VerificationParams>,
+  res: Response,
+): Promise<Response | void> => {
   const { verificationId } = req.params;
   if (!verificationId) {
     throw new UnauthorizedError("Unauthorized.");
@@ -139,10 +178,10 @@ export const verification = async (req, res) => {
 
   const payload = jwt.verify(
     verificationId,
-    process.env.JWT_VERIFICATION_SECRET,
-  );
+    process.env.JWT_VERIFICATION_SECRET as string,
+  ) as EmailTokenPayload;
 
-  if (!payload?.email) {
+  if (!payload.email) {
     throw new UnauthorizedError("Invalid verification token.");
   }
 
@@ -172,7 +211,10 @@ export const verification = async (req, res) => {
   });
 };
 
-export const resendVerification = async (req, res) => {
+export const resendVerification = async (
+  req: Request<{}, unknown, EmailBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { email } = req.body;
   if (!email) {
     throw new NotFoundError("Please provide email.");
@@ -207,7 +249,10 @@ export const resendVerification = async (req, res) => {
   });
 };
 
-export const loginAuthOne = async (req, res) => {
+export const loginAuthOne = async (
+  req: Request<{}, unknown, EmailBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { email } = req.body;
   if (!email) {
     throw new BadRequestError("Please Provide a email.");
@@ -240,13 +285,17 @@ export const loginAuthOne = async (req, res) => {
   });
 };
 
-export const loginGoogleAuthTwo = async (req, res) => {
+export const loginGoogleAuthTwo = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<Response | void> => {
   const parsed = GooglePasswordSchema.safeParse(req.body);
   if (!parsed.success) {
     throw firstValidationError(parsed, "Invalid password details.");
   }
 
-  const user = await User.findById(req.user.userId).select("+password");
+  const { userId } = requireAuthUser(req);
+  const user = await User.findById(userId).select("+password");
   if (!user) {
     throw new NotFoundError("no account found for this session.");
   }
@@ -270,7 +319,10 @@ export const loginGoogleAuthTwo = async (req, res) => {
   });
 };
 
-export const loginAuthTwo = async (req, res) => {
+export const loginAuthTwo = async (
+  req: Request<{}, unknown, LoginBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new BadRequestError("please provide credentials");
@@ -303,21 +355,27 @@ export const loginAuthTwo = async (req, res) => {
   });
 };
 
-export const refreshToken = async (req, res) => {
-  const token = req.cookies.refreshToken;
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
+  const token = req.cookies?.refreshToken as string | undefined;
   if (!token) {
     return rejectRefreshToken(res);
   }
 
-  let payload;
+  let payload: RefreshTokenPayload;
 
   try {
-    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    payload = jwt.verify(
+      token,
+      process.env.JWT_REFRESH_SECRET as string,
+    ) as RefreshTokenPayload;
   } catch {
     return rejectRefreshToken(res);
   }
 
-  if (!payload?.email) {
+  if (!payload.email) {
     return rejectRefreshToken(res);
   }
 
@@ -338,12 +396,15 @@ export const refreshToken = async (req, res) => {
   }
 
   try {
-    const response = await axios.post("https://oauth2.googleapis.com/token", {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      refresh_token: user.refreshToken,
-      grant_type: "refresh_token",
-    });
+    const response = await axios.post<{ access_token?: string }>(
+      "https://oauth2.googleapis.com/token",
+      {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        refresh_token: user.refreshToken,
+        grant_type: "refresh_token",
+      },
+    );
 
     const accessToken = user.createAccessToken();
     const googleAccessToken = response.data.access_token;
@@ -354,22 +415,28 @@ export const refreshToken = async (req, res) => {
   }
 };
 
-export const me = async (req, res) => {
-  const token = req.cookies.refreshToken;
+export const me = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
+  const token = req.cookies?.refreshToken as string | undefined;
   if (!token) {
     return res.json({ isAuthenticated: false });
   }
 
-  let payload;
+  let payload: RefreshTokenPayload;
 
   try {
-    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    payload = jwt.verify(
+      token,
+      process.env.JWT_REFRESH_SECRET as string,
+    ) as RefreshTokenPayload;
   } catch {
     clearRefreshTokenCookie(res);
     return res.json({ isAuthenticated: false });
   }
 
-  if (!payload?.email) {
+  if (!payload.email) {
     clearRefreshTokenCookie(res);
     return res.json({ isAuthenticated: false });
   }
@@ -392,14 +459,20 @@ export const me = async (req, res) => {
     .json({ isAuthenticated: true, accessToken });
 };
 
-export const logout = async (req, res) => {
-  const token = req.cookies.refreshToken;
+export const logout = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
+  const token = req.cookies?.refreshToken as string | undefined;
 
   if (token) {
     try {
-      const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+      const payload = jwt.verify(
+        token,
+        process.env.JWT_REFRESH_SECRET as string,
+      ) as RefreshTokenPayload;
 
-      if (payload?.email) {
+      if (payload.email) {
         const user = await User.findOne({ email: payload.email });
 
         if (user) {
@@ -417,7 +490,10 @@ export const logout = async (req, res) => {
   return res.status(StatusCodes.OK).json({ message: "Logout successful!" });
 };
 
-export const forgotPassword = async (req, res) => {
+export const forgotPassword = async (
+  req: Request<{}, unknown, EmailBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { email } = req.body;
   if (!email) {
     throw new BadRequestError("Please provide email.");
@@ -447,7 +523,10 @@ export const forgotPassword = async (req, res) => {
   return res.status(StatusCodes.OK).json({ message: "Reset link sent!" });
 };
 
-export const resetPassword = async (req, res) => {
+export const resetPassword = async (
+  req: Request<VerificationParams>,
+  res: Response,
+): Promise<Response | void> => {
   const {
     params: { verificationId },
     body,
@@ -458,9 +537,12 @@ export const resetPassword = async (req, res) => {
     throw firstValidationError(parsed, "Invalid password details.");
   }
 
-  const payload = jwt.verify(verificationId, process.env.JWT_RESET_SECRET);
+  const payload = jwt.verify(
+    verificationId,
+    process.env.JWT_RESET_SECRET as string,
+  ) as EmailTokenPayload;
 
-  if (!payload?.email) {
+  if (!payload.email) {
     throw new UnauthorizedError("Invalid reset token.");
   }
 
@@ -487,7 +569,10 @@ export const resetPassword = async (req, res) => {
   return res.status(StatusCodes.OK).json({ message: "Password updated." });
 };
 
-export const resendPasswordVerification = async (req, res) => {
+export const resendPasswordVerification = async (
+  req: Request<{}, unknown, EmailBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { email } = req.body;
   if (!email) {
     throw new BadRequestError("Please provide email.");
@@ -522,7 +607,10 @@ export const resendPasswordVerification = async (req, res) => {
   });
 };
 
-export const google = async (req, res) => {
+export const google = async (
+  req: Request<{}, unknown, GoogleBody>,
+  res: Response,
+): Promise<Response | void> => {
   const { code } = req.body;
 
   if (!code) {
@@ -537,8 +625,8 @@ export const google = async (req, res) => {
   const { refresh_token, id_token } = tokens;
 
   const ticket = await oauthClient.verifyIdToken({
-    idToken: id_token,
-    audience: process.env.GOOGLE_CLIENT_ID,
+    idToken: id_token as string,
+    audience: process.env.GOOGLE_CLIENT_ID as string,
   });
 
   if (!ticket) {
@@ -560,7 +648,7 @@ export const google = async (req, res) => {
   if (!user) {
     user = new User({
       email,
-      username,
+      username: username as string,
       googleId,
       refreshToken: refresh_token,
       isVerified: true,
@@ -593,8 +681,11 @@ export const google = async (req, res) => {
   });
 };
 
-export const deleteUser = async (req, res) => {
-  const { userId } = req.user;
+export const deleteUser = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<Response | void> => {
+  const { userId } = requireAuthUser(req);
 
   const user = await User.findById(userId).select("+refreshToken");
   if (!user) {
@@ -605,7 +696,7 @@ export const deleteUser = async (req, res) => {
     await revokeGoogleAccess(user.refreshToken);
   }
 
-  await User.deleteOne({ _id: userId });
+  await User.deleteOne({ _id: new mongoose.Types.ObjectId(userId) });
   clearRefreshTokenCookie(res);
 
   return res
