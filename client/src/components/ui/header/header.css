@@ -294,8 +294,13 @@
 }
 
 .search__item {
+  width: 100%;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
   font-weight: var(--fw-200);
   font-size: var(--fs-xs);
+  text-align: left;
   text-transform: capitalize;
   background-color: var(--bg-clr-secondary);
   padding: 0.3rem;

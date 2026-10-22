@@ -10,13 +10,17 @@ const MangaFsImg = ({ coverImgUrl }) => {
   return (
     <>
       <button
+        type="button"
         className="manga__full-screen-button"
+        aria-label="Open cover image"
+        aria-expanded={fsImg}
         onClick={() => setFsImg(true)}
       >
         <svg
           className="manga__full-screen-svg"
           fill="currentColor"
           viewBox="0 0 16 16"
+          aria-hidden="true"
         >
           <path
             fillRule="evenodd"
@@ -25,8 +29,10 @@ const MangaFsImg = ({ coverImgUrl }) => {
         </svg>
       </button>
       {fsImg ? (
-        <div
+        <button
+          type="button"
           className="manga__fs-img-wrapper"
+          aria-label="Close cover image"
           onClick={(e) => {
             setFsImg(false);
             e.stopPropagation();
@@ -37,7 +43,7 @@ const MangaFsImg = ({ coverImgUrl }) => {
             src={coverImgUrl || "/t-1px.webp"}
             alt=""
           />
-        </div>
+        </button>
       ) : null}
     </>
   );

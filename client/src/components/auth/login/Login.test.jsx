@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Login from "./Login";
 import { loginAuthOne } from "../../../services/mutation/authMutation";
+import { expectNoSeriousA11yViolations } from "../../../test/a11y";
 
 vi.mock("../../../services/mutation/authMutation", () => ({
   loginAuthOne: vi.fn(),
@@ -29,6 +30,12 @@ const renderLogin = () => {
 describe("Login", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("has no serious accessibility violations", async () => {
+    const { container } = renderLogin();
+
+    await expectNoSeriousA11yViolations(container);
   });
 
   it("shows the Google-account message instead of navigating", async () => {

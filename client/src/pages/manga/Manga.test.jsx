@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext } from "../../hooks/useAuth";
 import { useMangaData } from "../../hooks/useMangaData";
 import { usePrefetchChapter } from "../../hooks/usePrefetchChapter";
+import { expectNoSeriousA11yViolations } from "../../test/a11y";
 import Manga from "./Manga";
 
 vi.mock("../../hooks/useMangaData", () => ({
@@ -98,7 +99,7 @@ describe("Manga", () => {
   });
 
   it("renders the shaped manga details", async () => {
-    renderManga();
+    const { container } = renderManga();
 
     expect(
       await screen.findByRole("heading", { name: "Berserk" }),
@@ -118,6 +119,7 @@ describe("Manga", () => {
       mangaId: "manga-1",
       CHUNK_SIZE: 100,
     });
+    await expectNoSeriousA11yViolations(container);
   });
 
   it("disables reading when MangaDex returns an API error", async () => {

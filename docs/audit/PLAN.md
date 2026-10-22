@@ -310,8 +310,8 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 7   | `fix/client-p1`          | Done        |
 | 8a  | `refactor/naming`        | Done        |
 | 8b  | `refactor/routes`        | Done        |
-| 8c  | `refactor/manga-page`    | In progress |
-| 9   | `chore/a11y`             | Planned     |
+| 8c  | `refactor/manga-page`    | Done        |
+| 9   | `chore/a11y`             | In progress |
 | 10  | `chore/ts-foundation`    | Planned     |
 | 11  | `refactor/server-ts`     | Planned     |
 | 12  | `refactor/client-ts`     | Planned     |
