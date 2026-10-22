@@ -1,8 +1,26 @@
 import "./input.css";
 import { useState } from "react";
-import PropTypes from "prop-types";
+import type {
+  FieldError,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+  UseFormWatch,
+} from "react-hook-form";
+import type { FormField } from "../../../types/forms";
 
-const Input = ({
+interface InputProps<TFieldValues extends FieldValues> {
+  register: UseFormRegister<TFieldValues>;
+  errors: FieldErrors<TFieldValues>;
+  watch: UseFormWatch<TFieldValues>;
+  formData: FormField;
+  inputClassName?: string;
+  inputWrapperClassName?: string;
+  placeholder?: string;
+}
+
+const Input = <TFieldValues extends FieldValues>({
   register,
   errors,
   watch,
@@ -10,7 +28,7 @@ const Input = ({
   inputClassName,
   inputWrapperClassName,
   placeholder,
-}) => {
+}: InputProps<TFieldValues>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordToggle = () => {
@@ -18,11 +36,8 @@ const Input = ({
   };
 
   const { name, label, defaultMsg, toggle, type } = formData;
-
-  function getError() {
-    return errors[name];
-  }
-  const error = getError();
+  const fieldName = name as Path<TFieldValues>;
+  const error = errors[fieldName] as FieldError | undefined;
 
   return (
     <div className="input">
@@ -33,7 +48,7 @@ const Input = ({
       ) : null}
       <div className={`input__wrapper ${inputWrapperClassName}`}>
         <input
-          {...register(name)}
+          {...register(fieldName)}
           className={`input__field ${inputClassName} ${
             toggle && "input__field--password"
           }`}
@@ -45,7 +60,7 @@ const Input = ({
           aria-invalid={Boolean(error)}
           aria-describedby={defaultMsg ? `${name}-validation` : undefined}
           style={{
-            outline: error?.message && "2px solid #f87171",
+            outline: error?.message ? "2px solid #f87171" : undefined,
           }}
         />
         {toggle && (
@@ -99,7 +114,7 @@ const Input = ({
                 fillRule="evenodd"
               />
             </svg>
-          ) : watch(name) ? (
+          ) : watch(fieldName) ? (
             <svg
               className="input__valid-icon"
               xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +141,11 @@ const Input = ({
           )}
           <span
             style={{
-              color: error ? "#f87171" : watch(name) && "#16a34a",
+              color: error
+                ? "#f87171"
+                : watch(fieldName)
+                  ? "#16a34a"
+                  : undefined,
             }}
             className="input__valid-text"
           >
@@ -136,16 +155,6 @@ const Input = ({
       )}
     </div>
   );
-};
-
-Input.propTypes = {
-  register: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  watch: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  inputClassName: PropTypes.string,
-  inputWrapperClassName: PropTypes.string,
-  placeholder: PropTypes.string,
 };
 
 export default Input;

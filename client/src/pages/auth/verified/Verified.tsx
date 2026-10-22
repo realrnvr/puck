@@ -4,13 +4,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { verify } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 import Loader from "../../../components/ui/loader/Loader";
 import toast from "react-hot-toast";
 
 const Verified = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const { verificationId } = useParams();
+  const { verificationId } = useParams<{ verificationId: string }>();
   const hasRun = useRef(false);
 
   const { mutate: verifyMutate, error } = useMutation({
@@ -21,8 +22,8 @@ const Verified = () => {
       navigate("/account");
       localStorage.removeItem("sign-mail");
     },
-    onError: (error) => {
-      toast.success(error?.response?.data?.message || "Something went wrong!");
+    onError: (mutationError) => {
+      toast.success(getErrorMessage(mutationError, "Something went wrong!"));
     },
   });
 
@@ -32,7 +33,6 @@ const Verified = () => {
       if (verificationId && signMail) {
         verifyMutate({
           verificationId,
-          email: signMail,
         });
       }
       hasRun.current = true;

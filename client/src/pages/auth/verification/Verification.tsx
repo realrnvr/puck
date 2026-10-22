@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import { reverification } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 
 const Verification = () => {
   const [signMail, setSignMail] = useState("");
 
   useEffect(() => {
-    const signMail = localStorage.getItem("sign-mail");
-    if (signMail) {
-      setSignMail(signMail);
+    const storedSignMail = localStorage.getItem("sign-mail");
+    if (storedSignMail) {
+      setSignMail(storedSignMail);
     }
   }, []);
 
@@ -22,12 +23,12 @@ const Verification = () => {
       });
     },
     onSuccess: (data) => {
-      toast.success(data?.data?.message, {
+      toast.success(data?.data?.message ?? "", {
         id: "toast-verification",
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message, {
+      toast.error(getErrorMessage(error, "Something went wrong"), {
         id: "toast-verification",
       });
     },
