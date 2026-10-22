@@ -1,5 +1,6 @@
 # Remediation and TypeScript migration plan
 
+- Current status and resume guide: [`STATUS.md`](./STATUS.md)
 - Owner: `realrnvr`
 - Baseline: `docs/audit/BASELINE.md` (`a1721aa`)
 - Working branch for this document: `audit/phase-0-baseline`
