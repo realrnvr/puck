@@ -1,3 +1,4 @@
+import type { LoaderFunctionArgs } from "react-router-dom";
 import { queryClient } from "../services/provider/QueryClient/config/client";
 import {
   fetchAuthor,
@@ -5,7 +6,14 @@ import {
   fetchStatics,
 } from "../services/query/query";
 
-export const mangaLoader = ({ params }) => {
+interface MangaLoaderData {
+  mangaId: string;
+  authorId: string;
+}
+
+export const mangaLoader = ({
+  params,
+}: LoaderFunctionArgs): MangaLoaderData | null => {
   const { mangaId, authorId } = params;
 
   if (!mangaId || !authorId) {

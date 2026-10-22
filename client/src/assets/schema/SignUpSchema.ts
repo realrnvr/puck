@@ -25,3 +25,5 @@ export const SignUpSchema = z.object({
     .regex(/\d/, "At least one Digit")
     .regex(/[\W_]/, "At least one Special character"),
 });
+
+export type SignUpFormValues = z.infer<typeof SignUpSchema>;

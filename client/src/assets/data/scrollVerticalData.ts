@@ -1,4 +1,6 @@
-export const scrollVerticalData = [
+import type { ScrollVerticalImage } from "../../types/forms";
+
+export const scrollVerticalData: ScrollVerticalImage[][] = [
   [
     {
       imgSrc: "/berserk-manga.webp",

@@ -16,3 +16,5 @@ export const UsernameSchema = z.object({
       message: "Cannot end with a dot or underscore",
     }),
 });
+
+export type UsernameFormValues = z.infer<typeof UsernameSchema>;

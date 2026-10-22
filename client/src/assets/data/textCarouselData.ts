@@ -1,4 +1,4 @@
-export const textData = [
+export const textData: string[] = [
   "WATCH ANIME",
   "READ MANGA",
   "WATCH ANIME",

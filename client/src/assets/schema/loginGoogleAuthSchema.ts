@@ -16,3 +16,5 @@ export const loginGoogleAuthSchema = z
     message: "Passwords must match",
     path: ["confirmPassword"],
   });
+
+export type LoginGoogleAuthFormValues = z.infer<typeof loginGoogleAuthSchema>;

@@ -1,4 +1,6 @@
-export const formData = [
+import type { FormField } from "../../types/forms";
+
+export const formData: FormField[] = [
   {
     label: "Email",
     name: "email",
