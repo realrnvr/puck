@@ -1,3 +1,7 @@
+export interface MessageResponse {
+  message?: string;
+}
+
 export interface MangaRecord {
   _id?: string;
   title: string;
