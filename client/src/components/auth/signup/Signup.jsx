@@ -67,7 +67,7 @@ const Signup = () => {
             {
               duration: 10000,
               id: "verification-toast",
-            }
+            },
           );
           break;
         default:

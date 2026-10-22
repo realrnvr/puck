@@ -82,7 +82,7 @@ UserSchema.methods.createAccessToken = function () {
   const accessToken = jwt.sign(
     { userId: this._id, email: this.email },
     process.env.JWT_ACCESS_SECRET,
-    { expiresIn: process.env.JWT_ACCESS_TIMESPAN }
+    { expiresIn: process.env.JWT_ACCESS_TIMESPAN },
   );
   return accessToken;
 };
@@ -91,7 +91,7 @@ UserSchema.methods.createRefreshToken = function () {
   const refreshToken = jwt.sign(
     { userId: this._id, email: this.email },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) }
+    { expiresIn: Number(process.env.JWT_REFRESH_TIMESPAN) },
   );
   return refreshToken;
 };
@@ -100,7 +100,7 @@ UserSchema.methods.createVerificationToken = function () {
   const verificationToken = jwt.sign(
     { email: this.email },
     process.env.JWT_VERIFICATION_SECRET,
-    { expiresIn: process.env.JWT_VERIFICATION_TIMESPAN }
+    { expiresIn: process.env.JWT_VERIFICATION_TIMESPAN },
   );
   return verificationToken;
 };
@@ -109,7 +109,7 @@ UserSchema.methods.createResetToken = function () {
   const resetToken = jwt.sign(
     { email: this.email },
     process.env.JWT_RESET_SECRET,
-    { expiresIn: process.env.JWT_RESET_TIMESPAN }
+    { expiresIn: process.env.JWT_RESET_TIMESPAN },
   );
   return resetToken;
 };

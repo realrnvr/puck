@@ -53,7 +53,7 @@ const Login = () => {
           {
             duration: 10000,
             id: "verification-toast",
-          }
+          },
         );
       }
     },

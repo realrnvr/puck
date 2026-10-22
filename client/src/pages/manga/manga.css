@@ -264,7 +264,9 @@
   cursor: pointer;
   visibility: hidden;
   background-color: transparent;
-  transition: background-color 0.25s ease-in-out, visibility 0.3s ease-in-out,
+  transition:
+    background-color 0.25s ease-in-out,
+    visibility 0.3s ease-in-out,
     opacity 0.3s ease-in-out;
 }
 

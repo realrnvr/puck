@@ -30,12 +30,12 @@ const LazyViewer = lazy(() => import("../../pages/viewer/Viewer"));
 // import Viewer from "../../pages/viewer/Viewer";
 const LazyFavourite = lazy(() => import("../../pages/favourite/Favourite"));
 // import Favourite from "../../pages/favourite/Favourite";
-const LazyAccountSetting = lazy(() =>
-  import("../../pages/accountSetting/AccountSetting")
+const LazyAccountSetting = lazy(
+  () => import("../../pages/accountSetting/AccountSetting"),
 );
 // import AccountSetting from "../../pages/accountSetting/AccountSetting";
-const LazyChangePassword = lazy(() =>
-  import("../../pages/changePassword/ChangePassword")
+const LazyChangePassword = lazy(
+  () => import("../../pages/changePassword/ChangePassword"),
 );
 // import ChangePassword from "../../pages/changePassword/ChangePassword";
 import RestrictAccountSection from "../auth/RestrictAccountSection";

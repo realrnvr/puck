@@ -11,7 +11,7 @@ const createNewsletterContent = (mangaUpdate) => {
   let content = "<h1>Weekly Manga Newsletter</h1>";
   content += `<p>Check out the latest chapter of <a href="${link}">${title}</a> - Chapter ${chapter} is now available!</p>`;
   content += `<p><strong>Publish Date:</strong> ${new Date(
-    publishAt
+    publishAt,
   ).toLocaleDateString()}</p>`;
   content += `<p><strong>Pages:</strong> ${pages}</p>`;
   content += `<p><a href="${link}">Read it now</a></p>`;

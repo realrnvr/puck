@@ -226,15 +226,15 @@ PRs 6 and 7 can run in parallel after PR4. PRs 11 and 12 can run in parallel aft
 
 ## Test matrix
 
-| Layer | Tool | Scope |
-| --- | --- | --- |
-| Server unit | Vitest | Errors, serializers, validators, token helpers |
-| Server integration | Vitest + Supertest + mongodb-memory-server | Routes, auth, status codes, DB behavior |
-| Client unit | Vitest + RTL | Hooks, components, state transitions |
-| Client integration | Vitest + RTL + MSW | Page data flows, loading/error/empty states |
-| Accessibility | vitest-axe | Key pages and interactive components |
-| E2E smoke (optional) | Playwright | Login, browse, favourite, read chapter |
-| Static | ESLint + Prettier + `tsc --noEmit` | Every PR |
+| Layer                | Tool                                       | Scope                                          |
+| -------------------- | ------------------------------------------ | ---------------------------------------------- |
+| Server unit          | Vitest                                     | Errors, serializers, validators, token helpers |
+| Server integration   | Vitest + Supertest + mongodb-memory-server | Routes, auth, status codes, DB behavior        |
+| Client unit          | Vitest + RTL                               | Hooks, components, state transitions           |
+| Client integration   | Vitest + RTL + MSW                         | Page data flows, loading/error/empty states    |
+| Accessibility        | vitest-axe                                 | Key pages and interactive components           |
+| E2E smoke (optional) | Playwright                                 | Login, browse, favourite, read chapter         |
+| Static               | ESLint + Prettier + `tsc --noEmit`         | Every PR                                       |
 
 ## Definition of done
 
@@ -249,34 +249,34 @@ PRs 6 and 7 can run in parallel after PR4. PRs 11 and 12 can run in parallel aft
 
 Project-scoped skills installed for this work (restore instructions in `docs/AGENT_SKILLS.md`):
 
-| Skill | Use |
-| --- | --- |
-| `vercel-react-best-practices` | React performance and data-fetching review |
-| `web-design-guidelines` | UI/accessibility review |
-| `security-best-practices` | P0 security review and fixes |
-| `nodejs-backend-patterns` | Express/Mongoose structure and error handling |
-| `improve-codebase-architecture` | Oversized module split plan |
-| `tdd` | Red-green-refactor workflow |
-| `vitest` | Test harness and mocking patterns |
-| `typescript-advanced-types` | Type-level design during migration |
-| `typescript-react-reviewer` | React/TS review gates |
-| `webapp-testing` | Optional Playwright smoke checks |
+| Skill                           | Use                                           |
+| ------------------------------- | --------------------------------------------- |
+| `vercel-react-best-practices`   | React performance and data-fetching review    |
+| `web-design-guidelines`         | UI/accessibility review                       |
+| `security-best-practices`       | P0 security review and fixes                  |
+| `nodejs-backend-patterns`       | Express/Mongoose structure and error handling |
+| `improve-codebase-architecture` | Oversized module split plan                   |
+| `tdd`                           | Red-green-refactor workflow                   |
+| `vitest`                        | Test harness and mocking patterns             |
+| `typescript-advanced-types`     | Type-level design during migration            |
+| `typescript-react-reviewer`     | React/TS review gates                         |
+| `webapp-testing`                | Optional Playwright smoke checks              |
 
 ## Tracking
 
-| PR | Branch | Status |
-| --- | --- | --- |
-| 1 | `audit/phase-0-baseline` | In progress |
-| 2 | `chore/quality-tooling` | Planned |
-| 3 | `style/format-baseline` | Planned |
-| 4 | `test/harness` | Planned |
-| 5 | `fix/security-p0` | Planned |
-| 6 | `fix/server-p1` | Planned |
-| 7 | `fix/client-p1` | Planned |
-| 8 | `refactor/structure-naming` | Planned |
-| 9 | `chore/a11y` | Planned |
-| 10 | `chore/ts-foundation` | Planned |
-| 11 | `refactor/server-ts` | Planned |
-| 12 | `refactor/client-ts` | Planned |
-| 13 | `chore/ts-strict` | Planned |
-| 14 | `chore/final-audit` | Planned |
+| PR  | Branch                      | Status      |
+| --- | --------------------------- | ----------- |
+| 1   | `audit/phase-0-baseline`    | In progress |
+| 2   | `chore/quality-tooling`     | Planned     |
+| 3   | `style/format-baseline`     | Planned     |
+| 4   | `test/harness`              | Planned     |
+| 5   | `fix/security-p0`           | Planned     |
+| 6   | `fix/server-p1`             | Planned     |
+| 7   | `fix/client-p1`             | Planned     |
+| 8   | `refactor/structure-naming` | Planned     |
+| 9   | `chore/a11y`                | Planned     |
+| 10  | `chore/ts-foundation`       | Planned     |
+| 11  | `refactor/server-ts`        | Planned     |
+| 12  | `refactor/client-ts`        | Planned     |
+| 13  | `chore/ts-strict`           | Planned     |
+| 14  | `chore/final-audit`         | Planned     |

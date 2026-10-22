@@ -89,7 +89,7 @@ export const updateUsername = async (req, res) => {
   const user = await User.findOneAndUpdate(
     { _id: userId, username: { $ne: newUsername } },
     { username: newUsername },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!user) {
@@ -111,7 +111,7 @@ export const updatePassword = async (req, res) => {
 
   if (newPassword !== confirmNewPassword) {
     throw new BadRequestError(
-      "new password must be equal to confirm new password"
+      "new password must be equal to confirm new password",
     );
   }
 

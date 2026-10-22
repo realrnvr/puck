@@ -22,15 +22,15 @@ npm run build
 
 ### File naming
 
-| Kind | Convention | Example |
-| --- | --- | --- |
-| React component | `PascalCase.jsx` / `PascalCase.tsx` | `MangaCard.jsx` |
-| Hook | `useCamelCase.js` / `.ts` | `usePrefetchChapter.ts` |
-| Utility/helper | `camelCase.js` / `.ts` | `setCacheHeaders.ts` |
-| Route module | `camelCase.routes.js` / `.ts` | `auth.routes.ts` |
-| Test | `<subject>.test.js` / `.test.tsx` | `auth.test.ts` |
-| Type-only module | `camelCase.types.ts` | `manga.types.ts` |
-| Constant/config | `camelCase.js` / `.ts` | `queryClient.ts` |
+| Kind             | Convention                          | Example                 |
+| ---------------- | ----------------------------------- | ----------------------- |
+| React component  | `PascalCase.jsx` / `PascalCase.tsx` | `MangaCard.jsx`         |
+| Hook             | `useCamelCase.js` / `.ts`           | `usePrefetchChapter.ts` |
+| Utility/helper   | `camelCase.js` / `.ts`              | `setCacheHeaders.ts`    |
+| Route module     | `camelCase.routes.js` / `.ts`       | `auth.routes.ts`        |
+| Test             | `<subject>.test.js` / `.test.tsx`   | `auth.test.ts`          |
+| Type-only module | `camelCase.types.ts`                | `manga.types.ts`        |
+| Constant/config  | `camelCase.js` / `.ts`              | `queryClient.ts`        |
 
 Existing files keep their names until the structure PR; new files follow this table.
 
@@ -178,14 +178,14 @@ Existing files keep their names until the structure PR; new files follow this ta
 
 ## 9. Enforcement
 
-| Rule | Tool | When |
-| --- | --- | --- |
-| Formatting | Prettier | Pre-commit / CI |
-| Correctness | ESLint | CI |
-| Types | `tsc --noEmit` | CI |
-| Tests | Vitest | CI |
-| Build | Vite / `tsc` | CI |
-| Security | ESLint + review + `npm audit` | CI / PR |
-| Accessibility | `vitest-axe` + review | CI / PR |
+| Rule          | Tool                          | When            |
+| ------------- | ----------------------------- | --------------- |
+| Formatting    | Prettier                      | Pre-commit / CI |
+| Correctness   | ESLint                        | CI              |
+| Types         | `tsc --noEmit`                | CI              |
+| Tests         | Vitest                        | CI              |
+| Build         | Vite / `tsc`                  | CI              |
+| Security      | ESLint + review + `npm audit` | CI / PR         |
+| Accessibility | `vitest-axe` + review         | CI / PR         |
 
 Rules start as warnings only when the existing codebase cannot pass them immediately. A warning that is not on a path to becoming an error is not a standard.

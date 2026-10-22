@@ -3,7 +3,7 @@ import { axiosInstance } from "../api/axios";
 export const verify = ({ verificationId, data }) => {
   return axiosInstance.post(
     `/api/v1/auth/verification/${verificationId}`,
-    data
+    data,
   );
 };
 
@@ -34,7 +34,7 @@ export const forgotPassword = (data) => {
 export const resetPassword = ({ verificationId, data }) => {
   return axiosInstance.post(
     `/api/v1/auth/resetPassword/${verificationId}`,
-    data
+    data,
   );
 };
 

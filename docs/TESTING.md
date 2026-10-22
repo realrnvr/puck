@@ -9,16 +9,16 @@
 
 ## Tooling
 
-| Area | Choice | Why |
-| --- | --- | --- |
-| Runner | Vitest | Native ESM, Vite integration, Jest-compatible API |
-| Server HTTP | Supertest | Exercises Express routes without a live port |
-| Server DB | `mongodb-memory-server` | Real Mongoose behavior without a local MongoDB |
-| Client DOM | jsdom + Testing Library | User-centric component tests |
-| Client network | MSW | Mock at the HTTP boundary, not inside React Query |
-| Accessibility | `vitest-axe` | Automated axe checks in component tests |
-| Coverage | `@vitest/coverage-v8` | Built-in V8 coverage |
-| E2E (optional) | Playwright | Critical user journeys after P0/P1 work |
+| Area           | Choice                  | Why                                               |
+| -------------- | ----------------------- | ------------------------------------------------- |
+| Runner         | Vitest                  | Native ESM, Vite integration, Jest-compatible API |
+| Server HTTP    | Supertest               | Exercises Express routes without a live port      |
+| Server DB      | `mongodb-memory-server` | Real Mongoose behavior without a local MongoDB    |
+| Client DOM     | jsdom + Testing Library | User-centric component tests                      |
+| Client network | MSW                     | Mock at the HTTP boundary, not inside React Query |
+| Accessibility  | `vitest-axe`            | Automated axe checks in component tests           |
+| Coverage       | `@vitest/coverage-v8`   | Built-in V8 coverage                              |
+| E2E (optional) | Playwright              | Critical user journeys after P0/P1 work           |
 
 ## Layout
 
@@ -98,19 +98,19 @@ it("returns a health response", async () => {
 
 ### P0 security (`fix/security-p0`)
 
-| Test | Expected |
-| --- | --- |
-| Unauthenticated `DELETE /auth/deleteUser` | `401` |
-| Authenticated user deleting another user | `403` |
-| Signup body with `isVerified: true`, `type: "google"`, `googleId` | Those fields are ignored/rejected |
-| Signup/login/resend/forgot responses | No `password`, `refreshToken`, `verificationToken`, `resetToken` |
-| Missing/invalid bearer token on a protected route | `401`, not `200` |
-| Proxy request to `http://169.254.169.254/...` | `400`/`403`, no outbound request |
-| Proxy request to `http://localhost/...` | `400`/`403` |
-| Proxy request to a non-allowlisted HTTPS host | `400`/`403` |
-| Proxy request to an allowlisted HTTPS host | Proxied successfully |
-| Logout | Stored refresh token cleared/rotated; old token rejected |
-| Password reset/change | Existing sessions invalidated |
+| Test                                                              | Expected                                                         |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Unauthenticated `DELETE /auth/deleteUser`                         | `401`                                                            |
+| Authenticated user deleting another user                          | `403`                                                            |
+| Signup body with `isVerified: true`, `type: "google"`, `googleId` | Those fields are ignored/rejected                                |
+| Signup/login/resend/forgot responses                              | No `password`, `refreshToken`, `verificationToken`, `resetToken` |
+| Missing/invalid bearer token on a protected route                 | `401`, not `200`                                                 |
+| Proxy request to `http://169.254.169.254/...`                     | `400`/`403`, no outbound request                                 |
+| Proxy request to `http://localhost/...`                           | `400`/`403`                                                      |
+| Proxy request to a non-allowlisted HTTPS host                     | `400`/`403`                                                      |
+| Proxy request to an allowlisted HTTPS host                        | Proxied successfully                                             |
+| Logout                                                            | Stored refresh token cleared/rotated; old token rejected         |
+| Password reset/change                                             | Existing sessions invalidated                                    |
 
 ### Server P1 (`fix/server-p1`)
 

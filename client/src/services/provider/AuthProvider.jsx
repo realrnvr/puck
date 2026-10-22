@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
             try {
               const refreshResponse = await axiosInstance.get(
-                "/api/v1/auth/refreshToken"
+                "/api/v1/auth/refreshToken",
               );
 
               setToken(refreshResponse.data.accessToken);
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {

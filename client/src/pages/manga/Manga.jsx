@@ -328,7 +328,7 @@ const Manga = () => {
                           {val}
                         </p>
                       );
-                    }
+                    },
                   )
                 )}
                 {isStaticsError ? (
