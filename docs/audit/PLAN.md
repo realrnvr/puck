@@ -101,10 +101,12 @@
 - Branch: `fix/proxy-ssrf`
 - Scope:
   - SEC-04: allowlist MangaDex/MangaDex@Home hosts, require HTTPS, reject credentials/private/loopback/link-local hosts and non-standard ports.
-  - Cap redirects, response size, and time; validate upstream content type; return a controlled error.
+  - Validate chapter image quality/hash/filename, cap redirects, response size, and time, validate redirect targets, and allow only raster image content types.
 - Tests:
-  - Reject `http://169.254.169.254`, `localhost`, and non-allowlisted hosts without calling the upstream.
-  - Accept an allowlisted HTTPS host and stream the image.
+  - Reject `http://169.254.169.254`, `localhost`, non-allowlisted hosts, lookalikes, and credentialed URLs without calling the upstream.
+  - Reject invalid redirect targets inside `beforeRedirect`.
+  - Accept an allowlisted HTTPS host and stream a raster image.
+  - Reject oversized responses, non-image responses, and SVG.
 - Rollback: revert the proxy change; no schema changes.
 
 ### PR 6 — Server correctness P1
@@ -284,7 +286,7 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 | 3   | `style/format-baseline`     | Done        |
 | 4   | `test/harness`              | Done        |
 | 5a  | `fix/auth-p0`               | In progress |
-| 5b  | `fix/proxy-ssrf`            | Planned     |
+| 5b  | `fix/proxy-ssrf`            | In progress |
 | 6   | `fix/server-p1`             | Planned     |
 | 7   | `fix/client-p1`             | Planned     |
 | 8   | `refactor/structure-naming` | Planned     |

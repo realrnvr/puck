@@ -7,6 +7,21 @@ import { dexAxios } from "../services/dexAxios.js";
 import { coverAxios } from "../services/coverAxios.js";
 import Manga from "../models/manga.js";
 import axios from "axios";
+import {
+  assertAllowedProxyUrl,
+  MAX_PROXY_BYTES,
+  MAX_PROXY_REDIRECTS,
+  PROXY_TIMEOUT_MS,
+} from "../utils/proxyUrl.js";
+
+const ALLOWED_PROXY_IMAGE_TYPES = new Set([
+  "image/avif",
+  "image/gif",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+]);
 
 export const mangas = async (req, res) => {
   const limit = Number(req.query.limit) || 10;
@@ -321,31 +336,111 @@ export const chapterImage = async (req, res) => {
 };
 
 export const proxyChapterImage = async (req, res) => {
-  let { baseUrl, quality, hash, val } = req.params;
+  const { baseUrl, quality, hash, val } = req.params;
 
-  baseUrl = decodeURIComponent(baseUrl);
+  let decodedBaseUrl;
 
-  const response = await axios.get(`${baseUrl}/${quality}/${hash}/${val}`, {
+  try {
+    decodedBaseUrl = decodeURIComponent(baseUrl);
+  } catch {
+    throw new BadRequestError("Invalid image URL.");
+  }
+
+  if (!["data", "data-saver"].includes(quality)) {
+    throw new BadRequestError("Invalid image quality.");
+  }
+
+  if (
+    !/^[a-zA-Z0-9_-]+$/.test(hash) ||
+    !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(val) ||
+    val.includes("..")
+  ) {
+    throw new BadRequestError("Invalid image path.");
+  }
+
+  const base = assertAllowedProxyUrl(decodedBaseUrl);
+  if (base.search || base.hash) {
+    throw new BadRequestError("Invalid image base URL.");
+  }
+
+  const targetUrl = assertAllowedProxyUrl(
+    `${base.origin}${base.pathname.replace(/\/+$/, "")}/${quality}/${hash}/${val}`,
+  );
+
+  const response = await axios.get(targetUrl.toString(), {
     responseType: "stream",
+    timeout: PROXY_TIMEOUT_MS,
+    maxRedirects: MAX_PROXY_REDIRECTS,
+    maxContentLength: MAX_PROXY_BYTES,
+    maxBodyLength: MAX_PROXY_BYTES,
+    beforeRedirect: (options) => {
+      const redirectUrl =
+        options.href ??
+        `${options.protocol ?? ""}//${options.host ?? ""}${options.path ?? ""}`;
+      assertAllowedProxyUrl(redirectUrl);
+    },
   });
-  res.setHeader("Content-Type", "image/jpeg");
+
+  const contentType = String(response.headers?.["content-type"] ?? "");
+  const mimeType = contentType.split(";")[0].trim().toLowerCase();
+
+  if (!ALLOWED_PROXY_IMAGE_TYPES.has(mimeType)) {
+    response.data.destroy();
+    return res.status(StatusCodes.BAD_GATEWAY).json({
+      message: "Upstream did not return a supported image.",
+    });
+  }
+
+  const contentLength = Number(response.headers?.["content-length"]);
+
+  if (Number.isFinite(contentLength) && contentLength > MAX_PROXY_BYTES) {
+    response.data.destroy();
+    return res.status(StatusCodes.BAD_GATEWAY).json({
+      message: "Image is too large.",
+    });
+  }
+
+  res.setHeader("Content-Type", contentType);
+  res.setHeader("Cache-Control", "public, max-age=86400, immutable");
   res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, User-Agent",
   );
 
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
+  if (Number.isFinite(contentLength) && contentLength >= 0) {
+    res.setHeader("Content-Length", contentLength);
   }
 
-  response.data.pipe(res);
+  let receivedBytes = 0;
 
-  response.data.on("end", () => {
-    res.end();
+  response.data.on("data", (chunk) => {
+    receivedBytes += chunk.length;
+
+    if (receivedBytes > MAX_PROXY_BYTES) {
+      response.data.destroy(new Error("Image is too large."));
+    }
   });
+
+  response.data.on("error", () => {
+    if (!res.headersSent) {
+      res.status(StatusCodes.BAD_GATEWAY).json({
+        message: "Failed to fetch image.",
+      });
+      return;
+    }
+
+    res.destroy();
+  });
+
+  res.on("close", () => {
+    if (!response.data.destroyed) {
+      response.data.destroy();
+    }
+  });
+
+  response.data.pipe(res);
 };
 
 export const search = async (req, res) => {
