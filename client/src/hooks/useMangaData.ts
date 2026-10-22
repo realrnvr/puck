@@ -1,12 +1,20 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
+import type { AxiosResponse } from "axios";
+import type { MangaCoverResponse } from "../types/api";
+import type { MangaData } from "../types/manga";
 import {
   fetchStatics,
   fetchAuthor,
   fetchMangaCover,
 } from "../services/query/query";
 
-export const useMangaData = ({ mangaId, authorId }) => {
+interface MangaDataArgs {
+  mangaId: string;
+  authorId: string;
+}
+
+export const useMangaData = ({ mangaId, authorId }: MangaDataArgs) => {
   const queryClient = useQueryClient();
 
   const {
@@ -37,10 +45,9 @@ export const useMangaData = ({ mangaId, authorId }) => {
     queryKey: ["coverImg", { mangaId, volume: "desc", width: 256 }],
     queryFn: () => fetchMangaCover({ mangaId, volume: "desc", width: 256 }),
     initialData: () => {
-      const state = queryClient.getQueryData([
-        "manga-cover",
-        { mangaId, volume: "desc", width: 256 },
-      ]);
+      const state = queryClient.getQueryData<AxiosResponse<MangaCoverResponse>>(
+        ["manga-cover", { mangaId, volume: "desc", width: 256 }],
+      );
       return state;
     },
     initialDataUpdatedAt: () => {
@@ -54,11 +61,11 @@ export const useMangaData = ({ mangaId, authorId }) => {
   const manga = statics?.data?.data?.attributes?.description?.en;
   const author = authorData?.data?.data?.attributes?.biography?.en;
 
-  const mangaData = useMemo(
+  const mangaData = useMemo<MangaData>(
     () => ({
       mangaTitle: statics?.data?.data?.attributes?.title?.en,
-      mangaId: mangaId,
-      authorId: authorId,
+      mangaId,
+      authorId,
       coverUrl: coverImg?.data?.coverImgUrl,
     }),
     [

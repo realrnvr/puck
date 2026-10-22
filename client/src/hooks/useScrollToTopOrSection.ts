@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 
 const instantScrollPaths = ["/mangas"];
 
-const useScrollToTopOrSection = () => {
+const useScrollToTopOrSection = (): void => {
   const { pathname, hash } = useLocation();
-  const elRef = useRef(null);
+  const elRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     window.history.scrollRestoration = "manual";
@@ -13,7 +13,7 @@ const useScrollToTopOrSection = () => {
     const reduceMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     )?.matches;
-    const scrollBehavior = reduceMotion
+    const scrollBehavior: ScrollBehavior = reduceMotion
       ? "auto"
       : instantScrollPaths.includes(pathname)
         ? "instant"

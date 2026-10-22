@@ -25,6 +25,12 @@ export interface FavouritesPage {
   length: number;
 }
 
+export interface FavouritesCachePage {
+  client: FavouriteManga[];
+  nextCursor?: string | null;
+  length?: number;
+}
+
 export interface MangaCoverResponse {
   coverImgUrl: string;
 }

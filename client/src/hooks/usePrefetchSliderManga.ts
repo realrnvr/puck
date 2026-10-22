@@ -2,7 +2,15 @@ import { useEffect } from "react";
 import { fetchMangaCover, fetchRandomManga } from "../services/query/query";
 import { useQueryClient } from "@tanstack/react-query";
 
-export const usePrefetchSliderManga = ({ inView, LIMIT }) => {
+interface PrefetchSliderArgs {
+  inView: boolean;
+  LIMIT: number;
+}
+
+export const usePrefetchSliderManga = ({
+  inView,
+  LIMIT,
+}: PrefetchSliderArgs): void => {
   const queryClient = useQueryClient();
   const sliderMangaCache = queryClient.getQueryData([
     "random-manga-slider",

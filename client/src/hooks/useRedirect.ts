@@ -4,15 +4,19 @@ import { useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../services/api/axios";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../helper/getErrorMessage";
 
-export const useRedirect = () => {
+export const useRedirect = (): void => {
   const auth = useAuth();
   const navigate = useNavigate();
 
   const isMutating = useRef(false);
 
   const { mutate: googleMutate } = useMutation({
-    mutationFn: (code) => axiosInstance.post("/api/v1/auth/google", { code }),
+    mutationFn: (code: string) =>
+      axiosInstance.post<{ accessToken?: string }>("/api/v1/auth/google", {
+        code,
+      }),
     onSuccess: (data) => {
       auth.setToken(data.data?.accessToken);
       toast.success("hello :)");
@@ -20,7 +24,11 @@ export const useRedirect = () => {
       isMutating.current = false;
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      const message = getErrorMessage(error, "Something went wrong");
+
+      if (message) {
+        toast.error(message);
+      }
       navigate("/login", { replace: true });
       isMutating.current = false;
     },

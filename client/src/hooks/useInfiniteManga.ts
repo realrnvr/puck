@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { fetchMangas } from "../services/query/query";
 
-export const useInfiniteManga = (LIMIT) => {
+export const useInfiniteManga = (LIMIT: number) => {
   const {
     data,
     fetchNextPage,
