@@ -3,6 +3,7 @@ import { NotFoundError } from "../errors/notFoundError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import Client from "../models/client.js";
 import User from "../models/auth.js";
+import { clearRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 
 export const favourite = async (req, res) => {
   const {
@@ -115,7 +116,7 @@ export const updatePassword = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({ _id: userId }).select("+password");
   if (!user) {
     throw new NotFoundError("user does not exists");
   }
@@ -132,7 +133,9 @@ export const updatePassword = async (req, res) => {
   }
 
   user.password = newPassword;
+  user.tokenVersion = (user.tokenVersion ?? 0) + 1;
   await user.save();
+  clearRefreshTokenCookie(res);
 
   res.status(StatusCodes.OK).json({ message: "password changed!" });
 };

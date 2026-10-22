@@ -18,10 +18,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
+import helmet from "helmet";
 import "express-async-errors";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware.js";
 import { notFound } from "./middleware/notFound.js";
 import { connectDB } from "./connectDB/connectDB.js";
+import { validateEnv } from "./config/validateEnv.js";
 import { auth } from "./middleware/authorization.js";
 import { redisClient } from "./config/redisClient.js";
 import { sendNewsLetter } from "./services/newsletter.js";
@@ -38,7 +40,13 @@ import newsletterRouter from "./router/newsletter.js";
 export const createApp = () => {
   const app = express();
 
+  app.disable("x-powered-by");
   app.set("trust proxy", 1);
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
   app.use(
     cors({
       origin: process.env.CLIENT_APP_URL,
@@ -79,6 +87,7 @@ const PORT = process.env.PORT || 3000;
 
 export const startServer = async () => {
   try {
+    validateEnv();
     await connectDB(process.env.MONGO_URI);
     await redisClient.connect();
     return app.listen(PORT, () => {

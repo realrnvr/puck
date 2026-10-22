@@ -74,26 +74,38 @@
   - Tests do not require local MongoDB, Redis, SMTP, or Google credentials.
 - Rollback: remove test configs and dev dependencies.
 
-### PR 5 — Security P0
+### PR 5a — Auth and session security P0
 
-- Branch: `fix/security-p0`
+- Branch: `fix/auth-p0`
 - Scope:
-  - SEC-01: remove or protect `deleteUser`; require auth and ownership/admin check.
-  - SEC-02/SEC-07: stop returning user documents; add serializers; `select: false` for sensitive fields.
+  - SEC-01: require auth for `deleteUser`; delete only `req.user.userId`.
+  - SEC-02/SEC-07: add a public user serializer; stop returning user documents; `select: false` for passwords and tokens.
   - SEC-03: whitelist signup fields with Zod; reject unknown fields.
-  - SEC-04: replace arbitrary proxy fetch with an allowlist of MangaDex/CDN hosts, HTTPS only, size/time limits, and redirect checks.
-  - SEC-05: return real HTTP 401/403 from auth middleware; update client handling.
-  - SEC-06: revoke/rotate refresh tokens on logout, password change, and password reset.
-  - Add Helmet, explicit cookie options, and startup validation for required secrets.
+  - SEC-05: return real HTTP 401 from auth middleware; update the client interceptor.
+  - SEC-06: add `tokenVersion`; revoke refresh tokens on logout, password change, and password reset.
+  - SEC-09: require auth for `loginGoogleAuthTwo`, bind it to `req.user.userId`, and stop `loginAuthOne` from sending Google users to the unauthenticated page.
+  - Add Helmet, environment-aware cookie options, and startup validation for required secrets.
 - Tests:
-  - `DELETE /auth/deleteUser` unauthenticated -> 401; other user's id -> 403; own id -> success (or route removed).
-  - Signup with `isVerified: true`/`type: "google"` does not persist those fields.
-  - Login/signup/forgot-password responses never contain `password`, `refreshToken`, `verificationToken`, or `resetToken`.
-  - Auth middleware returns 401/403 status codes.
-  - Proxy rejects `http://169.254.169.254`, `localhost`, and non-allowlisted hosts; accepts allowlisted HTTPS host.
-  - Logout invalidates the stored refresh token; old refresh token is rejected.
-- Acceptance: all P0 tests fail before the fix and pass after; no secrets in logs/responses.
-- Rollback: each fix is a separate commit; revert the specific commit if a regression appears.
+  - `DELETE /auth/deleteUser` unauthenticated -> 401; authenticated user deletes only self.
+  - Signup with `isVerified: true`/`type: "google"` is rejected and does not persist.
+  - Login/signup/forgot/resend responses never contain `password`, `refreshToken`, `verificationToken`, or `resetToken`.
+  - Auth middleware returns 401 for missing/invalid tokens.
+  - Logout, password change, and password reset invalidate the old refresh token.
+  - `loginGoogleAuthTwo` rejects unauthenticated callers and non-Google accounts.
+  - Helmet header present; cookie is `HttpOnly`, `SameSite=Strict`, and not `Secure` outside production.
+- Acceptance: all P0 tests fail before the fix and pass after; no secrets in responses.
+- Rollback: revert by commit.
+
+### PR 5b — Proxy SSRF P0
+
+- Branch: `fix/proxy-ssrf`
+- Scope:
+  - SEC-04: allowlist MangaDex/MangaDex@Home hosts, require HTTPS, reject credentials/private/loopback/link-local hosts and non-standard ports.
+  - Cap redirects, response size, and time; validate upstream content type; return a controlled error.
+- Tests:
+  - Reject `http://169.254.169.254`, `localhost`, and non-allowlisted hosts without calling the upstream.
+  - Accept an allowlisted HTTPS host and stream the image.
+- Rollback: revert the proxy change; no schema changes.
 
 ### PR 6 — Server correctness P1
 
@@ -210,7 +222,8 @@
 PR1 baseline
   -> PR2 tooling -> PR3 formatting
   -> PR4 test harness
-       -> PR5 security P0
+       -> PR5a auth P0
+            -> PR5b proxy SSRF
        -> PR6 server P1
        -> PR7 client P1
             -> PR8 structure/naming
@@ -266,11 +279,12 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 
 | PR  | Branch                      | Status      |
 | --- | --------------------------- | ----------- |
-| 1   | `audit/phase-0-baseline`    | In progress |
-| 2   | `chore/quality-tooling`     | Planned     |
-| 3   | `style/format-baseline`     | Planned     |
-| 4   | `test/harness`              | Planned     |
-| 5   | `fix/security-p0`           | Planned     |
+| 1   | `audit/phase-0-baseline`    | Done        |
+| 2   | `chore/quality-tooling`     | Done        |
+| 3   | `style/format-baseline`     | Done        |
+| 4   | `test/harness`              | Done        |
+| 5a  | `fix/auth-p0`               | In progress |
+| 5b  | `fix/proxy-ssrf`            | Planned     |
 | 6   | `fix/server-p1`             | Planned     |
 | 7   | `fix/client-p1`             | Planned     |
 | 8   | `refactor/structure-naming` | Planned     |

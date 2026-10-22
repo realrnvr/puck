@@ -1,21 +1,106 @@
 import User from "../models/auth.js";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import { z } from "zod";
 import { UnauthorziedError } from "../errors/unauthorizedError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import { StatusCodes } from "http-status-codes";
 import { mailer } from "../services/mailer.js";
 import { revokeGoogleAccess } from "../utils/revokeGoogleAccess.js";
 import { NotFoundError } from "../errors/notFoundError.js";
-import { setRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
+import {
+  clearRefreshTokenCookie,
+  setRefreshTokenCookie,
+} from "../helper/setRefreshTokenCookie.js";
 import { mailTemplate } from "../utils/mailTemplate.js";
 import { oauthClient } from "../config/oauthClient.js";
+import { toPublicUser } from "../utils/publicUser.js";
+
+const passwordSchema = z
+  .string()
+  .min(8, "At least 8 characters")
+  .regex(/[A-Z]/, "At least one Uppercase letter")
+  .regex(/[a-z]/, "At least one Lowercase letter")
+  .regex(/\d/, "At least one Digit")
+  .regex(/[\W_]/, "At least one Special character");
+
+const SignupSchema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .min(4, "At least 4 characters")
+      .max(50, "Cannot exceed 50 characters")
+      .regex(/^[a-zA-Z0-9._]+$/, {
+        message: "Only letters, numbers, dots, and underscores allowed.",
+      })
+      .refine((value) => !value.startsWith(".") && !value.startsWith("_"), {
+        message: "Cannot start with a dot or underscore",
+      })
+      .refine((value) => !value.endsWith(".") && !value.endsWith("_"), {
+        message: "Cannot end with a dot or underscore",
+      }),
+    email: z.string().trim().email("Valid email."),
+    password: passwordSchema,
+  })
+  .strict();
+
+const GooglePasswordSchema = z
+  .object({
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
+
+const ResetPasswordSchema = z
+  .object({
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
+
+const firstValidationError = (result, fallback) => {
+  const issue = result.error.issues[0];
+  return new BadRequestError(
+    issue?.message ?? fallback,
+    issue?.path?.[0] ?? null,
+  );
+};
+
+const rejectRefreshToken = (res) => {
+  clearRefreshTokenCookie(res);
+
+  return res.status(StatusCodes.UNAUTHORIZED).json({
+    message: "Session expired please login again!",
+    type: "refresh-token-expired",
+  });
+};
+
+const bumpTokenVersion = (user) => {
+  user.tokenVersion = (user.tokenVersion ?? 0) + 1;
+};
+
+const createSession = (res, user) => {
+  const accessToken = user.createAccessToken();
+  const refreshToken = user.createRefreshToken();
+  setRefreshTokenCookie(res, refreshToken);
+
+  return accessToken;
+};
 
 export const signup = async (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    throw new BadRequestError("Please provide email");
+  const parsed = SignupSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw firstValidationError(parsed, "Invalid signup details.");
   }
+
+  const { username, email, password } = parsed.data;
 
   const existingUser = await User.findOne({ email });
   if (existingUser && !existingUser.isVerified) {
@@ -26,13 +111,12 @@ export const signup = async (req, res) => {
     });
   }
 
-  const user = await User.create({ ...req.body });
+  const user = await User.create({ username, email, password });
 
   const verificationToken = user.verificationToken;
-
   const verificationLink = `${process.env.CLIENT_APP_URL}/verified/${verificationToken}`;
 
-  mailer({
+  await mailer({
     to: user.email,
     subject: "Email Address Verification",
     html: mailTemplate({
@@ -42,7 +126,9 @@ export const signup = async (req, res) => {
     }),
   });
 
-  return res.status(StatusCodes.CREATED).json({ user });
+  return res
+    .status(StatusCodes.CREATED)
+    .json({ user: toPublicUser(user), message: "Verification email sent." });
 };
 
 export const verification = async (req, res) => {
@@ -56,7 +142,13 @@ export const verification = async (req, res) => {
     process.env.JWT_VERIFICATION_SECRET,
   );
 
-  const user = await User.findOne({ email: payload.email });
+  if (!payload?.email) {
+    throw new UnauthorziedError("Invalid verification token.");
+  }
+
+  const user = await User.findOne({ email: payload.email }).select(
+    "+verificationToken",
+  );
   if (!user) {
     throw new NotFoundError("User is not Found.");
   }
@@ -67,15 +159,15 @@ export const verification = async (req, res) => {
   if (verificationId !== user.verificationToken) {
     throw new UnauthorziedError("Use latest sent verification link.");
   }
+
   user.isVerified = true;
+  user.verificationToken = undefined;
   await user.save();
 
-  const accessToken = user.createAccessToken();
-  const refreshToken = user.createRefreshToken();
-  setRefreshTokenCookie(res, refreshToken);
+  const accessToken = createSession(res, user);
 
   return res.status(StatusCodes.OK).json({
-    user: { username: user.username, email: user.email },
+    user: toPublicUser(user),
     accessToken,
   });
 };
@@ -110,9 +202,9 @@ export const resendVerification = async (req, res) => {
     }),
   });
 
-  return res
-    .status(StatusCodes.OK)
-    .json({ user, message: "New verification link sent to your email." });
+  return res.status(StatusCodes.OK).json({
+    message: "New verification link sent to your email.",
+  });
 };
 
 export const loginAuthOne = async (req, res) => {
@@ -121,7 +213,7 @@ export const loginAuthOne = async (req, res) => {
     throw new BadRequestError("Please Provide a email.");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     throw new NotFoundError("no account found with this email.");
   }
@@ -135,42 +227,45 @@ export const loginAuthOne = async (req, res) => {
   }
 
   if (!user.password) {
-    return res
-      .status(StatusCodes.OK)
-      .json({ user, navigate: "loginGoogleAuth" });
+    return res.status(StatusCodes.CONFLICT).json({
+      type: "google-account",
+      message:
+        "This account uses Google sign-in. Continue with Google or reset your password via email.",
+    });
   }
 
-  return res.status(StatusCodes.OK).json({ user, navigate: "loginTwo" });
+  return res.status(StatusCodes.OK).json({
+    user: toPublicUser(user),
+    navigate: "loginTwo",
+  });
 };
 
 export const loginGoogleAuthTwo = async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
-  if (!email || !password || !confirmPassword) {
-    throw new BadRequestError("please provide credentials");
+  const parsed = GooglePasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw firstValidationError(parsed, "Invalid password details.");
   }
 
-  if (password !== confirmPassword) {
-    throw new BadRequestError("passwords should match");
-  }
-
-  const user = await User.findOne({ email });
+  const user = await User.findById(req.user.userId).select("+password");
   if (!user) {
-    throw new NotFoundError("no account found with this email.");
+    throw new NotFoundError("no account found for this session.");
   }
-  if (!user.isVerified) {
-    throw new UnauthorziedError("please verify your email.");
+
+  if (user.type === "normal" || user.password) {
+    throw new BadRequestError(
+      "This account already has a password or is not a Google account.",
+      "password",
+    );
   }
 
   user.type = "both";
-  user.password = password;
+  user.password = parsed.data.password;
   await user.save();
 
-  const accessToken = user.createAccessToken();
-  const refreshToken = user.createRefreshToken();
-  setRefreshTokenCookie(res, refreshToken);
+  const accessToken = createSession(res, user);
 
   return res.status(StatusCodes.OK).json({
-    user: { username: user.username, email: user.email },
+    user: toPublicUser(user),
     accessToken,
   });
 };
@@ -181,12 +276,18 @@ export const loginAuthTwo = async (req, res) => {
     throw new BadRequestError("please provide credentials");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     throw new NotFoundError("no account found with this email.");
   }
   if (!user.isVerified) {
     throw new UnauthorziedError("please verify your email.");
+  }
+  if (!user.password) {
+    throw new BadRequestError(
+      "This account uses Google sign-in.",
+      "google-account",
+    );
   }
 
   const isCorrect = await user.verifyPassword(password);
@@ -194,44 +295,41 @@ export const loginAuthTwo = async (req, res) => {
     throw new UnauthorziedError("password is incorrect.");
   }
 
-  const accessToken = user.createAccessToken();
-  const refreshToken = user.createRefreshToken();
-  setRefreshTokenCookie(res, refreshToken);
+  const accessToken = createSession(res, user);
 
   return res.status(StatusCodes.OK).json({
-    user: { username: user.username, email: user.email },
+    user: toPublicUser(user),
     accessToken,
   });
 };
 
 export const refreshToken = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    return res.status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED).json({
-      message: "Session expired please login again!",
-      type: "refresh-token-expired",
-    });
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    return rejectRefreshToken(res);
   }
 
   let payload;
 
   try {
-    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-  } catch (error) {
-    return res
-      .clearCookie("refreshToken")
-      .status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED)
-      .json({
-        message: "Session expired please login again!",
-        type: "refresh-token-expired",
-      });
+    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch {
+    return rejectRefreshToken(res);
   }
 
-  const { email } = payload;
+  if (!payload?.email) {
+    return rejectRefreshToken(res);
+  }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: payload.email }).select(
+    "+refreshToken",
+  );
   if (!user) {
-    throw new UnauthorziedError("User doesnt exists!");
+    return rejectRefreshToken(res);
+  }
+
+  if ((payload.tokenVersion ?? 0) !== (user.tokenVersion ?? 0)) {
+    return rejectRefreshToken(res);
   }
 
   if (!user.refreshToken) {
@@ -239,37 +337,51 @@ export const refreshToken = async (req, res) => {
     return res.status(StatusCodes.OK).json({ accessToken });
   }
 
-  const response = await axios.post("https://oauth2.googleapis.com/token", {
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    refresh_token: user.refreshToken,
-    grant_type: "refresh_token",
-  });
+  try {
+    const response = await axios.post("https://oauth2.googleapis.com/token", {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      refresh_token: user.refreshToken,
+      grant_type: "refresh_token",
+    });
 
-  const accessToken = user.createAccessToken();
-  const googleAccessToken = response.data.access_token;
+    const accessToken = user.createAccessToken();
+    const googleAccessToken = response.data.access_token;
 
-  return res.status(StatusCodes.OK).json({ accessToken, googleAccessToken });
+    return res.status(StatusCodes.OK).json({ accessToken, googleAccessToken });
+  } catch {
+    return rejectRefreshToken(res);
+  }
 };
 
 export const me = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
+  const token = req.cookies.refreshToken;
+  if (!token) {
     return res.json({ isAuthenticated: false });
   }
 
   let payload;
 
   try {
-    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-  } catch (error) {
+    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch {
+    clearRefreshTokenCookie(res);
     return res.json({ isAuthenticated: false });
   }
 
-  const { email } = payload;
+  if (!payload?.email) {
+    clearRefreshTokenCookie(res);
+    return res.json({ isAuthenticated: false });
+  }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: payload.email });
   if (!user) {
+    clearRefreshTokenCookie(res);
+    return res.json({ isAuthenticated: false });
+  }
+
+  if ((payload.tokenVersion ?? 0) !== (user.tokenVersion ?? 0)) {
+    clearRefreshTokenCookie(res);
     return res.json({ isAuthenticated: false });
   }
 
@@ -280,20 +392,27 @@ export const me = async (req, res) => {
     .json({ isAuthenticated: true, accessToken });
 };
 
-export const logout = (req, res) => {
-  const { refreshToken } = req.cookies;
+export const logout = async (req, res) => {
+  const token = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "No refresh token found. Already logged out?" });
+  if (token) {
+    try {
+      const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+      if (payload?.email) {
+        const user = await User.findOne({ email: payload.email });
+
+        if (user) {
+          bumpTokenVersion(user);
+          await user.save();
+        }
+      }
+    } catch {
+      // An invalid or expired token is already useless; still clear the cookie.
+    }
   }
 
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: true,
-    SameSite: "Strict",
-  });
+  clearRefreshTokenCookie(res);
 
   return res.status(StatusCodes.OK).json({ message: "Logout successful!" });
 };
@@ -325,18 +444,29 @@ export const forgotPassword = async (req, res) => {
     }),
   });
 
-  return res.status(StatusCodes.OK).json({ user, message: "Reset link sent!" });
+  return res.status(StatusCodes.OK).json({ message: "Reset link sent!" });
 };
 
 export const resetPassword = async (req, res) => {
   const {
     params: { verificationId },
-    body: { newPassword },
+    body,
   } = req;
+
+  const parsed = ResetPasswordSchema.safeParse(body);
+  if (!parsed.success) {
+    throw firstValidationError(parsed, "Invalid password details.");
+  }
 
   const payload = jwt.verify(verificationId, process.env.JWT_RESET_SECRET);
 
-  const user = await User.findOne({ email: payload.email });
+  if (!payload?.email) {
+    throw new UnauthorziedError("Invalid reset token.");
+  }
+
+  const user = await User.findOne({ email: payload.email }).select(
+    "+resetToken",
+  );
   if (!user) {
     throw new NotFoundError("user does not exist");
   }
@@ -345,8 +475,14 @@ export const resetPassword = async (req, res) => {
     throw new UnauthorziedError("Use the latest link shared");
   }
 
-  user.password = newPassword;
+  user.password = parsed.data.newPassword;
+  user.resetToken = undefined;
+  if (user.googleId) {
+    user.type = "both";
+  }
+  bumpTokenVersion(user);
   await user.save();
+  clearRefreshTokenCookie(res);
 
   return res.status(StatusCodes.OK).json({ message: "Password updated." });
 };
@@ -381,9 +517,9 @@ export const resendPasswordVerification = async (req, res) => {
     }),
   });
 
-  return res
-    .status(StatusCodes.OK)
-    .json({ user, message: "New verification link sent to your email." });
+  return res.status(StatusCodes.OK).json({
+    message: "New verification link sent to your email.",
+  });
 };
 
 export const google = async (req, res) => {
@@ -411,7 +547,7 @@ export const google = async (req, res) => {
 
   const payload = ticket.getPayload();
 
-  if (!payload) {
+  if (!payload?.email || payload.email_verified === false) {
     throw new BadRequestError("User credentials cannot be fetched");
   }
 
@@ -419,10 +555,9 @@ export const google = async (req, res) => {
   const googleId = payload.sub;
   const username = payload.name;
 
-  let user = await User.findOne({ email });
+  let user = await User.findOne({ email }).select("+refreshToken");
 
   if (!user) {
-    // User does not exist, create a new user
     user = new User({
       email,
       username,
@@ -433,12 +568,10 @@ export const google = async (req, res) => {
     });
     await user.save();
   } else {
-    // User exists
     if (!user.isVerified) {
       user.isVerified = true;
     }
 
-    // Update refresh token if not already stored
     if (!user.refreshToken && refresh_token) {
       user.refreshToken = refresh_token;
     }
@@ -447,42 +580,34 @@ export const google = async (req, res) => {
       user.type = "both";
     }
 
-    // Save changes only if necessary
     if (user.isModified()) {
       await user.save();
     }
   }
 
-  // Generate tokens
-  const accessToken = user.createAccessToken();
-  const refreshToken = user.createRefreshToken();
-  setRefreshTokenCookie(res, refreshToken);
+  const accessToken = createSession(res, user);
 
-  // Return the response
   return res.status(StatusCodes.OK).json({
-    user: { username: user.username, email: user.email },
+    user: toPublicUser(user),
     accessToken,
   });
 };
 
-// dev only
 export const deleteUser = async (req, res) => {
-  const { userId } = req.body;
-  if (!userId) {
-    throw new BadRequestError("Please provide user id");
-  }
+  const { userId } = req.user;
 
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("+refreshToken");
   if (!user) {
     throw new NotFoundError("User not found");
   }
 
-  // Revoke Google access if refreshToken exists
   if (user.googleId && user.refreshToken) {
     await revokeGoogleAccess(user.refreshToken);
   }
 
   await User.deleteOne({ _id: userId });
+  clearRefreshTokenCookie(res);
+
   return res
     .status(StatusCodes.OK)
     .json({ message: "User deleted successfully" });

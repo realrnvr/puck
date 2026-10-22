@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 
 export const errorHandlerMiddleware = (err, req, res, next) => {
   let errObj = {
-    type: null,
+    type: err.type || null,
     message: err.message || "Something Went Wrong, Please try Again later",
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
   };
@@ -37,13 +37,13 @@ export const errorHandlerMiddleware = (err, req, res, next) => {
   if (err.name === "TokenExpiredError") {
     errObj.type = "jwt";
     errObj.message = "Link has been expired.";
-    errObj.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+    errObj.statusCode = StatusCodes.BAD_REQUEST;
   }
 
   if (err.name === "JsonWebTokenError") {
     errObj.type = "jwt";
     errObj.message = "Invalid Verification Token";
-    errObj.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+    errObj.statusCode = StatusCodes.BAD_REQUEST;
   }
 
   // mangadex api error

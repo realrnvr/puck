@@ -32,7 +32,12 @@ export const AuthProvider = ({ children }) => {
     const fetchMe = async () => {
       try {
         const response = await axiosInstance.post("/api/v1/auth/me");
-        setToken(response.data.accessToken);
+
+        if (response.data?.isAuthenticated && response.data.accessToken) {
+          setToken(response.data.accessToken);
+        } else {
+          setToken(null);
+        }
       } catch (error) {
         toast.error(error?.response?.data?.message);
         setToken(null);
@@ -60,38 +65,41 @@ export const AuthProvider = ({ children }) => {
 
   useLayoutEffect(() => {
     const refreshInterceptor = axiosInstance.interceptors.response.use(
-      async (response) => {
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        const isRefreshRequest =
+          originalRequest?.url?.includes("/api/v1/auth/refreshToken") ||
+          originalRequest?.url?.includes("/api/v1/auth/me");
+        const hadAccessToken = Boolean(originalRequest?.headers?.Authorization);
+
         if (
-          response.data.statusCode === 403 &&
-          response.data.message === "Forbidden"
+          error.response?.status === 401 &&
+          originalRequest &&
+          !originalRequest._retry &&
+          !isRefreshRequest &&
+          hadAccessToken
         ) {
-          const originalRequest = response.config;
+          originalRequest._retry = true;
 
-          if (!originalRequest._retry) {
-            originalRequest._retry = true;
+          try {
+            const refreshResponse = await axiosInstance.get(
+              "/api/v1/auth/refreshToken",
+            );
+            const nextAccessToken = refreshResponse.data.accessToken;
 
-            try {
-              const refreshResponse = await axiosInstance.get(
-                "/api/v1/auth/refreshToken",
-              );
+            setToken(nextAccessToken);
+            originalRequest.headers = originalRequest.headers ?? {};
+            originalRequest.headers.Authorization = `Bearer ${nextAccessToken}`;
 
-              setToken(refreshResponse.data.accessToken);
-
-              originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
-              return axiosInstance(originalRequest);
-            } catch (error) {
-              setToken(null);
-              return Promise.reject(error);
-            }
+            return axiosInstance(originalRequest);
+          } catch (refreshError) {
+            queryClient.removeQueries({ queryKey: ["user"] });
+            setToken(null);
+            return Promise.reject(refreshError);
           }
-
-          setToken(null);
-          return Promise.reject(response);
         }
 
-        return response;
-      },
-      (error) => {
         return Promise.reject(error);
       },
     );
@@ -99,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       axiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, []);
+  }, [queryClient]);
 
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
