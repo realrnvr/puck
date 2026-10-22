@@ -1,5 +1,7 @@
 # TypeScript migration strategy
 
+> Current progress and local runbook: [`docs/audit/STATUS.md`](./audit/STATUS.md)
+
 ## Goal
 
 Move the client and server from JavaScript/JSX to TypeScript without a big-bang rewrite, while keeping the app shippable at every step.
