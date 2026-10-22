@@ -1,6 +1,15 @@
 import "./navigation-toast.css";
 import toast from "react-hot-toast";
-import PropTypes from "prop-types";
+
+interface NavigationToastProps {
+  email?: string;
+  navigate: (to: string) => void;
+  to: string;
+  toastId: string;
+  path: string;
+  message: string;
+  btnText: string;
+}
 
 const NavigationToast = ({
   email,
@@ -10,7 +19,7 @@ const NavigationToast = ({
   path,
   message,
   btnText,
-}) => {
+}: NavigationToastProps) => {
   return (
     <div className="v-toast__toaster">
       <p className="v-toast__t-description">{message}</p>
@@ -19,7 +28,7 @@ const NavigationToast = ({
           type="button"
           className="v-toast__t-verification-btn"
           onClick={() => {
-            localStorage.setItem(path, email);
+            localStorage.setItem(path, email ?? "");
             navigate(to);
             toast.dismiss(toastId);
           }}
@@ -46,16 +55,6 @@ const NavigationToast = ({
       </div>
     </div>
   );
-};
-
-NavigationToast.propTypes = {
-  email: PropTypes.string,
-  navigate: PropTypes.func,
-  to: PropTypes.string,
-  toastId: PropTypes.string,
-  path: PropTypes.string,
-  message: PropTypes.string,
-  btnText: PropTypes.string,
 };
 
 export default NavigationToast;

@@ -15,7 +15,7 @@ export const verify = ({
   data,
 }: {
   verificationId: string;
-  data: unknown;
+  data?: unknown;
 }): Promise<AxiosResponse<AuthResponse>> => {
   return axiosInstance.post(
     `/api/v1/auth/verification/${verificationId}`,

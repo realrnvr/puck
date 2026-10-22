@@ -1,13 +1,17 @@
 import "./login-google-auth.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { loginGoogleAuthData } from "../../../assets/data/loginGoogleAuthData";
-import { loginGoogleAuthSchema } from "../../../assets/schema/loginGoogleAuthSchema";
+import {
+  loginGoogleAuthSchema,
+  type LoginGoogleAuthFormValues,
+} from "../../../assets/schema/loginGoogleAuthSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginGoogleAuthTwo } from "../../../services/mutation/authMutation";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 
@@ -21,7 +25,7 @@ const LoginGoogleAuth = () => {
     register,
     watch,
     formState: { isValid, errors },
-  } = useForm({
+  } = useForm<LoginGoogleAuthFormValues>({
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -39,11 +43,11 @@ const LoginGoogleAuth = () => {
       navigate("/account");
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.message);
+      toast.error(getErrorMessage(error, "Something went wrong"));
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<LoginGoogleAuthFormValues> = (data) => {
     loginGoogleAuthTwoMutate(data);
   };
 

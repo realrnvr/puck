@@ -1,13 +1,17 @@
 import "./login-two.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { loginTwoData } from "../../../assets/data/loginTwoData";
-import { PasswordSchema } from "../../../assets/schema/PasswordSchema";
+import {
+  PasswordSchema,
+  type PasswordFormValues,
+} from "../../../assets/schema/PasswordSchema";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAuthTwo } from "../../../services/mutation/authMutation";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 
@@ -21,7 +25,7 @@ const LoginTwo = () => {
     watch,
     setError,
     formState: { isValid, errors },
-  } = useForm({
+  } = useForm<PasswordFormValues>({
     defaultValues: {
       password: "",
     },
@@ -38,13 +42,15 @@ const LoginTwo = () => {
       localStorage.removeItem("log-mail");
     },
     onError: (error) => {
-      setError("password", { message: error.response.data.message });
+      setError("password", {
+        message: getErrorMessage(error, "Something went wrong"),
+      });
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<PasswordFormValues> = (data) => {
     loginAuthTwoMutate({
-      email: localStorage.getItem("log-mail"),
+      email: localStorage.getItem("log-mail") ?? "",
       ...data,
     });
   };

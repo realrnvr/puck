@@ -1,12 +1,17 @@
 import "./login.css";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { formData } from "../../../assets/data/logInData";
-import { EmailSchema } from "../../../assets/schema/EmailSchema";
+import {
+  EmailSchema,
+  type EmailFormValues,
+} from "../../../assets/schema/EmailSchema";
 import { useMutation } from "@tanstack/react-query";
 import { loginAuthOne } from "../../../services/mutation/authMutation";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorResponseData } from "../../../helper/getErrorResponseData";
+import type { AuthResponse } from "../../../types/auth";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 import NavigationToast from "../navigationToast/NavigationToast";
@@ -21,7 +26,7 @@ const Login = () => {
     setFocus,
     watch,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<EmailFormValues>({
     defaultValues: {
       email: "",
     },
@@ -32,13 +37,14 @@ const Login = () => {
   const { mutate: loginAuthOneMutate, isPending } = useMutation({
     mutationFn: loginAuthOne,
     onSuccess: (data) => {
-      localStorage.setItem("log-mail", data?.data?.user?.email);
+      localStorage.setItem("log-mail", data?.data?.user?.email ?? "");
       if (data?.data?.navigate) {
         navigate(data.data.navigate);
       }
     },
     onError: (error) => {
-      const { type, message, email } = error?.response?.data ?? {};
+      const { type, message, email } =
+        getErrorResponseData<AuthResponse>(error) ?? {};
 
       if (!message) {
         toast.error("Something went wrong");
@@ -67,7 +73,7 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<EmailFormValues> = (data) => {
     loginAuthOneMutate(data);
   };
 

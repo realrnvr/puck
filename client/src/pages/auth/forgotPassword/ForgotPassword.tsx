@@ -1,13 +1,17 @@
 import "./forgot-password.css";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EmailSchema } from "../../../assets/schema/EmailSchema";
+import {
+  EmailSchema,
+  type EmailFormValues,
+} from "../../../assets/schema/EmailSchema";
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import Input from "../../../components/ui/input/Input";
 import toast from "react-hot-toast";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -17,7 +21,7 @@ const ForgotPassword = () => {
     handleSubmit,
     formState: { errors, isValid },
     watch,
-  } = useForm({
+  } = useForm<EmailFormValues>({
     defaultValues: {
       email: localStorage.getItem("log-mail") || "",
     },
@@ -33,20 +37,20 @@ const ForgotPassword = () => {
       });
     },
     onSuccess: (data, variables) => {
-      toast.success(data?.data?.message, {
+      toast.success(data?.data?.message ?? "", {
         id: "toast-verification",
       });
       localStorage.setItem("pass-mail", variables.email);
       navigate("/password-verification");
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.message ?? "Something went wrong", {
+      toast.error(getErrorMessage(error, "Something went wrong"), {
         id: "toast-verification",
       });
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<EmailFormValues> = (data) => {
     forgotPasswordMutate(data);
   };
 

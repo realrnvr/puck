@@ -1,12 +1,17 @@
 import "./signup.css";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { SignUpSchema } from "../../../assets/schema/SignUpSchema";
+import {
+  SignUpSchema,
+  type SignUpFormValues,
+} from "../../../assets/schema/SignUpSchema";
 import { formData } from "../../../assets/data/signUpData";
 import { signup } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorResponseData } from "../../../helper/getErrorResponseData";
+import type { AuthResponse } from "../../../types/auth";
 import Input from "../../ui/input/Input";
 import toast from "react-hot-toast";
 import Loader from "../../ui/loader/Loader";
@@ -20,7 +25,7 @@ const Signup = () => {
     watch,
     setFocus,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<SignUpFormValues>({
     defaultValues: {
       username: "",
       email: "",
@@ -35,11 +40,13 @@ const Signup = () => {
   const { mutate: signupMutate, isPending } = useMutation({
     mutationFn: signup,
     onSuccess: (data) => {
-      localStorage.setItem("sign-mail", data?.data?.user?.email);
+      localStorage.setItem("sign-mail", data?.data?.user?.email ?? "");
       navigate("/verification");
     },
     onError: (error) => {
-      const { type, message, email } = error.response.data;
+      const { type, message, email } =
+        getErrorResponseData<AuthResponse>(error) ?? {};
+
       switch (type) {
         case "username":
           setError("username", { message });
@@ -76,7 +83,7 @@ const Signup = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<SignUpFormValues> = (data) => {
     signupMutate(data);
   };
 

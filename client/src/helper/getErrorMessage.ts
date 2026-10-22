@@ -1,9 +1,11 @@
 import axios from "axios";
 
-export const getErrorMessage = (
+export function getErrorMessage(error: unknown): string | undefined;
+export function getErrorMessage(error: unknown, fallback: string): string;
+export function getErrorMessage(
   error: unknown,
   fallback?: string,
-): string | undefined => {
+): string | undefined {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { message?: unknown } | undefined;
     const message = data?.message;
@@ -14,4 +16,4 @@ export const getErrorMessage = (
   }
 
   return fallback;
-};
+}

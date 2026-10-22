@@ -2,7 +2,7 @@ export interface FormField {
   label: string;
   name: string;
   type: "text" | "password";
-  serverErr: string;
+  serverErr?: string;
   defaultMsg: string;
   toggle: boolean;
 }

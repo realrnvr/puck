@@ -1,12 +1,16 @@
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ResetPasswordSchema } from "../../../assets/schema/ResetPasswordSchema";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import {
+  ResetPasswordSchema,
+  type ResetPasswordFormValues,
+} from "../../../assets/schema/ResetPasswordSchema";
 import { resetPasswordData } from "../../../assets/data/resetPasswordData";
 import { resetPassword } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import { hasErrors } from "../../../helper/hasErrors";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 import Input from "../../../components/ui/input/Input";
 import { isExpired } from "../../../helper/isExpired";
 import { useEffect, useState } from "react";
@@ -15,7 +19,10 @@ const ResetPassword = () => {
   const [showErrorUI, setShowErrorUI] = useState(false);
 
   const navigate = useNavigate();
-  const { verificationId } = useParams();
+  const { verificationId: routeVerificationId } = useParams<{
+    verificationId: string;
+  }>();
+  const verificationId = routeVerificationId ?? "";
 
   useEffect(() => {
     const expired = isExpired(verificationId);
@@ -27,7 +34,7 @@ const ResetPassword = () => {
     register,
     watch,
     formState: { isValid, isSubmitting, errors },
-  } = useForm({
+  } = useForm<ResetPasswordFormValues>({
     defaultValues: {
       newPassword: "",
       confirmPassword: "",
@@ -44,18 +51,20 @@ const ResetPassword = () => {
     },
     onSuccess: (data) => {
       if (data?.data?.message) {
-        toast.success(data?.data?.message, { id: "password-toast" });
+        toast.success(data.data.message, { id: "password-toast" });
         navigate("/password-verified");
       }
     },
     onError: (error) => {
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, { id: "password-toast" });
+      const message = getErrorMessage(error);
+
+      if (message) {
+        toast.error(message, { id: "password-toast" });
       }
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<ResetPasswordFormValues> = (data) => {
     resetPasswordMutate({ verificationId, data });
   };
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { resendPasswordVerification } from "../../../services/mutation/authMutation";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../../../helper/getErrorMessage";
 
 const PasswordVerification = () => {
   const [passMail, setPassMail] = useState("");
@@ -23,13 +24,13 @@ const PasswordVerification = () => {
     },
     onSuccess: (data) => {
       toast.dismiss("toast-verification");
-      toast.success(data?.data?.message, {
+      toast.success(data?.data?.message ?? "", {
         id: "toast-verification",
       });
     },
     onError: (error) => {
       toast.dismiss("toast-verification");
-      toast.error(error.response?.data?.message, {
+      toast.error(getErrorMessage(error, "Something went wrong"), {
         id: "toast-verification",
       });
     },
