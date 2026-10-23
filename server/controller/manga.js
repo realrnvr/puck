@@ -509,19 +509,45 @@ export const search = async (req, res) => {
 };
 
 export const randomManga = async (req, res) => {
-  const limit = parseInt(req.query.limit) || 6;
+  const rawLimit = req.query.limit;
+
+  if (rawLimit !== undefined && typeof rawLimit !== "string") {
+    throw new BadRequestError(
+      "Limit must be an integer between 1 and 50.",
+      "limit",
+    );
+  }
+
+  const limit = rawLimit === undefined ? 6 : Number(rawLimit);
+
+  if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
+    throw new BadRequestError(
+      "Limit must be an integer between 1 and 50.",
+      "limit",
+    );
+  }
 
   const cacheKey = `randomManga:${limit}`;
   const expiry = 300;
 
-  const cachedRandomManga = await redisClient.get(cacheKey);
+  let cachedRandomManga = null;
+
+  try {
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      cachedRandomManga = JSON.parse(cached);
+    }
+  } catch (error) {
+    console.error("Unable to read the random manga cache:", error);
+  }
+
   if (cachedRandomManga) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
+    return res.status(StatusCodes.OK).json(cachedRandomManga);
   }
 
   const manga = await Manga.aggregate([
-    { $sample: { size: parseInt(limit) } },
+    { $sample: { size: limit } },
     {
       $project: {
         title: 1,
@@ -537,7 +563,12 @@ export const randomManga = async (req, res) => {
     length: manga.length,
   };
 
-  await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
+  try {
+    await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
+  } catch (error) {
+    console.error("Unable to write the random manga cache:", error);
+  }
+
   setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);
