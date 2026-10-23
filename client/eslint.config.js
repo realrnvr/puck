@@ -5,7 +5,6 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import plugin from "@tanstack/eslint-plugin-query";
 import jsxA11y from "eslint-plugin-jsx-a11y";
-import tseslint from "typescript-eslint";
 
 const a11yWarnings = Object.fromEntries(
   Object.entries(jsxA11y.flatConfigs.recommended.rules)
@@ -19,9 +18,8 @@ const a11yWarnings = Object.fromEntries(
 export default [
   ...plugin.configs["flat/recommended"],
   { ignores: ["dist"] },
-  ...tseslint.configs.recommended,
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -39,6 +37,7 @@ export default [
       "jsx-a11y": jsxA11y,
     },
     rules: {
+      ...js.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
@@ -47,22 +46,6 @@ export default [
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
-      ],
-    },
-  },
-  {
-    files: ["**/*.{js,jsx}"],
-    rules: {
-      ...js.configs.recommended.rules,
-    },
-  },
-  {
-    files: ["**/*.{ts,tsx}"],
-    rules: {
-      "react/prop-types": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", caughtErrors: "none" },
       ],
     },
   },

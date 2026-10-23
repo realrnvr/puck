@@ -6,17 +6,13 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.js"],
-    include: ["src/**/*.{test,spec}.{js,jsx,ts,tsx}"],
+    include: ["src/**/*.{test,spec}.{js,jsx}"],
     css: true,
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
-      include: ["src/**/*.{js,jsx,ts,tsx}"],
-      exclude: [
-        "src/main.jsx",
-        "src/**/*.{test,spec}.{js,jsx,ts,tsx}",
-        "src/test/**",
-      ],
+      include: ["src/**/*.{js,jsx}"],
+      exclude: ["src/main.jsx", "src/**/*.{test,spec}.{js,jsx}", "src/test/**"],
     },
   },
 });

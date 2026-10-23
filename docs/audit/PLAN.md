@@ -1,6 +1,7 @@
 # Remediation and TypeScript migration plan
 
-- Current status and resume guide: [`STATUS.md`](./STATUS.md)
+> **TypeScript migration cancelled.** The codebase remains JavaScript/JSX. Ignore the TypeScript migration PRs below.
+
 - Owner: `realrnvr`
 - Baseline: `docs/audit/BASELINE.md` (`a1721aa`)
 - Working branch for this document: `audit/phase-0-baseline`
@@ -193,15 +194,6 @@
 ### PR 11 — Server TypeScript conversion
 
 - Branch: `refactor/server-ts`
-- Split into leaf-first sub-PRs so each conversion can be reviewed and reverted independently:
-  - 11a: `errors`, `helper`, and `utils`.
-  - 11b: `config`, `models`, and `connectDB`.
-  - 11c: `middleware` and `services`.
-  - 11d: `client` and `newsletter` controllers.
-  - 11e: `manga` controller.
-  - 11f: `auth` controller.
-  - 11g: `router` and `app.ts`.
-  - 11h: enable TypeScript ESLint for the server.
 - Conversion order (leaf-first): `errors` -> `helper` -> `utils` -> `config` -> `models` -> `middleware` -> `services` -> `controller` -> `router` -> `app.ts`.
 - Scope:
   - Express request/response generics, `AuthRequest` with `req.user`.
@@ -209,22 +201,13 @@
   - JWT payload types; Zod schemas at boundaries.
   - Replace `console.log` with a small logger.
 - Tests: run server suite after each folder; add type-level tests where useful.
-- Acceptance: server runs from `tsx` in dev and through the `start` script; a compiled `tsc` build can replace `tsx` in a follow-up; no `any` in new code.
+- Acceptance: server runs from `tsx` in dev and `tsc` build in production; no `any` in new code.
 - Rollback: folder-by-folder commits, each independently revertible.
 
 ### PR 12 — Client TypeScript conversion
 
-- Split into leaf-first sub-PRs so each conversion can be reviewed and reverted independently:
-  - 12a: types, helpers, data constants, Zod schemas, API/query client, and route loaders.
-  - 12b: TypeScript ESLint coverage for the client.
-  - 12c: hooks.
-  - 12d: mutation services.
-  - 12e: auth components and pages.
-  - 12f: manga and reader components/pages.
-  - 12g: routing, layout, and providers.
-  - 12h: lightbox and sliderbox services.
-  - 12i: remaining JS/JSX cleanup and tests.
-- Conversion order: `types` -> `helper` -> `assets/data` -> `assets/schema` -> `services/api` -> `services/query` -> `routes/loaders` -> `hooks` -> `services/mutation` -> `components` -> `pages` -> `main.tsx`.
+- Branch: `refactor/client-ts`
+- Conversion order: `services/api` -> `helper` -> `types` -> `hooks` -> `services/query` -> `components/ui` -> `pages` -> `services/provider` -> `main.tsx`.
 - Scope:
   - API response types derived from Zod schemas.
   - TanStack Query generics and typed query keys.
@@ -241,6 +224,7 @@
   - Enable `checkJs`, then convert or exclude remaining JS.
   - Enable `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`.
   - Remove unused TypeScript type packages and `prop-types`.
+  - Add `eslint` TypeScript rules and `@typescript-eslint`.
 - Tests: full suite + typecheck + build.
 - Acceptance: no `allowJs`/`checkJs` escape hatches for source; strict checks green.
 - Rollback: strictness flags can be reverted one at a time.
@@ -316,37 +300,22 @@ Project-scoped skills installed for this work (restore instructions in `docs/AGE
 
 ## Tracking
 
-| PR  | Branch                                 | Status  |
-| --- | -------------------------------------- | ------- |
-| 1   | `audit/phase-0-baseline`               | Done    |
-| 2   | `chore/quality-tooling`                | Done    |
-| 3   | `style/format-baseline`                | Done    |
-| 4   | `test/harness`                         | Done    |
-| 5a  | `fix/auth-p0`                          | Done    |
-| 5b  | `fix/proxy-ssrf`                       | Done    |
-| 6   | `fix/server-p1`                        | Done    |
-| 7   | `fix/client-p1`                        | Done    |
-| 8a  | `refactor/naming`                      | Done    |
-| 8b  | `refactor/routes`                      | Done    |
-| 8c  | `refactor/manga-page`                  | Done    |
-| 9   | `chore/a11y`                           | Done    |
-| 10  | `chore/ts-foundation`                  | Done    |
-| 11a | `refactor/server-ts-leaves`            | Done    |
-| 11b | `refactor/server-ts-config`            | Done    |
-| 11c | `refactor/server-ts-services`          | Done    |
-| 11d | `refactor/server-ts-client-controller` | Done    |
-| 11e | `refactor/server-ts-manga-controller`  | Done    |
-| 11f | `refactor/server-ts-auth-controller`   | Done    |
-| 11g | `refactor/server-ts-app`               | Done    |
-| 11h | `chore/server-ts-lint`                 | Done    |
-| 12a | `refactor/client-ts-leaves`            | Done    |
-| 12b | `chore/client-ts-lint`                 | Done    |
-| 12c | `refactor/client-ts-hooks`             | Done    |
-| 12d | `refactor/client-ts-mutations`         | Done    |
-| 12e | `refactor/client-ts-auth`              | Done    |
-| 12f | `refactor/client-ts-manga`             | Planned |
-| 12g | `refactor/client-ts-app`               | Planned |
-| 12h | `refactor/client-ts-lightbox`          | Planned |
-| 12i | `chore/client-ts-cleanup`              | Planned |
-| 13  | `chore/ts-strict`                      | Planned |
-| 14  | `chore/final-audit`                    | Planned |
+| PR  | Branch                   | Status      |
+| --- | ------------------------ | ----------- |
+| 1   | `audit/phase-0-baseline` | Done        |
+| 2   | `chore/quality-tooling`  | Done        |
+| 3   | `style/format-baseline`  | Done        |
+| 4   | `test/harness`           | Done        |
+| 5a  | `fix/auth-p0`            | Done        |
+| 5b  | `fix/proxy-ssrf`         | Done        |
+| 6   | `fix/server-p1`          | Done        |
+| 7   | `fix/client-p1`          | Done        |
+| 8a  | `refactor/naming`        | Done        |
+| 8b  | `refactor/routes`        | Done        |
+| 8c  | `refactor/manga-page`    | Done        |
+| 9   | `chore/a11y`             | In progress |
+| 10  | `chore/ts-foundation`    | Planned     |
+| 11  | `refactor/server-ts`     | Planned     |
+| 12  | `refactor/client-ts`     | Planned     |
+| 13  | `chore/ts-strict`        | Planned     |
+| 14  | `chore/final-audit`      | Planned     |

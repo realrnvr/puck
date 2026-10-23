@@ -1,6 +1,6 @@
 # TypeScript migration strategy
 
-> Current progress and local runbook: [`docs/audit/STATUS.md`](./audit/STATUS.md)
+> **Cancelled.** The codebase remains JavaScript/JSX. This document is kept for historical context only.
 
 ## Goal
 
@@ -106,13 +106,14 @@ Add scripts:
 
 ```json
 {
-  "dev": "tsx watch app.ts",
+  "dev": "tsx watch server.ts",
   "typecheck": "tsc --noEmit",
-  "start": "tsx app.ts"
+  "build": "tsc",
+  "start": "node dist/server.js"
 }
 ```
 
-The server entrypoint is now `app.ts`. `tsx` runs it in development and for the interim production start script until a compiled `tsc` build is introduced.
+Keep `app.js` as the entrypoint until the server split lands, then rename to `app.ts`/`server.ts`.
 
 ### CI
 
