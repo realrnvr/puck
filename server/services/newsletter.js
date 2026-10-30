@@ -11,7 +11,7 @@ const createNewsletterContent = (mangaUpdate) => {
   let content = "<h1>Weekly Manga Newsletter</h1>";
   content += `<p>Check out the latest chapter of <a href="${link}">${title}</a> - Chapter ${chapter} is now available!</p>`;
   content += `<p><strong>Publish Date:</strong> ${new Date(
-    publishAt,
+    publishAt
   ).toLocaleDateString()}</p>`;
   content += `<p><strong>Pages:</strong> ${pages}</p>`;
   content += `<p><a href="${link}">Read it now</a></p>`;
@@ -24,31 +24,17 @@ export const sendNewsLetter = async () => {
     const newsletterContent = createNewsletterContent(mangaUpdate);
     const subscribers = await Newsletter.find({ isSubscribed: true });
 
-    let sent = 0;
-    let failed = 0;
-
     for (const subscriber of subscribers) {
-      try {
-        await mailer({
-          to: subscriber.email,
-          subject: "Your Weekly Manga Update",
-          html: newsletterContent,
-        });
-        sent += 1;
-        console.log(`newsletter sent to: ${subscriber.email}`);
-      } catch (error) {
-        failed += 1;
-        console.error("newsletter delivery failed", error);
-      }
+      mailer({
+        to: subscriber.email,
+        subject: "Your Weekly Manga Update",
+        html: newsletterContent,
+      });
+      console.log(`newsletter sent to: ${subscriber.email}`);
     }
 
-    if (failed === 0) {
-      console.log("All newsletters sent successfully.");
-    }
-
-    return { sent, failed };
+    console.log("All newsletters sent successfully.");
   } catch (error) {
-    console.error("error sending newsletter", error);
-    return { sent: 0, failed: 0 };
+    console.log("error sending newsletter", error);
   }
 };

@@ -3,7 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import PropTypes from "prop-types";
 import Loader from "../../components/ui/loader/Loader";
 
-const AuthRedirectGuard = ({ children }) => {
+const AuthRedirectGaurd = ({ children }) => {
   const { token, mutateTokenPending } = useAuth();
 
   if (mutateTokenPending) {
@@ -21,8 +21,8 @@ const AuthRedirectGuard = ({ children }) => {
   return children;
 };
 
-AuthRedirectGuard.propTypes = {
+AuthRedirectGaurd.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default AuthRedirectGuard;
+export default AuthRedirectGaurd;

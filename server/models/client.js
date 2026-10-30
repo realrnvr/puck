@@ -20,7 +20,7 @@ const ClientSchema = new mongoose.Schema(
       required: [true, "Please provide a valid user"],
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Client", ClientSchema);

@@ -2,32 +2,23 @@ import jwt from "jsonwebtoken";
 
 export const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  const [scheme, accessToken] = authHeader?.split(" ") ?? [];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.json({ statusCode: 403, message: "Forbidden" });
+  }
 
-  if (scheme !== "Bearer" || !accessToken) {
-    return res.status(401).json({
-      message: "Authentication required.",
-      type: "unauthenticated",
-    });
+  const accessToken = authHeader.split(" ")[1];
+  if (!accessToken) {
+    return res.json({ statusCode: 403, message: "Forbidden" });
   }
 
   try {
     const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-
-    if (!payload?.userId) {
-      throw new Error("Invalid access token payload");
-    }
-
     req.user = {
       userId: payload.userId,
       email: payload.email,
     };
-
-    return next();
-  } catch {
-    return res.status(401).json({
-      message: "Invalid or expired access token.",
-      type: "unauthenticated",
-    });
+    next();
+  } catch (error) {
+    return res.json({ statusCode: 403, message: "Forbidden" });
   }
 };

@@ -18,14 +18,13 @@ import {
 
 import { passwordLimiter, resendLimiter } from "../utils/localLimiter.js";
 import { validateResetPassword } from "../middleware/validateResetPassword.js";
-import { auth } from "../middleware/authorization.js";
 
 const router = Router();
 
 router.route("/me").post(me);
 router.route("/loginAuthOne").post(loginAuthOne);
 router.route("/loginAuthTwo").post(loginAuthTwo);
-router.route("/loginGoogleAuthTwo").post(auth, loginGoogleAuthTwo);
+router.route("/loginGoogleAuthTwo").post(loginGoogleAuthTwo);
 router.route("/signup").post(signup);
 router.route("/refreshToken").get(refreshToken);
 router.route("/logout").post(logout);
@@ -39,6 +38,6 @@ router
   .route("/resendPasswordVerification")
   .post(resendLimiter, resendPasswordVerification);
 router.route("/google").post(google);
-router.route("/deleteUser").delete(auth, deleteUser);
+router.route("/deleteUser").delete(deleteUser);
 
 export default router;

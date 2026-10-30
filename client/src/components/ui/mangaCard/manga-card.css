@@ -7,10 +7,6 @@
   cursor: pointer;
 }
 
-.manga-card__link {
-  display: block;
-}
-
 .manga-card__content:hover .manga-card__title {
   background-color: rgb(203, 60, 60);
 }

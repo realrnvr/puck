@@ -20,14 +20,14 @@ const Newsletter = new mongoose.Schema(
     },
     subscriptionDate: {
       type: Date,
-      default: Date.now,
+      default: Date.now(),
     },
     lastSent: {
       type: Date,
       default: null,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Newsletter", Newsletter);

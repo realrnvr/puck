@@ -8,7 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Node modules
-node_modules/
 client/node_modules/
 server/node_modules/
 
@@ -23,11 +22,6 @@ server/.env.*.local
 # Build output
 client/dist/
 server/dist/
-coverage/
-*.tsbuildinfo
-
-# Agent skills are restored from skills-lock.json
-.agents/
 
 # Editor directories and files
 .vscode/*

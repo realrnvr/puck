@@ -18,7 +18,7 @@ export function useLazyLoadEffect({ carouselRef, lzImgsRef }) {
         root: carouselRef?.current,
         rootMargin: "100px",
         threshold: 0.01,
-      },
+      }
     );
 
     Array.isArray(lzImgsRef.current)

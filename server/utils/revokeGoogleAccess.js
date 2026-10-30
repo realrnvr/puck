@@ -10,7 +10,7 @@ export const revokeGoogleAccess = async (refreshToken) => {
   } catch (error) {
     console.error(
       "Error revoking Google access:",
-      error.response?.data || error.message,
+      error.response?.data || error.message
     );
   }
 };

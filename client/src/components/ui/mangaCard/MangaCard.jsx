@@ -1,12 +1,14 @@
 import "./manga-card.css";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchMangaCover } from "../../../services/query/query";
 import FavBtn from "../favBtn/FavBtn";
 import PropTypes from "prop-types";
 import MangaCardImgSkeleton from "../../../utils/skeletons/mangaCardImg/MangaCardImgSkeleton";
 
 const MangaCard = ({ title, mangaId, authorId }) => {
+  const navigate = useNavigate();
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["manga-cover", { mangaId, volume: "desc", width: 256 }],
     queryFn: () => fetchMangaCover({ mangaId, volume: "desc", width: 256 }),
@@ -21,43 +23,31 @@ const MangaCard = ({ title, mangaId, authorId }) => {
     coverUrl: coverUrl,
   };
 
-  const imageSrc = isError || !coverUrl ? "/1px.webp" : coverUrl;
+  const handleMangaClick = () => {
+    navigate(`/manga/${mangaId}/${authorId}`);
+  };
 
   return (
-    <div className="manga-card">
-      <Link
-        to={`/manga/${mangaId}/${authorId}`}
-        className="manga-card__link"
-        aria-label={title ? `View ${title}` : "View manga"}
-      >
-        <img
-          className="manga-card__hold-img"
-          src="/t-1px.webp"
-          alt=""
-          width={250}
-          height={275}
-        />
-        <div className="manga-card__content">
-          {isLoading ? (
-            <MangaCardImgSkeleton />
-          ) : (
-            <img
-              className="manga-card__img"
-              src={imageSrc}
-              alt=""
-              width={250}
-              height={275}
-            />
-          )}
-          <p className="manga-card__title">{title || "---"} </p>
-        </div>
-      </Link>
+    <div className="manga-card" onClick={handleMangaClick}>
+      <img className="manga-card__hold-img" src="/t-1px.webp" alt="" />
       <div className="manga-card__fav-btn-wrapper">
         <FavBtn
           mangaId={mangaId}
           mangaData={mangaData}
           className="manga-card__fav-btn"
         />
+      </div>
+      <div className="manga-card__content">
+        {isLoading ? (
+          <MangaCardImgSkeleton />
+        ) : (
+          <img
+            className="manga-card__img"
+            src={isError ? "/1px.webp" : `${coverUrl}`}
+            alt="manga"
+          />
+        )}
+        <p className="manga-card__title">{title || "---"} </p>
       </div>
     </div>
   );

@@ -7,21 +7,6 @@ import { dexAxios } from "../services/dexAxios.js";
 import { coverAxios } from "../services/coverAxios.js";
 import Manga from "../models/manga.js";
 import axios from "axios";
-import {
-  assertAllowedProxyUrl,
-  MAX_PROXY_BYTES,
-  MAX_PROXY_REDIRECTS,
-  PROXY_TIMEOUT_MS,
-} from "../utils/proxyUrl.js";
-
-const ALLOWED_PROXY_IMAGE_TYPES = new Set([
-  "image/avif",
-  "image/gif",
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-]);
 
 export const mangas = async (req, res) => {
   const limit = Number(req.query.limit) || 10;
@@ -84,11 +69,11 @@ export const statics = async (req, res) => {
   }
 
   const altTitles = staticsData.attributes.altTitles.map(
-    (altTitle) => Object.values(altTitle)[0],
+    (altTitle) => Object.values(altTitle)[0]
   );
 
   const jaTitleObj = staticsData.attributes.altTitles.find((altTitle) =>
-    altTitle.hasOwnProperty("ja"),
+    altTitle.hasOwnProperty("ja")
   );
   const jaTitle = jaTitleObj ? jaTitleObj.ja : "No Japanese title available";
 
@@ -198,7 +183,7 @@ export const proxyCover = async (req, res) => {
 
   const response = await coverAxios.get(
     `/covers/${mangaId}/${fileName}.${width}.jpg`,
-    { responseType: "stream" },
+    { responseType: "stream" }
   );
 
   // Set cache headers for browsers to cache images
@@ -208,7 +193,7 @@ export const proxyCover = async (req, res) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, User-Agent",
+    "Content-Type, Authorization, User-Agent"
   );
 
   if (req.method === "OPTIONS") {
@@ -322,7 +307,7 @@ export const chapterImage = async (req, res) => {
       src: `${
         process.env.API_BASE_URL
       }/api/v1/manga/proxy/chapter-image/${encodeURIComponent(
-        baseUrl,
+        baseUrl
       )}/${quality}/${hash}/${val}`,
     };
   });
@@ -336,128 +321,40 @@ export const chapterImage = async (req, res) => {
 };
 
 export const proxyChapterImage = async (req, res) => {
-  const { baseUrl, quality, hash, val } = req.params;
+  let { baseUrl, quality, hash, val } = req.params;
 
-  let decodedBaseUrl;
+  baseUrl = decodeURIComponent(baseUrl);
 
-  try {
-    decodedBaseUrl = decodeURIComponent(baseUrl);
-  } catch {
-    throw new BadRequestError("Invalid image URL.");
-  }
-
-  if (!["data", "data-saver"].includes(quality)) {
-    throw new BadRequestError("Invalid image quality.");
-  }
-
-  if (
-    !/^[a-zA-Z0-9_-]+$/.test(hash) ||
-    !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(val) ||
-    val.includes("..")
-  ) {
-    throw new BadRequestError("Invalid image path.");
-  }
-
-  const base = assertAllowedProxyUrl(decodedBaseUrl);
-  if (base.search || base.hash) {
-    throw new BadRequestError("Invalid image base URL.");
-  }
-
-  const targetUrl = assertAllowedProxyUrl(
-    `${base.origin}${base.pathname.replace(/\/+$/, "")}/${quality}/${hash}/${val}`,
-  );
-
-  const response = await axios.get(targetUrl.toString(), {
+  const response = await axios.get(`${baseUrl}/${quality}/${hash}/${val}`, {
     responseType: "stream",
-    timeout: PROXY_TIMEOUT_MS,
-    maxRedirects: MAX_PROXY_REDIRECTS,
-    maxContentLength: MAX_PROXY_BYTES,
-    maxBodyLength: MAX_PROXY_BYTES,
-    beforeRedirect: (options) => {
-      const redirectUrl =
-        options.href ??
-        `${options.protocol ?? ""}//${options.host ?? ""}${options.path ?? ""}`;
-      assertAllowedProxyUrl(redirectUrl);
-    },
   });
-
-  const contentType = String(response.headers?.["content-type"] ?? "");
-  const mimeType = contentType.split(";")[0].trim().toLowerCase();
-
-  if (!ALLOWED_PROXY_IMAGE_TYPES.has(mimeType)) {
-    response.data.destroy();
-    return res.status(StatusCodes.BAD_GATEWAY).json({
-      message: "Upstream did not return a supported image.",
-    });
-  }
-
-  const contentLength = Number(response.headers?.["content-length"]);
-
-  if (Number.isFinite(contentLength) && contentLength > MAX_PROXY_BYTES) {
-    response.data.destroy();
-    return res.status(StatusCodes.BAD_GATEWAY).json({
-      message: "Image is too large.",
-    });
-  }
-
-  res.setHeader("Content-Type", contentType);
-  res.setHeader("Cache-Control", "public, max-age=86400, immutable");
+  res.setHeader("Content-Type", "image/jpeg");
   res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_APP_URL);
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, User-Agent",
+    "Content-Type, Authorization, User-Agent"
   );
 
-  if (Number.isFinite(contentLength) && contentLength >= 0) {
-    res.setHeader("Content-Length", contentLength);
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
   }
 
-  let receivedBytes = 0;
-
-  response.data.on("data", (chunk) => {
-    receivedBytes += chunk.length;
-
-    if (receivedBytes > MAX_PROXY_BYTES) {
-      response.data.destroy(new Error("Image is too large."));
-    }
-  });
-
-  response.data.on("error", () => {
-    if (!res.headersSent) {
-      res.status(StatusCodes.BAD_GATEWAY).json({
-        message: "Failed to fetch image.",
-      });
-      return;
-    }
-
-    res.destroy();
-  });
-
-  res.on("close", () => {
-    if (!response.data.destroyed) {
-      response.data.destroy();
-    }
-  });
-
   response.data.pipe(res);
+
+  response.data.on("end", () => {
+    res.end();
+  });
 };
 
 export const search = async (req, res) => {
   const { query } = req.query;
 
-  if (typeof query !== "string") {
-    throw new BadRequestError("Query must be a string.", "query");
-  }
-
   const trimmedQuery = query.trim();
 
   if (!trimmedQuery) {
-    throw new BadRequestError("Query cannot be empty.", "query");
-  }
-
-  if (trimmedQuery.length > 100) {
-    throw new BadRequestError("Query cannot exceed 100 characters.", "query");
+    return new BadRequestError("Query cannot be empty.");
   }
 
   const cacheKey = `search:${trimmedQuery}`;
@@ -509,45 +406,19 @@ export const search = async (req, res) => {
 };
 
 export const randomManga = async (req, res) => {
-  const rawLimit = req.query.limit;
-
-  if (rawLimit !== undefined && typeof rawLimit !== "string") {
-    throw new BadRequestError(
-      "Limit must be an integer between 1 and 50.",
-      "limit",
-    );
-  }
-
-  const limit = rawLimit === undefined ? 6 : Number(rawLimit);
-
-  if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
-    throw new BadRequestError(
-      "Limit must be an integer between 1 and 50.",
-      "limit",
-    );
-  }
+  const limit = parseInt(req.query.limit) || 6;
 
   const cacheKey = `randomManga:${limit}`;
   const expiry = 300;
 
-  let cachedRandomManga = null;
-
-  try {
-    const cached = await redisClient.get(cacheKey);
-    if (cached) {
-      cachedRandomManga = JSON.parse(cached);
-    }
-  } catch (error) {
-    console.error("Unable to read the random manga cache:", error);
-  }
-
+  const cachedRandomManga = await redisClient.get(cacheKey);
   if (cachedRandomManga) {
     setCacheHeaders({ res, cacheStatus: "HIT", ttl: expiry });
-    return res.status(StatusCodes.OK).json(cachedRandomManga);
+    return res.status(StatusCodes.OK).json(JSON.parse(cachedRandomManga));
   }
 
   const manga = await Manga.aggregate([
-    { $sample: { size: limit } },
+    { $sample: { size: parseInt(limit) } },
     {
       $project: {
         title: 1,
@@ -563,12 +434,7 @@ export const randomManga = async (req, res) => {
     length: manga.length,
   };
 
-  try {
-    await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
-  } catch (error) {
-    console.error("Unable to write the random manga cache:", error);
-  }
-
+  await redisClient.setEx(cacheKey, expiry, JSON.stringify(responseData));
   setCacheHeaders({ res, cacheStatus: "MISS", ttl: expiry });
 
   res.status(StatusCodes.OK).json(responseData);

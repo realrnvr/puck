@@ -15,26 +15,22 @@ const Read = () => {
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["random-manga", { LIMIT: RANDOM_MANGA_LIMIT }],
-    queryFn: async () => {
-      const response = await fetchRandomManga(RANDOM_MANGA_LIMIT);
-      const manga = response?.data?.manga;
-
-      if (Array.isArray(manga)) {
-        manga.forEach((val) => {
-          queryClient.prefetchQuery({
-            queryKey: [
-              "manga-cover",
-              { mangaId: val.mangaId, volume: "desc", width: 256 },
-            ],
-            queryFn: () =>
-              fetchMangaCover({
-                mangaId: val.mangaId,
-                volume: "desc",
-                width: 256,
-              }),
-          });
+    queryFn: () => {
+      const response = fetchRandomManga(RANDOM_MANGA_LIMIT);
+      response?.data?.manga.forEach((val) => {
+        queryClient.prefetchQuery({
+          queryKey: [
+            "manga-cover",
+            { mangaId: val.mangaId, volume: "desc", width: 256 },
+          ],
+          queryFn: () =>
+            fetchMangaCover({
+              mangaId: val.mangaId,
+              volume: "desc",
+              width: 256,
+            }),
         });
-      }
+      });
 
       return response;
     },
@@ -56,10 +52,10 @@ const Read = () => {
         </Link>
       </div>
       <div className="read__manga-container">
-        {(data?.data?.manga ?? []).map((val) => {
+        {data?.data?.manga.map((val, idx) => {
           return (
             <MangaCard
-              key={val.mangaId}
+              key={idx}
               title={val.title}
               mangaId={val.mangaId}
               authorId={val.authorId}

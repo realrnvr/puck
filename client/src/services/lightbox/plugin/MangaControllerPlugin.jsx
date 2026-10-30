@@ -3,7 +3,7 @@ import MangaController from "../module/mangaController/mangaController";
 
 const MangaControllerModule = createModule(
   "MangaControllerModule",
-  MangaController,
+  MangaController
 );
 
 function MangaControllerPlugin({ addModule, MangaControllerProps }) {

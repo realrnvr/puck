@@ -33,18 +33,10 @@ const Login = () => {
     mutationFn: loginAuthOne,
     onSuccess: (data) => {
       localStorage.setItem("log-mail", data?.data?.user?.email);
-      if (data?.data?.navigate) {
-        navigate(data.data.navigate);
-      }
+      navigate(data?.data?.navigate);
     },
     onError: (error) => {
-      const { type, message, email } = error?.response?.data ?? {};
-
-      if (!message) {
-        toast.error("Something went wrong");
-        return;
-      }
-
+      const { type, message, email } = error.response.data;
       setError("email", { message });
       setFocus("email");
       if (type === "email") {
@@ -61,7 +53,7 @@ const Login = () => {
           {
             duration: 10000,
             id: "verification-toast",
-          },
+          }
         );
       }
     },
