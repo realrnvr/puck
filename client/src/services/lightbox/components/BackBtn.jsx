@@ -15,14 +15,12 @@ const BackBtn = () => {
     <button
       type="button"
       className="controller__back | yarl__button"
-      aria-label="Go back"
       onClick={handleClick}
     >
       <svg
         className="controller__back-svg"
         fill="currentColor"
         viewBox="0 0 512 512"
-        aria-hidden="true"
       >
         <path
           fill="none"

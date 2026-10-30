@@ -32,12 +32,7 @@ export const AuthProvider = ({ children }) => {
     const fetchMe = async () => {
       try {
         const response = await axiosInstance.post("/api/v1/auth/me");
-
-        if (response.data?.isAuthenticated && response.data.accessToken) {
-          setToken(response.data.accessToken);
-        } else {
-          setToken(null);
-        }
+        setToken(response.data.accessToken);
       } catch (error) {
         toast.error(error?.response?.data?.message);
         setToken(null);
@@ -65,49 +60,46 @@ export const AuthProvider = ({ children }) => {
 
   useLayoutEffect(() => {
     const refreshInterceptor = axiosInstance.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
-        const isRefreshRequest =
-          originalRequest?.url?.includes("/api/v1/auth/refreshToken") ||
-          originalRequest?.url?.includes("/api/v1/auth/me");
-        const hadAccessToken = Boolean(originalRequest?.headers?.Authorization);
-
+      async (response) => {
         if (
-          error.response?.status === 401 &&
-          originalRequest &&
-          !originalRequest._retry &&
-          !isRefreshRequest &&
-          hadAccessToken
+          response.data.statusCode === 403 &&
+          response.data.message === "Forbidden"
         ) {
-          originalRequest._retry = true;
+          const originalRequest = response.config;
 
-          try {
-            const refreshResponse = await axiosInstance.get(
-              "/api/v1/auth/refreshToken",
-            );
-            const nextAccessToken = refreshResponse.data.accessToken;
+          if (!originalRequest._retry) {
+            originalRequest._retry = true;
 
-            setToken(nextAccessToken);
-            originalRequest.headers = originalRequest.headers ?? {};
-            originalRequest.headers.Authorization = `Bearer ${nextAccessToken}`;
+            try {
+              const refreshResponse = await axiosInstance.get(
+                "/api/v1/auth/refreshToken"
+              );
 
-            return axiosInstance(originalRequest);
-          } catch (refreshError) {
-            queryClient.removeQueries({ queryKey: ["user"] });
-            setToken(null);
-            return Promise.reject(refreshError);
+              setToken(refreshResponse.data.accessToken);
+
+              originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
+              return axiosInstance(originalRequest);
+            } catch (error) {
+              setToken(null);
+              return Promise.reject(error);
+            }
           }
+
+          setToken(null);
+          return Promise.reject(response);
         }
 
-        return Promise.reject(error);
+        return response;
       },
+      (error) => {
+        return Promise.reject(error);
+      }
     );
 
     return () => {
       axiosInstance.interceptors.response.eject(refreshInterceptor);
     };
-  }, [queryClient]);
+  }, []);
 
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,

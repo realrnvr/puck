@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const ProcessGuard = ({ children, value, to }) => {
+const ProcessGaurd = ({ children, value, to }) => {
   const parameter = localStorage.getItem(value);
 
   if (!parameter) {
@@ -11,10 +11,10 @@ const ProcessGuard = ({ children, value, to }) => {
   return children;
 };
 
-ProcessGuard.propTypes = {
+ProcessGaurd.propTypes = {
   children: PropTypes.node.isRequired,
   value: PropTypes.string,
   to: PropTypes.string,
 };
 
-export default ProcessGuard;
+export default ProcessGaurd;

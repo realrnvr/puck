@@ -89,14 +89,14 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       if (context?.previousIsFavourite) {
         queryClient.setQueryData(
           ["isFavourite", { mangaId }],
-          context.previousIsFavourite,
+          context.previousIsFavourite
         );
         toast.error(err?.response?.data?.message);
       }
       if (context?.previousAllFavourite) {
         queryClient.setQueryData(
           ["all-favourites", { LIMIT }],
-          context.previousAllFavourite,
+          context.previousAllFavourite
         );
       }
     },
@@ -135,7 +135,7 @@ export const useFavourite = ({ mangaId, mangaData }) => {
       if (context?.previousIsFavourite) {
         queryClient.setQueryData(
           ["isFavourite", { mangaId }],
-          context.previousIsFavourite,
+          context.previousIsFavourite
         );
         toast.error(err?.response?.data?.message);
       }

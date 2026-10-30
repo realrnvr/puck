@@ -66,7 +66,7 @@ export const useMangaData = ({ mangaId, authorId }) => {
       mangaId,
       authorId,
       coverImg?.data?.coverImgUrl,
-    ],
+    ]
   );
 
   return {

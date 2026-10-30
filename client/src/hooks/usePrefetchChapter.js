@@ -3,50 +3,17 @@ import { useCallback } from "react";
 import { fetchChapter, fetchChapterImage } from "../services/query/query";
 import toast from "react-hot-toast";
 
-const DEFAULT_MANGA_STATE = {
-  chapterCount: 0,
-  quality: "data",
-  offset: 0,
-};
-
-export const readStoredMangaState = (mangaId) => {
-  if (typeof localStorage === "undefined") {
-    return { ...DEFAULT_MANGA_STATE };
-  }
-
-  try {
-    const stored = localStorage.getItem(`mangaState:${mangaId}`);
-    if (!stored) return { ...DEFAULT_MANGA_STATE };
-
-    const parsed = JSON.parse(stored);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return { ...DEFAULT_MANGA_STATE };
-    }
-
-    return {
-      chapterCount:
-        Number.isInteger(parsed.chapterCount) && parsed.chapterCount >= 0
-          ? parsed.chapterCount
-          : DEFAULT_MANGA_STATE.chapterCount,
-      quality:
-        parsed.quality === "data-saver"
-          ? "data-saver"
-          : DEFAULT_MANGA_STATE.quality,
-      offset:
-        Number.isInteger(parsed.offset) && parsed.offset >= 0
-          ? parsed.offset
-          : DEFAULT_MANGA_STATE.offset,
-    };
-  } catch {
-    return { ...DEFAULT_MANGA_STATE };
-  }
-};
-
 export const usePrefetchChapter = ({ mangaId, CHUNK_SIZE }) => {
   const queryClient = useQueryClient();
 
+  const stateKey = `mangaState:${mangaId}`;
+  const storedState = JSON.parse(localStorage.getItem(stateKey)) ?? {
+    chapterCount: 0,
+    quality: "data",
+    offset: 0,
+  };
+
   const prefetch = useCallback(async () => {
-    const storedState = readStoredMangaState(mangaId);
     const chapterCache = queryClient.getQueryData([
       "chapter",
       { mangaId, CHUNK_SIZE, offset: storedState.offset },
@@ -87,7 +54,14 @@ export const usePrefetchChapter = ({ mangaId, CHUNK_SIZE }) => {
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to load.");
     }
-  }, [CHUNK_SIZE, mangaId, queryClient]);
+  }, [
+    CHUNK_SIZE,
+    mangaId,
+    queryClient,
+    storedState.chapterCount,
+    storedState.offset,
+    storedState.quality,
+  ]);
 
   return { prefetch };
 };

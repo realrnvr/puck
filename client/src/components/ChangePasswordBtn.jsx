@@ -23,7 +23,7 @@ const ChangePasswordBtn = ({ user, isPending, disabled }) => {
         {
           duration: 10000,
           id: "create-password-toast",
-        },
+        }
       );
     } else {
       navigate("/change-password");

@@ -19,22 +19,20 @@ const Search = ({ onClick }) => {
       <div className="header__form-wrapper">
         <form
           className="header__form"
-          role="search"
-          aria-label="Manga search"
+          aria-label="Search Manga"
           onSubmit={(e) => e.preventDefault()}
         >
           <input
             type="text"
             name="search"
             className="header__input"
-            aria-label="Search manga"
-            spellCheck={false}
+            spellCheck="false"
             autoComplete="off"
             placeholder="Search"
             value={query}
             onChange={handleQueryChange}
           />
-          <p className="header__search-btn" aria-hidden="true">
+          <p className="header__search-btn">
             <svg
               viewBox="0 0 16 16"
               className="header__icon header__icon--width header__icon--color"
@@ -53,25 +51,21 @@ const Search = ({ onClick }) => {
                 ? "search__result--pd"
                 : null
             }`}
-            aria-label="Search results"
-            aria-live="polite"
           >
             {data?.data?.manga?.map((manga) => (
-              <li key={manga.mangaId}>
-                <button
-                  type="button"
-                  className="search__item"
-                  onClick={() => {
-                    onClick?.();
-                    handleNavigate({
-                      mangaId: manga?.mangaId,
-                      authorId: manga?.authorId,
-                    });
-                    setQuery("");
-                  }}
-                >
-                  {manga?.title}
-                </button>
+              <li
+                key={manga.mangaId}
+                className="search__item"
+                onClick={() => {
+                  onClick?.();
+                  handleNavigate({
+                    mangaId: manga?.mangaId,
+                    authorId: manga?.authorId,
+                  });
+                  setQuery("");
+                }}
+              >
+                {manga?.title}
               </li>
             ))}
             {isLoading && !isError ? (
@@ -87,7 +81,7 @@ const Search = ({ onClick }) => {
           </ul>
         }
         {(query && !isLoading && data?.data?.manga?.length === 0) || isError ? (
-          <p className="header__no-search" role="status">
+          <p className="header__no-search">
             {isError
               ? error?.response?.data?.message || "Something went wrong."
               : "No results found."}

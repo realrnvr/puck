@@ -17,7 +17,7 @@ export const useDisableEvent = (isOpen) => {
       "onPointerDown",
       (event) => {
         event.stopPropagation();
-      },
+      }
     );
 
     const unsubscribeWheel = subscribeSensors("onWheel", (event) => {
@@ -29,7 +29,7 @@ export const useDisableEvent = (isOpen) => {
       (event) => {
         event.stopPropagation();
         event.preventDefault();
-      },
+      }
     );
 
     return () => {

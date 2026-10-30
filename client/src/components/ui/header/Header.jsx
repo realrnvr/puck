@@ -70,11 +70,8 @@ const Header = () => {
       <div className="header__main-wrapper">
         <div className="header__main | container">
           <button
-            type="button"
             className="header__btn header__btn--opacity header__sm-screen"
             onClick={toggleMobileMenu}
-            aria-expanded={MobileMenu}
-            aria-controls="mobile-navigation"
             style={MobileMenu ? { opacity: 0 } : null}
           >
             <svg
@@ -128,7 +125,6 @@ const Header = () => {
         </div>
       </div>
       <div
-        id="mobile-navigation"
         className="header__mobile-nav-wrapper"
         style={
           MobileMenu
@@ -142,10 +138,8 @@ const Header = () => {
       >
         <div className="header__mobile-nav">
           <button
-            type="button"
             className="header__btn header__btn--border"
             onClick={toggleMobileMenu}
-            aria-controls="mobile-navigation"
           >
             <svg
               fill="none"
@@ -153,7 +147,6 @@ const Header = () => {
               strokeWidth={3}
               stroke="currentColor"
               className="header__icon"
-              aria-hidden="true"
               color="#fff"
             >
               <path strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

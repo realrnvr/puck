@@ -1,10 +1,8 @@
-import mongoose from "mongoose";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../errors/notFoundError.js";
 import { BadRequestError } from "../errors/badRequestError.js";
 import Client from "../models/client.js";
 import User from "../models/auth.js";
-import { clearRefreshTokenCookie } from "../helper/setRefreshTokenCookie.js";
 
 export const favourite = async (req, res) => {
   const {
@@ -16,46 +14,24 @@ export const favourite = async (req, res) => {
   res.status(StatusCodes.OK).json({ isFavourite: Boolean(isFavourite) });
 };
 
-export const allFavourites = async (req, res) => {
-  const { userId } = req.user;
-  const rawLimit = req.query.limit;
+export const Allfavourites = async (req, res) => {
+  const limit = Number(req.query.limit) || 8;
   const cursor = req.query.cursor;
+  const { userId } = req.user;
 
-  if (rawLimit !== undefined && typeof rawLimit !== "string") {
-    throw new BadRequestError(
-      "Limit must be an integer between 1 and 50.",
-      "limit",
-    );
-  }
-
-  const limit = rawLimit === undefined ? 8 : Number(rawLimit);
-
-  if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
-    throw new BadRequestError(
-      "Limit must be an integer between 1 and 50.",
-      "limit",
-    );
-  }
-
-  if (
-    cursor !== undefined &&
-    (typeof cursor !== "string" || !mongoose.isValidObjectId(cursor))
-  ) {
-    throw new BadRequestError("Invalid cursor.", "cursor");
-  }
-
-  const query = { createdBy: userId };
+  let query = { createdBy: userId };
   if (cursor) {
     query._id = { $lt: cursor };
   }
 
-  const favourites = await Client.find(query)
-    .sort({ _id: -1 })
-    .limit(limit + 1);
+  const client = await Client.find(query).sort({ _id: -1 }).limit(limit);
 
-  const hasMore = favourites.length > limit;
-  const client = hasMore ? favourites.slice(0, limit) : favourites;
-  const nextCursor = hasMore ? client[client.length - 1]._id : null;
+  const hasMore = await Client.exists({
+    createdBy: userId,
+    _id: { $lt: client[client.length - 1]?._id },
+  });
+
+  const nextCursor = hasMore ? client[client.length - 1]?._id : null;
 
   res.status(StatusCodes.OK).json({
     client,
@@ -113,7 +89,7 @@ export const updateUsername = async (req, res) => {
   const user = await User.findOneAndUpdate(
     { _id: userId, username: { $ne: newUsername } },
     { username: newUsername },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   );
 
   if (!user) {
@@ -135,11 +111,11 @@ export const updatePassword = async (req, res) => {
 
   if (newPassword !== confirmNewPassword) {
     throw new BadRequestError(
-      "new password must be equal to confirm new password",
+      "new password must be equal to confirm new password"
     );
   }
 
-  const user = await User.findOne({ _id: userId }).select("+password");
+  const user = await User.findOne({ _id: userId });
   if (!user) {
     throw new NotFoundError("user does not exists");
   }
@@ -156,9 +132,7 @@ export const updatePassword = async (req, res) => {
   }
 
   user.password = newPassword;
-  user.tokenVersion = (user.tokenVersion ?? 0) + 1;
   await user.save();
-  clearRefreshTokenCookie(res);
 
   res.status(StatusCodes.OK).json({ message: "password changed!" });
 };

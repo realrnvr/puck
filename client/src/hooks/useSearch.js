@@ -21,14 +21,14 @@ export const useSearch = () => {
       if (query === "" && value.startsWith(" ")) return;
       setQuery(value);
     },
-    [query],
+    [query]
   );
 
   const handleNavigate = useCallback(
     ({ mangaId, authorId }) => {
       navigate(`/manga/${mangaId}/${authorId}`);
     },
-    [navigate],
+    [navigate]
   );
 
   return {

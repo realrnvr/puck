@@ -32,15 +32,15 @@ const ForgotPassword = () => {
         id: "toast-verification",
       });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       toast.success(data?.data?.message, {
         id: "toast-verification",
       });
-      localStorage.setItem("pass-mail", variables.email);
+      localStorage.setItem("pass-mail", data?.data?.user?.email);
       navigate("/password-verification");
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.message ?? "Something went wrong", {
+      toast.error(error.response?.data?.message, {
         id: "toast-verification",
       });
     },

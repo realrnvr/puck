@@ -16,9 +16,6 @@ const MangaCardImgSkeleton = () => {
         className="manga-card__img"
         style={{ visibility: "hidden" }}
         src="/1px.webp"
-        alt=""
-        width={250}
-        height={275}
       />
     </figure>
   );

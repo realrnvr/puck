@@ -10,7 +10,7 @@ export const mailTemplate = ({ username, redirect, template }) => {
     __dirname,
     "..",
     "template",
-    `${template}.html`,
+    `${template}.html`
   );
   let htmlContent = fs.readFileSync(templatePath, "utf-8");
 

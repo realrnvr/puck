@@ -21,7 +21,7 @@ export const fetchMangaUpdates = async () => {
           includeEmptyPages: 0,
           includeFuturePublishAt: 0,
         },
-      },
+      }
     );
     const mangaData = response.data.data[0];
 
